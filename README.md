@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="apps/docs/public/hero.png" alt="react-kino — cinematic scroll-driven storytelling for React" width="100%" />
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/npm/v/react-kino?style=flat-square&color=000" alt="npm version" />
   <img src="https://img.shields.io/bundlephobia/minzip/react-kino?style=flat-square&color=000" alt="bundle size" />
   <img src="https://img.shields.io/npm/l/react-kino?style=flat-square&color=000" alt="license" />
@@ -193,6 +197,10 @@ import { Parallax } from "react-kino";
 | `className` | `string` | -- | CSS class |
 | `style` | `CSSProperties` | -- | Inline styles (merged with transform) |
 
+<p align="center">
+  <img src="apps/docs/public/parallax-demo.png" alt="Parallax depth effect demo" width="80%" />
+</p>
+
 ---
 
 ### `<Counter>`
@@ -260,6 +268,10 @@ import { CompareSlider } from "react-kino";
 | `progress` | `number` | -- | Progress override (0-1). When `scrollDriven`, defaults to parent `<Scene>` context |
 | `initialPosition` | `number` | `0.5` | Initial slider position (0-1) in drag mode |
 | `className` | `string` | -- | CSS class for the container |
+
+<p align="center">
+  <img src="apps/docs/public/compare-slider-demo.png" alt="CompareSlider before/after reveal demo" width="80%" />
+</p>
 
 ---
 
