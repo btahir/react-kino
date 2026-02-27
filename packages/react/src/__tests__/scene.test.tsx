@@ -5,11 +5,11 @@ import { Scene } from "../scene";
 
 // Mock @kino/core to avoid real scroll tracking in tests
 vi.mock("@kino/core", () => ({
-  ScrollTracker: vi.fn().mockImplementation(() => ({
-    subscribe: vi.fn(() => vi.fn()),
-    start: vi.fn(),
-    stop: vi.fn(),
-  })),
+  ScrollTracker: class MockScrollTracker {
+    subscribe = vi.fn(() => vi.fn());
+    start = vi.fn();
+    stop = vi.fn();
+  },
   calcSceneProgress: vi.fn(() => 0),
   parseDuration: vi.fn(() => 1600),
 }));
