@@ -1,0 +1,52 @@
+{
+  "name": "@kino/templates",
+  "version": "0.1.0",
+  "description": "Pre-built full-page scroll experience templates for react-kino",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./product-launch": {
+      "types": "./dist/product-launch.d.ts",
+      "import": "./dist/product-launch.js",
+      "require": "./dist/product-launch.cjs"
+    },
+    "./case-study": {
+      "types": "./dist/case-study.d.ts",
+      "import": "./dist/case-study.js",
+      "require": "./dist/case-study.cjs"
+    },
+    "./portfolio": {
+      "types": "./dist/portfolio.d.ts",
+      "import": "./dist/portfolio.js",
+      "require": "./dist/portfolio.cjs"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react-kino": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "react": "^19",
+    "tsup": "^8",
+    "typescript": "^5"
+  },
+  "license": "MIT"
+}
