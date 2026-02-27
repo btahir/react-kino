@@ -26,10 +26,15 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0"
+    "react-dom": ">=18.0.0",
+    "framer-motion": ">=10.0.0",
+    "motion": ">=10.0.0"
   },
   "peerDependenciesMeta": {
     "framer-motion": {
+      "optional": true
+    },
+    "motion": {
       "optional": true
     }
   },
@@ -37,12 +42,12 @@
     "@testing-library/react": "^16",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "jsdom": "^25",
+    "jsdom": "^28",
     "react": "^19",
     "react-dom": "^19",
     "tsup": "^8",
     "typescript": "^5",
-    "vitest": "^2"
+    "vitest": "^4"
   },
   "keywords": [
     "react", "scroll", "animation", "storytelling", "parallax",
