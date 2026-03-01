@@ -15,6 +15,12 @@ Cinematic scroll-driven storytelling for React.<br/>
 Core scroll engine under 1 KB gzipped.
 </p>
 
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/launch-video.mp4" width="100%" autoplay loop muted playsinline></video>
+</p>
+
+> **Note:** If the video doesn't load above, you can [watch it directly](apps/video/out/launch-video.mp4).
+
 ---
 
 ## Why react-kino

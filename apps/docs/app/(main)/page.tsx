@@ -1353,6 +1353,31 @@ export default function LandingPage() {
         </StickyHeader>
         <Progress type="bar" position="top" color="#dc2626" />
         <Hero />
+
+        {/* Launch video */}
+        <section
+          style={{
+            padding: "80px 24px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <video
+            src="/launch-video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              width: "100%",
+              maxWidth: "960px",
+              borderRadius: "12px",
+              border: "1px solid rgba(220, 38, 38, 0.15)",
+              boxShadow: "0 0 80px rgba(220, 38, 38, 0.08)",
+            }}
+          />
+        </section>
+
         <MarqueeStrip />
         <SceneDemo />
         <TextRevealDemo />
