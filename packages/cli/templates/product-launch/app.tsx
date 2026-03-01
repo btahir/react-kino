@@ -21,7 +21,7 @@ export default function __PROJECT_NAME__() {
       <Scene duration="300vh">
         <Reveal animation="fade-up" at={0.15}>
           <div style={{ display: "grid", gap: "4rem", padding: "10vh 2rem", maxWidth: 800, margin: "0 auto" }}>
-            <Feature title="Blazing Fast" description="Built on CSS Scroll Timeline for native performance." />
+            <Feature title="Blazing Fast" description="Built on a tiny RAF-driven scroll engine for smooth performance." />
             <Feature title="Framework Ready" description="Works with Next.js, Vite, and any React setup." />
             <Feature title="Accessible" description="Respects prefers-reduced-motion out of the box." />
           </div>

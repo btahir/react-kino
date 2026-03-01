@@ -67,6 +67,7 @@ export function TextReveal({
 }: TextRevealProps) {
   const progress = useProgress(progressProp);
   const reducedMotion = usePrefersReducedMotion();
+  const lineMode = mode === "line";
 
   const tokens = splitTokens(children, mode);
   // Only count non-whitespace tokens for threshold calculation
@@ -75,8 +76,38 @@ export function TextReveal({
 
   if (reducedMotion) {
     return (
-      <div className={className} data-testid="text-reveal">
+      <div
+        className={className}
+        data-testid="text-reveal"
+        style={lineMode ? { whiteSpace: "pre-line" } : undefined}
+      >
         {children}
+      </div>
+    );
+  }
+
+  if (lineMode) {
+    return (
+      <div className={className} data-testid="text-reveal">
+        {tokens.map((line, i) => {
+          const threshold =
+            totalContent > 1 ? at + (i / (totalContent - 1)) * span : at;
+          const isRevealed = progress >= threshold;
+          const lineStyle: CSSProperties = {
+            color: isRevealed ? color || undefined : dimColor || undefined,
+            opacity: isRevealed ? 1 : 0.15,
+            transition: "color 0.15s, opacity 0.15s",
+          };
+
+          return (
+            <React.Fragment key={i}>
+              <span style={lineStyle} data-testid="text-reveal-token">
+                {line}
+              </span>
+              {i < tokens.length - 1 && <br />}
+            </React.Fragment>
+          );
+        })}
       </div>
     );
   }

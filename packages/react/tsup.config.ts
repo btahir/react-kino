@@ -7,6 +7,6 @@ export default defineConfig({
   splitting: true,
   treeshake: true,
   clean: true,
-  external: ["react", "react-dom", "framer-motion"],
+  external: ["react", "react-dom"],
   minify: true,
 });

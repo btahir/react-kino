@@ -35,9 +35,9 @@ async function main() {
 function printHelp() {
   console.log(BANNER);
   console.log("  Usage:");
-  console.log("    npx kino init    Scaffold a new scroll page from a template");
-  console.log("    npx kino -h      Show this help message");
-  console.log("    npx kino -v      Show version\n");
+  console.log("    npx @kino/cli init    Scaffold a new scroll page from a template");
+  console.log("    npx @kino/cli -h      Show this help message");
+  console.log("    npx @kino/cli -v      Show version\n");
 }
 
 main().catch((err) => {

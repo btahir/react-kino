@@ -72,6 +72,6 @@ describe("Panel", () => {
     expect(wrapper.style.backgroundColor).toBe("blue");
     // Default styles should still be applied
     expect(wrapper.style.width).toBe("100vw");
-    expect(wrapper.style.height).toBe("100vh");
+    expect(wrapper.style.height).toBe("var(--kino-panel-height, 100vh)");
   });
 });

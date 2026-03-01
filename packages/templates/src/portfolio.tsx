@@ -1,4 +1,3 @@
-"use client";
 import React, { type CSSProperties } from "react";
 import {
   Kino,

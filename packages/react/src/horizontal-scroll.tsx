@@ -7,8 +7,9 @@ import React, {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { ScrollTracker, calcSceneProgress } from "@kino/core";
+import { calcSceneProgress } from "@kino/core";
 import { useIsClient } from "./hooks/use-is-client";
+import { useScrollTracker } from "./hooks/use-scroll-tracker";
 
 interface HorizontalScrollProps {
   children: ReactNode;
@@ -27,7 +28,7 @@ export function Panel({ children, className, style }: PanelProps) {
   const panelStyle: CSSProperties = {
     flexShrink: 0,
     width: "100vw",
-    height: "100vh",
+    height: "var(--kino-panel-height, 100vh)",
     ...style,
   };
 
@@ -47,13 +48,12 @@ export function HorizontalScroll({
   const stripRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState(0);
   const isClient = useIsClient();
+  const { tracker, isOwned } = useScrollTracker();
 
   const childCount = Children.count(children);
 
   useEffect(() => {
     if (!isClient || !spacerRef.current) return;
-
-    const tracker = new ScrollTracker();
 
     const unsub = tracker.subscribe(({ scrollY, viewportHeight }) => {
       if (!spacerRef.current || !stripRef.current) return;
@@ -61,7 +61,10 @@ export function HorizontalScroll({
       const rect = spacerRef.current.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
       const spacerHeight = spacerRef.current.offsetHeight;
-      const duration = spacerHeight - viewportHeight;
+      const stickyHeight =
+        (spacerRef.current.firstElementChild as HTMLElement | null)?.offsetHeight ??
+        viewportHeight;
+      const duration = spacerHeight - stickyHeight;
 
       if (duration <= 0) return;
 
@@ -72,23 +75,24 @@ export function HorizontalScroll({
       setTranslateX(progress * maxTranslate);
     });
 
-    tracker.start();
+    if (isOwned) tracker.start();
     return () => {
-      tracker.stop();
       unsub();
+      if (isOwned) tracker.stop();
     };
-  }, [isClient, childCount]);
+  }, [isClient, childCount, tracker, isOwned]);
 
-  // Spacer height: one "viewport" per child
+  // Spacer height: one panel height per child
   const spacerStyle: CSSProperties = {
     position: "relative",
-    height: isClient ? `${childCount * 100}vh` : `calc(${childCount} * ${panelHeight})`,
+    height: `calc(${childCount} * ${panelHeight})`,
+    ["--kino-panel-height" as string]: panelHeight,
   };
 
   const stickyStyle: CSSProperties = {
     position: "sticky",
     top: 0,
-    height: "100vh",
+    height: panelHeight,
     overflow: "hidden",
   };
 

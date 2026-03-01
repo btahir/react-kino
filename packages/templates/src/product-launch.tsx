@@ -1,4 +1,3 @@
-"use client";
 import React, { type CSSProperties } from "react";
 import {
   Kino,
@@ -122,7 +121,7 @@ export function ProductLaunch({
                 letterSpacing: "-0.04em",
                 lineHeight: 1,
                 margin: 0,
-                background: `linear-gradient(135deg, #ffffff 0%, ${accentColor} 100%)`,
+                backgroundImage: `linear-gradient(135deg, #ffffff 0%, ${accentColor} 100%)`,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -244,7 +243,7 @@ export function ProductLaunch({
                         fontSize: "clamp(2.5rem, 6vw, 5rem)",
                         fontWeight: 800,
                         letterSpacing: "-0.02em",
-                        background: `linear-gradient(135deg, #ffffff 0%, ${accentColor} 100%)`,
+                        backgroundImage: `linear-gradient(135deg, #ffffff 0%, ${accentColor} 100%)`,
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",

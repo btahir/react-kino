@@ -1,17 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ScrollTracker } from "@kino/core";
+import { useScrollTracker } from "./use-scroll-tracker";
 
 export function useScrollProgress(): number {
   const [progress, setProgress] = useState(0);
+  const { tracker, isOwned } = useScrollTracker();
+
   useEffect(() => {
-    const tracker = new ScrollTracker();
     const unsub = tracker.subscribe((data) => setProgress(data.progress));
-    tracker.start();
+    if (isOwned) tracker.start();
     return () => {
-      tracker.stop();
       unsub();
+      if (isOwned) tracker.stop();
     };
-  }, []);
+  }, [tracker, isOwned]);
+
   return progress;
 }

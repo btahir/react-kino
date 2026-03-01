@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { ScrollTracker } from "@kino/core";
+import { useScrollTracker } from "./hooks/use-scroll-tracker";
 
 interface ParallaxProps {
   /** Speed multiplier: 1 = normal scroll, <1 = slower (background), >1 = faster (foreground) */
@@ -21,6 +21,7 @@ export function Parallax({
 }: ParallaxProps) {
   const [offset, setOffset] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const { tracker, isOwned } = useScrollTracker();
 
   useEffect(() => {
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -33,18 +34,16 @@ export function Parallax({
   useEffect(() => {
     if (reducedMotion) return;
 
-    const tracker = new ScrollTracker();
-
     const unsub = tracker.subscribe(({ scrollY }) => {
       setOffset(scrollY * (1 - speed));
     });
 
-    tracker.start();
+    if (isOwned) tracker.start();
     return () => {
-      tracker.stop();
       unsub();
+      if (isOwned) tracker.stop();
     };
-  }, [speed, reducedMotion]);
+  }, [speed, reducedMotion, tracker, isOwned]);
 
   const transform =
     reducedMotion

@@ -1,25 +1,28 @@
 "use client";
 import { RefObject, useState, useEffect } from "react";
-import { ScrollTracker, calcSceneProgress } from "@kino/core";
+import { calcSceneProgress } from "@kino/core";
+import { useScrollTracker } from "./use-scroll-tracker";
 
 export function useSceneProgress(
   spacerRef: RefObject<HTMLElement | null>,
   durationPx: number
 ): number {
   const [progress, setProgress] = useState(0);
+  const { tracker, isOwned } = useScrollTracker();
+
   useEffect(() => {
-    const tracker = new ScrollTracker();
     const unsub = tracker.subscribe(({ scrollY }) => {
       if (!spacerRef.current) return;
       const offsetTop =
         spacerRef.current.getBoundingClientRect().top + scrollY;
       setProgress(calcSceneProgress(scrollY, offsetTop, durationPx));
     });
-    tracker.start();
+    if (isOwned) tracker.start();
     return () => {
-      tracker.stop();
       unsub();
+      if (isOwned) tracker.stop();
     };
-  }, [spacerRef, durationPx]);
+  }, [spacerRef, durationPx, tracker, isOwned]);
+
   return progress;
 }

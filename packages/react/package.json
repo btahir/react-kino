@@ -12,31 +12,24 @@
       "require": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/add-use-client.mjs",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@kino/core": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "framer-motion": ">=10.0.0",
-    "motion": ">=10.0.0"
-  },
-  "peerDependenciesMeta": {
-    "framer-motion": {
-      "optional": true
-    },
-    "motion": {
-      "optional": true
-    }
+    "react-dom": ">=18.0.0"
   },
   "devDependencies": {
     "@testing-library/react": "^16",
@@ -50,8 +43,16 @@
     "vitest": "^4"
   },
   "keywords": [
-    "react", "scroll", "animation", "storytelling", "parallax",
-    "scroll-driven", "apple", "cinematic", "pinned", "sticky"
+    "react",
+    "scroll",
+    "animation",
+    "storytelling",
+    "parallax",
+    "scroll-driven",
+    "apple",
+    "cinematic",
+    "pinned",
+    "sticky"
   ],
   "author": "Bilal Tahir",
   "license": "MIT",

@@ -6,8 +6,9 @@ import React, {
   type ReactNode,
   type CSSProperties,
 } from "react";
-import { ScrollTracker, calcSceneProgress, parseDuration } from "@kino/core";
+import { calcSceneProgress, parseDuration } from "@kino/core";
 import { useIsClient } from "./hooks/use-is-client";
+import { useScrollTracker } from "./hooks/use-scroll-tracker";
 
 interface VideoScrollProps {
   /** URL of the video file (MP4 recommended, no audio needed) */
@@ -48,27 +49,28 @@ export function VideoScroll({
   const [progress, setProgress] = useState(0);
   const isClient = useIsClient();
   const reducedMotion = usePrefersReducedMotion();
+  const { tracker, isOwned } = useScrollTracker();
 
   useEffect(() => {
     if (!isClient) return;
 
     const viewportHeight = window.innerHeight;
     const durationPx = parseDuration(duration, viewportHeight);
-    const tracker = new ScrollTracker();
 
     const unsub = tracker.subscribe(({ scrollY }) => {
       if (!spacerRef.current) return;
       const rect = spacerRef.current.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
-      setProgress(calcSceneProgress(scrollY, offsetTop, durationPx));
+      const effectiveDuration = pin ? Math.max(1, durationPx - viewportHeight) : durationPx;
+      setProgress(calcSceneProgress(scrollY, offsetTop, effectiveDuration));
     });
 
-    tracker.start();
+    if (isOwned) tracker.start();
     return () => {
-      tracker.stop();
       unsub();
+      if (isOwned) tracker.stop();
     };
-  }, [isClient, duration]);
+  }, [isClient, duration, pin, tracker, isOwned]);
 
   // Scrub the video based on scroll progress
   useEffect(() => {

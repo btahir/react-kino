@@ -8,8 +8,9 @@ import React, {
   type ReactNode,
   type CSSProperties,
 } from "react";
-import { ScrollTracker, calcSceneProgress, parseDuration } from "@kino/core";
+import { calcSceneProgress, parseDuration } from "@kino/core";
 import { useIsClient } from "./hooks/use-is-client";
+import { useScrollTracker } from "./hooks/use-scroll-tracker";
 
 /** Context so child components can access scene progress */
 interface SceneContextValue {
@@ -45,13 +46,13 @@ export function Scene({
   const spacerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const isClient = useIsClient();
+  const { tracker, isOwned } = useScrollTracker();
 
   useEffect(() => {
     if (!isClient) return;
 
     const viewportHeight = window.innerHeight;
     const durationPx = parseDuration(duration, viewportHeight);
-    const tracker = new ScrollTracker();
 
     const unsub = tracker.subscribe(({ scrollY }) => {
       if (!spacerRef.current) return;
@@ -64,12 +65,12 @@ export function Scene({
       setProgress(calcSceneProgress(scrollY, offsetTop, effectiveDuration));
     });
 
-    tracker.start();
+    if (isOwned) tracker.start();
     return () => {
-      tracker.stop();
       unsub();
+      if (isOwned) tracker.stop();
     };
-  }, [isClient, duration]);
+  }, [isClient, duration, pin, tracker, isOwned]);
 
   const viewportHeight = isClient ? window.innerHeight : 0;
   const durationPx = isClient ? parseDuration(duration, viewportHeight) : 0;
