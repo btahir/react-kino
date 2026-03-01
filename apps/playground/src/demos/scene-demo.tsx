@@ -43,7 +43,7 @@ export function SceneDemo() {
                   fontSize: 72,
                   fontWeight: 700,
                   fontFamily: "monospace",
-                  color: "#7c3aed",
+                  color: "#dc2626",
                 }}
               >
                 {(progress * 100).toFixed(1)}%
@@ -64,7 +64,7 @@ export function SceneDemo() {
                   style={{
                     width: `${progress * 100}%`,
                     height: "100%",
-                    background: "#7c3aed",
+                    background: "#dc2626",
                     transition: "width 50ms linear",
                   }}
                 />

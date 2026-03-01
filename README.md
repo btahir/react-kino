@@ -708,7 +708,7 @@ import { ProductLaunch } from "@kino/templates/product-launch";
 <ProductLaunch
   name="Your Product"
   tagline="The tagline that changes everything."
-  accentColor="#7c3aed"
+  accentColor="#dc2626"
   stats={[
     { value: 10000, label: "Users", format: (n) => `${n.toLocaleString()}+` },
     { value: 99, label: "Uptime", format: (n) => `${n}%` },

@@ -29,7 +29,7 @@ export function CompareSliderDemo() {
       style={{
         width: "100%",
         height: "100%",
-        background: "linear-gradient(135deg, #7c3aed, #ec4899)",
+        background: "linear-gradient(135deg, #dc2626, #ec4899)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

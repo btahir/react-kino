@@ -64,8 +64,8 @@ const defaultFeatures: NonNullable<ProductLaunchProps["features"]> = [
 export function ProductLaunch({
   name,
   tagline,
-  heroBackground = "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
-  accentColor = "#7c3aed",
+  heroBackground = "linear-gradient(135deg, #0a0a0a 0%, #1a0a0a 100%)",
+  accentColor = "#dc2626",
   stats: statsProp,
   features: featuresProp,
 }: ProductLaunchProps) {

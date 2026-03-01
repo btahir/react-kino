@@ -19,7 +19,7 @@ const POSITION_OPTIONS = [
 export function ProgressDemo() {
   const [type, setType] = useState("bar");
   const [position, setPosition] = useState("top");
-  const [color, setColor] = useState("#7c3aed");
+  const [color, setColor] = useState("#dc2626");
   const [progressValue, setProgressValue] = useState(0.5);
 
   const code = `<Progress\n  type="${type}"\n  position="${position}"\n  color="${color}"\n  progress={${progressValue}}\n/>`;

@@ -33,18 +33,18 @@ function Badge({
         display: "inline-flex",
         alignItems: "center",
         gap: 6,
-        background: "#111",
-        border: `1px solid ${pass === undefined ? "#333" : pass ? "#0f0" : "#f00"}`,
+        background: "rgba(0,0,0,0.6)",
+        border: `1px solid ${pass === undefined ? "#2a2a2a" : pass ? "#22c55e" : "#ef4444"}`,
         borderRadius: 6,
         padding: "4px 10px",
         fontSize: 13,
         fontFamily: "monospace",
-        color: "#fff",
+        color: "#e5e5e5",
       }}
     >
       <strong>{label}:</strong> {value}
       {pass !== undefined && (
-        <span style={{ color: pass ? "#0f0" : "#f00" }}>
+        <span style={{ color: pass ? "#22c55e" : "#ef4444" }}>
           {pass ? " PASS" : " FAIL"}
         </span>
       )}
@@ -64,7 +64,7 @@ function SectionHeader({ title, id }: { title: string; id: string }) {
     >
       <span
         style={{
-          background: "#7c3aed",
+          background: "#dc2626",
           color: "#fff",
           padding: "4px 12px",
           borderRadius: 4,
@@ -97,7 +97,7 @@ function SceneTest() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                background: `hsl(${progress * 120}, 60%, 15%)`,
+                background: `hsl(${progress * 15}, ${40 + progress * 30}%, ${8 + progress * 6}%)`,
                 position: "relative",
               }}
             >
@@ -133,7 +133,7 @@ function SceneTest() {
                   left: 0,
                   height: 6,
                   width: `${pct}%`,
-                  background: "#0f0",
+                  background: "#dc2626",
                   transition: "width 0.05s",
                 }}
               />
@@ -154,11 +154,11 @@ function RevealTest() {
     at: number;
     color: string;
   }> = [
-    { animation: "fade", at: 0.1, color: "#e11d48" },
-    { animation: "fade-up", at: 0.3, color: "#f59e0b" },
-    { animation: "fade-down", at: 0.5, color: "#10b981" },
-    { animation: "scale", at: 0.7, color: "#3b82f6" },
-    { animation: "blur", at: 0.9, color: "#8b5cf6" },
+    { animation: "fade", at: 0.1, color: "#dc2626" },
+    { animation: "fade-up", at: 0.3, color: "#b91c1c" },
+    { animation: "fade-down", at: 0.5, color: "#991b1b" },
+    { animation: "scale", at: 0.7, color: "#7f1d1d" },
+    { animation: "blur", at: 0.9, color: "#ef4444" },
   ];
 
   return (
@@ -173,7 +173,7 @@ function RevealTest() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              background: "#0a0a0a",
+              background: "#0c0c0c",
               position: "relative",
               gap: 16,
             }}
@@ -269,7 +269,7 @@ function TextRevealTest() {
                 at={0}
                 span={0.75}
                 color="#ffffff"
-                dimColor="rgba(255,255,255,0.15)"
+                dimColor="rgba(255,255,255,0.12)"
               >
                 {text}
               </TextReveal>
@@ -297,7 +297,7 @@ function CounterTest() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              background: "#0a0a1a",
+              background: "#0c0c0c",
               position: "relative",
               gap: 32,
             }}
@@ -325,7 +325,7 @@ function CounterTest() {
                       fontSize: 48,
                       fontWeight: 700,
                       fontFamily: "monospace",
-                      color: ["#ef4444", "#22c55e", "#3b82f6"][i],
+                      color: ["#ef4444", "#f87171", "#fca5a5"][i],
                     }}
                   >
                     <Counter
@@ -339,7 +339,7 @@ function CounterTest() {
                   <div
                     style={{
                       fontSize: 13,
-                      color: "#888",
+                      color: "#666",
                       marginTop: 8,
                       fontFamily: "monospace",
                     }}
@@ -383,7 +383,9 @@ function CompareSliderTest() {
                 maxWidth: 600,
                 width: "90%",
                 marginTop: 24,
-                border: "2px solid #333",
+                border: "1px solid #2a2a2a",
+                borderRadius: 8,
+                overflow: "hidden",
               }}
             >
               <CompareSlider
@@ -394,11 +396,11 @@ function CompareSliderTest() {
                     style={{
                       width: "100%",
                       height: 300,
-                      background: "#dc2626",
+                      background: "#1a1a1a",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "#fff",
+                      color: "#ef4444",
                       fontSize: 32,
                       fontWeight: 700,
                       fontFamily: "monospace",
@@ -412,7 +414,7 @@ function CompareSliderTest() {
                     style={{
                       width: "100%",
                       height: 300,
-                      background: "#2563eb",
+                      background: "#dc2626",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -439,10 +441,10 @@ function CompareSliderTest() {
 /* ================================================================== */
 function HorizontalScrollTest() {
   const panels = [
-    { label: "Panel 1", color: "#dc2626" },
-    { label: "Panel 2", color: "#16a34a" },
-    { label: "Panel 3", color: "#2563eb" },
-    { label: "Panel 4", color: "#eab308" },
+    { label: "Panel 1", color: "#7f1d1d" },
+    { label: "Panel 2", color: "#991b1b" },
+    { label: "Panel 3", color: "#b91c1c" },
+    { label: "Panel 4", color: "#dc2626" },
   ];
 
   return (
@@ -500,7 +502,7 @@ function ParallaxTest() {
         style={{
           height: "200vh",
           position: "relative",
-          background: "#0a0a1a",
+          background: "#0c0c0c",
           overflow: "hidden",
         }}
       >
@@ -540,7 +542,8 @@ function ParallaxTest() {
               style={{
                 width: 200,
                 height: 200,
-                background: "#2563eb",
+                background: "#7f1d1d",
+                border: "2px solid #dc2626",
                 borderRadius: 16,
                 display: "flex",
                 flexDirection: "column",
@@ -580,7 +583,7 @@ function ProgressTest() {
         }}
       >
         <SectionHeader title="Progress" id="8" />
-        <div style={{ fontSize: 14, color: "#888", fontFamily: "monospace" }}>
+        <div style={{ fontSize: 14, color: "#666", fontFamily: "monospace" }}>
           All at progress=0.6
         </div>
         <div
@@ -605,7 +608,7 @@ function ProgressTest() {
               style={{
                 width: 240,
                 height: 8,
-                background: "#222",
+                background: "#1a1a1a",
                 borderRadius: 4,
                 overflow: "hidden",
               }}
@@ -614,13 +617,13 @@ function ProgressTest() {
                 style={{
                   width: "60%",
                   height: "100%",
-                  background: "#3b82f6",
+                  background: "#dc2626",
                   borderRadius: 4,
                 }}
               />
             </div>
             <span
-              style={{ fontSize: 12, color: "#888", fontFamily: "monospace" }}
+              style={{ fontSize: 12, color: "#666", fontFamily: "monospace" }}
             >
               bar @ 60%
             </span>
@@ -643,13 +646,13 @@ function ProgressTest() {
                     width: 12,
                     height: 12,
                     borderRadius: "50%",
-                    background: i < 3 ? "#3b82f6" : "#333",
+                    background: i < 3 ? "#dc2626" : "#1a1a1a",
                   }}
                 />
               ))}
             </div>
             <span
-              style={{ fontSize: 12, color: "#888", fontFamily: "monospace" }}
+              style={{ fontSize: 12, color: "#666", fontFamily: "monospace" }}
             >
               dots 3/5
             </span>
@@ -670,7 +673,7 @@ function ProgressTest() {
                 cy="24"
                 r="20"
                 fill="none"
-                stroke="#333"
+                stroke="#1a1a1a"
                 strokeWidth="4"
               />
               <circle
@@ -678,7 +681,7 @@ function ProgressTest() {
                 cy="24"
                 r="20"
                 fill="none"
-                stroke="#3b82f6"
+                stroke="#dc2626"
                 strokeWidth="4"
                 strokeDasharray={`${0.6 * 2 * Math.PI * 20} ${2 * Math.PI * 20}`}
                 strokeLinecap="round"
@@ -686,7 +689,7 @@ function ProgressTest() {
               />
             </svg>
             <span
-              style={{ fontSize: 12, color: "#888", fontFamily: "monospace" }}
+              style={{ fontSize: 12, color: "#666", fontFamily: "monospace" }}
             >
               ring 60%
             </span>
@@ -698,15 +701,15 @@ function ProgressTest() {
           style={{
             marginTop: 32,
             fontSize: 13,
-            color: "#666",
+            color: "#444",
             fontFamily: "monospace",
           }}
         >
           Real Progress components (fixed position, visible at viewport edges):
         </div>
-        <Progress type="bar" position="bottom" color="#22c55e" progress={0.6} />
-        <Progress type="dots" position="right" color="#f59e0b" progress={0.6} dotCount={5} />
-        <Progress type="ring" position="left" color="#ef4444" progress={0.6} ringSize={48} />
+        <Progress type="bar" position="bottom" color="#dc2626" progress={0.6} />
+        <Progress type="dots" position="right" color="#ef4444" progress={0.6} dotCount={5} />
+        <Progress type="ring" position="left" color="#b91c1c" progress={0.6} ringSize={48} />
       </div>
     </section>
   );
@@ -722,7 +725,7 @@ function StickyHeaderTest() {
         style={{
           height: "200vh",
           background:
-            "linear-gradient(to bottom, #0a0a1a 0%, #1a0a2e 50%, #0a0a1a 100%)",
+            "linear-gradient(to bottom, #0c0c0c 0%, #1a0a0a 50%, #0c0c0c 100%)",
           position: "relative",
         }}
       >
@@ -775,7 +778,7 @@ function StickyHeaderTest() {
           <div
             style={{
               fontSize: 18,
-              color: "#888",
+              color: "#666",
               fontFamily: "monospace",
               textAlign: "center",
               padding: "0 24px",
@@ -812,7 +815,7 @@ function MarqueeTest() {
         }}
       >
         <SectionHeader title="Marquee" id="10" />
-        <div style={{ fontSize: 14, color: "#888", fontFamily: "monospace" }}>
+        <div style={{ fontSize: 14, color: "#666", fontFamily: "monospace" }}>
           4 items duplicated to 8 · overflow hidden · CSS animation
         </div>
         <div style={{ width: "100%", maxWidth: 800 }}>
@@ -823,7 +826,7 @@ function MarqueeTest() {
                 data-testid="marquee-item"
                 style={{
                   padding: "16px 32px",
-                  background: "#7c3aed",
+                  background: "#dc2626",
                   color: "#fff",
                   borderRadius: 8,
                   fontWeight: 700,
@@ -844,8 +847,9 @@ function MarqueeTest() {
                 key={item}
                 style={{
                   padding: "12px 24px",
-                  background: "#065f46",
-                  color: "#fff",
+                  background: "#7f1d1d",
+                  border: "1px solid #991b1b",
+                  color: "#fca5a5",
                   borderRadius: 8,
                   fontWeight: 600,
                   fontFamily: "monospace",
@@ -880,7 +884,7 @@ function EdgeCaseTest() {
           <div
             style={{
               fontSize: 14,
-              color: "#888",
+              color: "#666",
               fontFamily: "monospace",
               marginTop: 48,
             }}
@@ -898,12 +902,12 @@ function EdgeCaseTest() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "#1a0505",
+                background: "#0c0808",
                 position: "relative",
               }}
             >
               <div style={{ textAlign: "center", fontFamily: "monospace" }}>
-                <div style={{ fontSize: 14, color: "#888" }}>
+                <div style={{ fontSize: 14, color: "#666" }}>
                   Minimal: 101vh
                 </div>
                 <div
@@ -925,16 +929,16 @@ function EdgeCaseTest() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "#050a1a",
+                background: "#080808",
                 position: "relative",
               }}
             >
               <div style={{ textAlign: "center", fontFamily: "monospace" }}>
-                <div style={{ fontSize: 14, color: "#888" }}>
+                <div style={{ fontSize: 14, color: "#666" }}>
                   Extreme: 1000vh
                 </div>
                 <div
-                  style={{ fontSize: 48, fontWeight: 700, color: "#3b82f6" }}
+                  style={{ fontSize: 48, fontWeight: 700, color: "#dc2626" }}
                 >
                   {Math.round(progress * 100)}%
                 </div>
@@ -951,13 +955,13 @@ function EdgeCaseTest() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "#0a1a0a",
+              background: "#0a0a0a",
             }}
           >
             <div
               style={{
                 fontSize: 14,
-                color: "#888",
+                color: "#666",
                 fontFamily: "monospace",
               }}
             >
@@ -978,8 +982,8 @@ export default function VisualTestPage() {
   return (
     <div
       style={{
-        background: "#000",
-        color: "#fff",
+        background: "#0a0a0a",
+        color: "#e5e5e5",
         fontFamily:
           "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
@@ -989,10 +993,10 @@ export default function VisualTestPage() {
         style={{
           padding: "24px",
           textAlign: "center",
-          borderBottom: "1px solid #222",
+          borderBottom: "1px solid #1a1a1a",
           position: "relative",
           zIndex: 100,
-          background: "#000",
+          background: "#0a0a0a",
         }}
       >
         <h1
@@ -1001,6 +1005,7 @@ export default function VisualTestPage() {
             fontWeight: 700,
             fontFamily: "monospace",
             margin: 0,
+            color: "#fff",
           }}
         >
           react-kino Visual Test Page
@@ -1008,7 +1013,7 @@ export default function VisualTestPage() {
         <p
           style={{
             fontSize: 14,
-            color: "#888",
+            color: "#666",
             marginTop: 8,
             fontFamily: "monospace",
           }}
@@ -1036,11 +1041,11 @@ export default function VisualTestPage() {
         style={{
           padding: "48px 24px",
           textAlign: "center",
-          borderTop: "1px solid #222",
+          borderTop: "1px solid #1a1a1a",
           fontFamily: "monospace",
         }}
       >
-        <p style={{ fontSize: 14, color: "#555" }}>
+        <p style={{ fontSize: 14, color: "#444" }}>
           End of visual test page — all 11 sections rendered
         </p>
       </div>

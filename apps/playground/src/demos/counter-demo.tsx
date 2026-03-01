@@ -55,7 +55,7 @@ export function CounterDemo() {
               span={span}
               className="counter-value"
             />
-            <style>{`.counter-value { font-size: 72px; font-weight: 700; font-family: monospace; color: #7c3aed; }`}</style>
+            <style>{`.counter-value { font-size: 72px; font-weight: 700; font-family: monospace; color: #dc2626; }`}</style>
             <div style={{ color: "#888", fontSize: 14 }}>
               {from} &rarr; {to} | at: {at} | span: {span}
             </div>

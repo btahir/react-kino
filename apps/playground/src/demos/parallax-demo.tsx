@@ -56,7 +56,7 @@ export function ParallaxDemo() {
                 width: 200,
                 height: 200,
                 borderRadius: 16,
-                background: "linear-gradient(135deg, #7c3aed, #3b82f6)",
+                background: "linear-gradient(135deg, #dc2626, #3b82f6)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

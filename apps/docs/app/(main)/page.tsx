@@ -33,7 +33,7 @@ function Hero() {
             position: "absolute",
             inset: "-50%",
             backgroundImage:
-              "radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 60%), " +
+              "radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.08) 0%, transparent 60%), " +
               "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), " +
               "linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
             backgroundSize: "100% 100%, 80px 80px, 80px 80px",
@@ -65,7 +65,7 @@ function Hero() {
             <span
               style={{
                 background:
-                  "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)",
+                  "linear-gradient(135deg, #dc2626 0%, #f87171 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -107,7 +107,7 @@ function Hero() {
                 border: "1px solid #2a2a2a",
                 borderRadius: "8px",
                 padding: "12px 20px",
-                color: "#a78bfa",
+                color: "#f87171",
               }}
             >
               npm install react-kino
@@ -120,7 +120,7 @@ function Hero() {
               style={{
                 display: "inline-block",
                 padding: "12px 32px",
-                background: "#7c3aed",
+                background: "#dc2626",
                 borderRadius: "999px",
                 fontSize: "16px",
                 fontWeight: 500,
@@ -188,7 +188,7 @@ function SceneDemo() {
             style={{
               fontSize: "13px",
               fontWeight: 500,
-              color: "#7c3aed",
+              color: "#dc2626",
               textTransform: "uppercase",
               letterSpacing: "0.15em",
               marginBottom: "32px",
@@ -205,7 +205,7 @@ function SceneDemo() {
               letterSpacing: "-0.04em",
               lineHeight: 1,
               marginBottom: "24px",
-              background: `linear-gradient(135deg, #ffffff ${Math.max(0, 80 - progress * 100)}%, #a78bfa ${100 - progress * 60}%, #7c3aed 100%)`,
+              background: `linear-gradient(135deg, #ffffff ${Math.max(0, 80 - progress * 100)}%, #f87171 ${100 - progress * 60}%, #dc2626 100%)`,
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -230,7 +230,7 @@ function SceneDemo() {
                 style={{
                   width: "4px",
                   height: `${20 + progress * 40 * (i === 2 ? 1.5 : i === 1 || i === 3 ? 1.2 : 0.8)}px`,
-                  background: `rgba(124, 58, 237, ${0.3 + progress * 0.7})`,
+                  background: `rgba(220, 38, 38, ${0.3 + progress * 0.7})`,
                   borderRadius: "2px",
                   transition: "height 0.1s ease",
                 }}
@@ -262,7 +262,7 @@ function TextRevealDemo() {
             style={{
               fontSize: "13px",
               fontWeight: 500,
-              color: "#7c3aed",
+              color: "#dc2626",
               textTransform: "uppercase",
               letterSpacing: "0.15em",
               marginBottom: "40px",
@@ -352,7 +352,7 @@ function CounterDemo() {
                   style={{
                     fontSize: "clamp(36px, 5vw, 64px)",
                     fontWeight: 700,
-                    color: "#a78bfa",
+                    color: "#f87171",
                     letterSpacing: "-0.02em",
                     lineHeight: 1.1,
                     marginBottom: "8px",
@@ -465,7 +465,7 @@ function CompareDemo() {
                   style={{
                     width: "100%",
                     height: "360px",
-                    background: "linear-gradient(135deg, #1a0a2e 0%, #2d1b69 40%, #7c3aed 100%)",
+                    background: "linear-gradient(135deg, #1a0a0a 0%, #2d1010 40%, #dc2626 100%)",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -549,7 +549,7 @@ function HorizontalDemo() {
                   style={{
                     fontSize: "24px",
                     fontFamily: "'SF Mono', 'Fira Code', monospace",
-                    color: "#7c3aed",
+                    color: "#dc2626",
                     marginBottom: "20px",
                     fontWeight: 700,
                   }}
@@ -656,7 +656,7 @@ function Footer() {
       >
         <Link
           href="/docs"
-          style={{ fontSize: "15px", color: "#7c3aed", textDecoration: "none" }}
+          style={{ fontSize: "15px", color: "#dc2626", textDecoration: "none" }}
         >
           Documentation
         </Link>
@@ -664,7 +664,7 @@ function Footer() {
           href="https://github.com/bilaltahir/react-kino"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ fontSize: "15px", color: "#7c3aed", textDecoration: "none" }}
+          style={{ fontSize: "15px", color: "#dc2626", textDecoration: "none" }}
         >
           GitHub
         </a>
@@ -679,7 +679,7 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Kino>
-        <Progress type="bar" position="top" color="#7c3aed" />
+        <Progress type="bar" position="top" color="#dc2626" />
         <Hero />
         <SceneDemo />
         <TextRevealDemo />
