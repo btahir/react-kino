@@ -3,16 +3,17 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://react-kino.dev"),
   title: {
     default: "react-kino",
     template: "%s | react-kino",
   },
   description:
-    "Cinematic scroll-driven storytelling for React. Apple-style scroll experiences in under 3 KB.",
+    "Cinematic scroll-driven storytelling for React. Core engine under 1 KB gzipped.",
   openGraph: {
     title: "react-kino",
     description:
-      "Cinematic scroll-driven storytelling for React. Apple-style scroll experiences in under 3 KB.",
+      "Cinematic scroll-driven storytelling for React. Core engine under 1 KB gzipped.",
     images: ["/og.png"],
     type: "website",
   },
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "react-kino",
     description:
-      "Cinematic scroll-driven storytelling for React. Apple-style scroll experiences in under 3 KB.",
+      "Cinematic scroll-driven storytelling for React. Core engine under 1 KB gzipped.",
     images: ["/og.png"],
   },
   icons: {

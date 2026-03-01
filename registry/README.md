@@ -1,12 +1,12 @@
 # react-kino shadcn Registry
 
-Install any react-kino component directly into your project using the shadcn CLI:
+Install thin react-kino wrapper components directly into your project using the shadcn CLI:
 
 ```bash
 # Install a single component
 npx shadcn add https://react-kino.dev/registry/components/scene.json
 
-# Or install via npm (recommended)
+# Install the package used by wrappers (recommended)
 npm install react-kino
 ```
 

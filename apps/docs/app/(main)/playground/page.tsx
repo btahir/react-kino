@@ -291,7 +291,7 @@ function TextRevealPlayground() {
       >
         <TextReveal progress={progress} mode={mode} at={0} span={0.8}>
           {mode === "line"
-            ? "Cinematic scroll-driven storytelling.\nBuild immersive experiences.\nZero dependencies, maximum impact."
+            ? "Cinematic scroll-driven storytelling.\nBuild immersive experiences.\nCore engine under 1 KB gzipped."
             : "Cinematic scroll-driven storytelling components for React. Build immersive experiences without the complexity."}
         </TextReveal>
       </div>

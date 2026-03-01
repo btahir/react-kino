@@ -4,13 +4,17 @@
   "type": "registry:component",
   "title": "Scene",
   "description": "Pinned scroll section with progress-based children rendering. The core building block for scroll-driven storytelling.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["kino"],
+  "registryDependencies": [
+    "kino"
+  ],
   "files": [
     {
       "path": "components/kino/scene.tsx",
-      "content": "\"use client\";\nimport React, {\n  useRef,\n  useState,\n  useEffect,\n  createContext,\n  useContext,\n  type ReactNode,\n  type CSSProperties,\n} from \"react\";\nimport { ScrollTracker, calcSceneProgress, parseDuration } from \"@kino/core\";\nimport { useIsClient } from \"./hooks/use-is-client\";\n\n/** Context so child components can access scene progress */\ninterface SceneContextValue {\n  progress: number;\n}\nconst SceneContext = createContext<SceneContextValue | null>(null);\n\nexport function useSceneContext(): SceneContextValue {\n  const ctx = useContext(SceneContext);\n  if (!ctx) throw new Error(\"Must be used inside <Scene>\");\n  return ctx;\n}\n\ntype SceneChildren = ReactNode | ((progress: number) => ReactNode);\n\ninterface SceneProps {\n  /** Scroll distance this scene spans, e.g. \"200vh\" or \"1500px\" */\n  duration: string;\n  /** Whether to pin (sticky) the inner content. Default: true */\n  pin?: boolean;\n  children: SceneChildren;\n  className?: string;\n  style?: CSSProperties;\n}\n\nexport function Scene({\n  duration,\n  pin = true,\n  children,\n  className,\n  style,\n}: SceneProps) {\n  const spacerRef = useRef<HTMLDivElement>(null);\n  const [progress, setProgress] = useState(0);\n  const isClient = useIsClient();\n\n  useEffect(() => {\n    if (!isClient) return;\n\n    const viewportHeight = window.innerHeight;\n    const durationPx = parseDuration(duration, viewportHeight);\n    const tracker = new ScrollTracker();\n\n    const unsub = tracker.subscribe(({ scrollY }) => {\n      if (!spacerRef.current) return;\n      const rect = spacerRef.current.getBoundingClientRect();\n      const offsetTop = rect.top + scrollY;\n      setProgress(calcSceneProgress(scrollY, offsetTop, durationPx));\n    });\n\n    tracker.start();\n    return () => {\n      tracker.stop();\n      unsub();\n    };\n  }, [isClient, duration]);\n\n  const viewportHeight = isClient ? window.innerHeight : 0;\n  const durationPx = isClient ? parseDuration(duration, viewportHeight) : 0;\n\n  const spacerStyle: CSSProperties = {\n    position: \"relative\",\n    height: isClient ? `${durationPx}px` : duration,\n  };\n\n  const stickyStyle: CSSProperties = pin\n    ? {\n        position: \"sticky\",\n        top: 0,\n        height: \"100vh\",\n        overflow: \"hidden\",\n      }\n    : {};\n\n  const resolvedChildren =\n    typeof children === \"function\" ? children(progress) : children;\n\n  return (\n    <div ref={spacerRef} style={spacerStyle} className={className}>\n      <div style={{ ...stickyStyle, ...style }}>\n        <SceneContext.Provider value={{ progress }}>\n          {resolvedChildren}\n        </SceneContext.Provider>\n      </div>\n    </div>\n  );\n}\n",
+      "content": "\"use client\";\nexport { Scene, useSceneContext } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/scene.tsx"
     }

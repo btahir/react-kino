@@ -4,13 +4,18 @@
   "type": "registry:component",
   "title": "Reveal",
   "description": "Scroll-triggered entrance animation with multiple presets: fade, fade-up, fade-down, scale, blur.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["kino", "scene"],
+  "registryDependencies": [
+    "kino",
+    "scene"
+  ],
   "files": [
     {
       "path": "components/kino/reveal.tsx",
-      "content": "\"use client\";\nimport React, {\n  useContext,\n  useEffect,\n  useRef,\n  useState,\n  type CSSProperties,\n  type ReactNode,\n} from \"react\";\nimport { useSceneContext } from \"./scene\";\n\ntype RevealAnimation = \"fade\" | \"fade-up\" | \"fade-down\" | \"scale\" | \"blur\";\n\ninterface RevealProps {\n  /** Progress value (0-1) when animation triggers */\n  at?: number;\n  /** Animation preset */\n  animation?: RevealAnimation;\n  /** Animation duration in ms */\n  duration?: number;\n  /** Delay before animation in ms */\n  delay?: number;\n  /** Direct progress override (if not inside a Scene) */\n  progress?: number;\n  children: ReactNode;\n  className?: string;\n}\n\nconst HIDDEN_STYLES: Record<RevealAnimation, CSSProperties> = {\n  fade: { opacity: 0 },\n  \"fade-up\": { opacity: 0, transform: \"translateY(40px)\" },\n  \"fade-down\": { opacity: 0, transform: \"translateY(-40px)\" },\n  scale: { opacity: 0, transform: \"scale(0.9)\" },\n  blur: { opacity: 0, filter: \"blur(12px)\" },\n};\n\nconst VISIBLE_STYLES: Record<RevealAnimation, CSSProperties> = {\n  fade: { opacity: 1 },\n  \"fade-up\": { opacity: 1, transform: \"translateY(0)\" },\n  \"fade-down\": { opacity: 1, transform: \"translateY(0)\" },\n  scale: { opacity: 1, transform: \"scale(1)\" },\n  blur: { opacity: 1, filter: \"blur(0px)\" },\n};\n\nfunction useProgress(propProgress?: number): number {\n  try {\n    const ctx = useSceneContext();\n    return propProgress ?? ctx.progress;\n  } catch {\n    return propProgress ?? 0;\n  }\n}\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = useState(false);\n  useEffect(() => {\n    const mql = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    setReduced(mql.matches);\n    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);\n    mql.addEventListener(\"change\", handler);\n    return () => mql.removeEventListener(\"change\", handler);\n  }, []);\n  return reduced;\n}\n\nexport function Reveal({\n  at = 0,\n  animation = \"fade\",\n  duration = 600,\n  delay = 0,\n  progress: progressProp,\n  children,\n  className,\n}: RevealProps) {\n  const progress = useProgress(progressProp);\n  const reducedMotion = usePrefersReducedMotion();\n  const isVisible = progress >= at;\n\n  if (reducedMotion) {\n    return (\n      <div className={className} style={VISIBLE_STYLES[animation]}>\n        {children}\n      </div>\n    );\n  }\n\n  const style: CSSProperties = {\n    ...(isVisible ? VISIBLE_STYLES[animation] : HIDDEN_STYLES[animation]),\n    transition: `opacity ${duration}ms ease ${delay}ms, transform ${duration}ms ease ${delay}ms, filter ${duration}ms ease ${delay}ms`,\n    willChange: \"opacity, transform, filter\",\n  };\n\n  return (\n    <div className={className} style={style}>\n      {children}\n    </div>\n  );\n}\n",
+      "content": "\"use client\";\nexport { Reveal } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/reveal.tsx"
     }

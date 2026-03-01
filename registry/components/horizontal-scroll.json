@@ -4,13 +4,17 @@
   "type": "registry:component",
   "title": "HorizontalScroll",
   "description": "Horizontal scroll section that converts vertical scroll into horizontal panel movement.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["kino"],
+  "registryDependencies": [
+    "kino"
+  ],
   "files": [
     {
       "path": "components/kino/horizontal-scroll.tsx",
-      "content": "\"use client\";\nimport React, {\n  Children,\n  useEffect,\n  useRef,\n  useState,\n  type CSSProperties,\n  type ReactNode,\n} from \"react\";\nimport { ScrollTracker, calcSceneProgress } from \"@kino/core\";\nimport { useIsClient } from \"./hooks/use-is-client\";\n\ninterface HorizontalScrollProps {\n  children: ReactNode;\n  className?: string;\n  /** Height of each panel as CSS string (default: \"100vh\") */\n  panelHeight?: string;\n}\n\ninterface PanelProps {\n  children: ReactNode;\n  className?: string;\n  style?: CSSProperties;\n}\n\nexport function Panel({ children, className, style }: PanelProps) {\n  const panelStyle: CSSProperties = {\n    flexShrink: 0,\n    width: \"100vw\",\n    height: \"100vh\",\n    ...style,\n  };\n\n  return (\n    <div className={className} style={panelStyle}>\n      {children}\n    </div>\n  );\n}\n\nexport function HorizontalScroll({\n  children,\n  className,\n  panelHeight = \"100vh\",\n}: HorizontalScrollProps) {\n  const spacerRef = useRef<HTMLDivElement>(null);\n  const stripRef = useRef<HTMLDivElement>(null);\n  const [translateX, setTranslateX] = useState(0);\n  const isClient = useIsClient();\n\n  const childCount = Children.count(children);\n\n  useEffect(() => {\n    if (!isClient || !spacerRef.current) return;\n\n    const tracker = new ScrollTracker();\n\n    const unsub = tracker.subscribe(({ scrollY, viewportHeight }) => {\n      if (!spacerRef.current || !stripRef.current) return;\n\n      const rect = spacerRef.current.getBoundingClientRect();\n      const offsetTop = rect.top + scrollY;\n      const spacerHeight = spacerRef.current.offsetHeight;\n      const duration = spacerHeight - viewportHeight;\n\n      if (duration <= 0) return;\n\n      const progress = calcSceneProgress(scrollY, offsetTop, duration);\n      const totalStripWidth = stripRef.current.scrollWidth;\n      const maxTranslate = totalStripWidth - window.innerWidth;\n\n      setTranslateX(progress * maxTranslate);\n    });\n\n    tracker.start();\n    return () => {\n      tracker.stop();\n      unsub();\n    };\n  }, [isClient, childCount]);\n\n  // Spacer height: one \"viewport\" per child\n  const spacerStyle: CSSProperties = {\n    position: \"relative\",\n    height: isClient ? `${childCount * 100}vh` : `calc(${childCount} * ${panelHeight})`,\n  };\n\n  const stickyStyle: CSSProperties = {\n    position: \"sticky\",\n    top: 0,\n    height: \"100vh\",\n    overflow: \"hidden\",\n  };\n\n  const stripStyle: CSSProperties = {\n    display: \"flex\",\n    flexDirection: \"row\",\n    height: \"100%\",\n    transform: `translateX(-${translateX}px)`,\n    willChange: \"transform\",\n  };\n\n  return (\n    <div ref={spacerRef} className={className} style={spacerStyle}>\n      <div style={stickyStyle}>\n        <div ref={stripRef} style={stripStyle}>\n          {children}\n        </div>\n      </div>\n    </div>\n  );\n}\n",
+      "content": "\"use client\";\nexport { HorizontalScroll, Panel } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/horizontal-scroll.tsx"
     }

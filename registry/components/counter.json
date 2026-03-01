@@ -4,13 +4,18 @@
   "type": "registry:component",
   "title": "Counter",
   "description": "Animated number counter that interpolates between values as the user scrolls.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["kino", "scene"],
+  "registryDependencies": [
+    "kino",
+    "scene"
+  ],
   "files": [
     {
       "path": "components/kino/counter.tsx",
-      "content": "\"use client\";\nimport React, { useEffect, useState, type ReactNode } from \"react\";\nimport { lerp, clamp, EASINGS, type EasingFn } from \"@kino/core\";\nimport { useSceneContext } from \"./scene\";\n\ninterface CounterProps {\n  /** Starting value */\n  from: number;\n  /** Ending value */\n  to: number;\n  /** Progress value (0-1) when counting begins */\n  at?: number;\n  /** How much of the progress range the count spans */\n  span?: number;\n  /** Formatting function */\n  format?: (value: number) => string;\n  /** Easing preset name or custom function */\n  easing?: string | ((t: number) => number);\n  /** Direct progress override (if not inside a Scene) */\n  progress?: number;\n  className?: string;\n}\n\nfunction useProgress(propProgress?: number): number {\n  try {\n    const ctx = useSceneContext();\n    return propProgress ?? ctx.progress;\n  } catch {\n    return propProgress ?? 0;\n  }\n}\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = useState(false);\n  useEffect(() => {\n    const mql = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    setReduced(mql.matches);\n    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);\n    mql.addEventListener(\"change\", handler);\n    return () => mql.removeEventListener(\"change\", handler);\n  }, []);\n  return reduced;\n}\n\nfunction resolveEasing(easing?: string | EasingFn): EasingFn {\n  if (typeof easing === \"function\") return easing;\n  if (typeof easing === \"string\" && EASINGS[easing]) return EASINGS[easing];\n  return EASINGS[\"ease-out\"];\n}\n\nfunction isInteger(n: number): boolean {\n  return Number.isInteger(n);\n}\n\nconst defaultFormat = (n: number): string => n.toLocaleString();\n\nexport function Counter({\n  from,\n  to,\n  at = 0,\n  span = 0.3,\n  format = defaultFormat,\n  easing,\n  progress: progressProp,\n  className,\n}: CounterProps) {\n  const progress = useProgress(progressProp);\n  const reducedMotion = usePrefersReducedMotion();\n  const easingFn = resolveEasing(easing);\n\n  // If reduced motion and progress has reached the trigger, show final value\n  if (reducedMotion && progress >= at) {\n    return <span className={className}>{format(to)}</span>;\n  }\n\n  // Map progress in [at, at+span] to t in [0, 1]\n  const rawT = span > 0 ? (progress - at) / span : progress >= at ? 1 : 0;\n  const t = clamp(rawT, 0, 1);\n  const easedT = easingFn(t);\n  let value = lerp(from, to, easedT);\n\n  // Round to integer if both from and to are integers\n  if (isInteger(from) && isInteger(to)) {\n    value = Math.round(value);\n  }\n\n  return <span className={className}>{format(value)}</span>;\n}\n",
+      "content": "\"use client\";\nexport { Counter } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/counter.tsx"
     }

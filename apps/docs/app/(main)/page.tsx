@@ -201,7 +201,7 @@ function Hero() {
             react-
             <span
               style={{
-                background:
+                backgroundImage:
                   "linear-gradient(135deg, #f87171 0%, #ef4444 30%, #dc2626 60%, #991b1b 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -224,7 +224,7 @@ function Hero() {
           >
             Cinematic scroll-driven storytelling for React.
             <br />
-            Apple-style scroll experiences in under 3&nbsp;KB.
+            Core engine under 1&nbsp;KB gzipped.
           </p>
 
           <div style={{ marginBottom: "28px" }}>
@@ -374,7 +374,7 @@ function SceneDemo() {
               letterSpacing: "-0.02em",
               lineHeight: 1,
               marginBottom: "20px",
-              background: `linear-gradient(135deg, #ffffff ${Math.max(0, 70 - progress * 100)}%, #ef4444 ${100 - progress * 50}%, #7f1d1d 100%)`,
+              backgroundImage: `linear-gradient(135deg, #ffffff ${Math.max(0, 70 - progress * 100)}%, #ef4444 ${100 - progress * 50}%, #7f1d1d 100%)`,
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -618,11 +618,15 @@ function CounterDemo() {
           >
             {[
               {
-                label: "Bundle Size",
-                to: 3,
+                label: "Core (Gzip)",
+                to: 0.9,
                 fmt: (n: number) => `${n.toFixed(1)} KB`,
               },
-              { label: "Dependencies", to: 0, fmt: (n: number) => `${n}` },
+              {
+                label: "React-Kino (Gzip)",
+                to: 4.9,
+                fmt: (n: number) => `${n.toFixed(1)} KB`,
+              },
               { label: "Components", to: 12, fmt: (n: number) => `${n}` },
             ].map((stat, i) => (
               <div key={stat.label} style={{ textAlign: "center", padding: "24px 8px" }}>
@@ -796,8 +800,8 @@ function FeatureShowcase() {
   const fromLeft = [
     {
       icon: "//",
-      title: "Zero Dependencies",
-      description: "Only React as a peer dependency. Nothing else.",
+      title: "Tiny Core Engine",
+      description: "Core runtime is under 1 KB gzipped.",
     },
     {
       icon: "<>",
@@ -1037,7 +1041,7 @@ function ComponentGallery() {
                 >
                   {Math.min(totalItems, unlocked)}
                 </span>
-                /{totalItems} unlocked &middot; Zero dependencies
+                /{totalItems} unlocked &middot; core engine under 1 KB gzipped
               </p>
             </div>
 

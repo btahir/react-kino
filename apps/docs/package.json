@@ -5,7 +5,8 @@
     "build": "next build",
     "dev": "next dev --port 5173",
     "start": "next start",
-    "clean": "rm -rf .next .source"
+    "clean": "rm -rf .next .source",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "fumadocs-core": "^14.7.7",

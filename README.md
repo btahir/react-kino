@@ -12,17 +12,17 @@
 
 <p align="center">
 Cinematic scroll-driven storytelling for React.<br/>
-Apple-style scroll experiences in under 3 KB.
+Core scroll engine under 1 KB gzipped.
 </p>
 
 ---
 
 ## Why react-kino
 
-- **Tiny** -- the core scroll engine is under 3 KB gzipped. GSAP ScrollTrigger alone is 33 KB.
+- **Tiny** -- the core scroll engine is under 1 KB gzipped. GSAP ScrollTrigger alone is 33 KB.
 - **Declarative** -- compose `<Scene>`, `<Reveal>`, `<Parallax>`, and `<Counter>` like regular React components. No imperative timelines.
-- **Zero dependencies** -- no runtime deps. React is a peer dependency. Framer Motion is optional.
-- **SSR-safe** -- every component renders children on the server, animates on the client. Works with Next.js App Router out of the box.
+- **Lightweight runtime** -- `react-kino` uses a tiny internal engine package (`@kino/core`) plus React peers.
+- **SSR-safe** -- every component renders children on the server and animates on the client.
 
 ## Installation
 
@@ -670,7 +670,7 @@ function FeatureShowcase() {
 ## Scaffolding with the CLI
 
 ```bash
-npx kino init
+npx @kino/cli init
 ```
 
 Prompts you to choose a template, enter a project name, and scaffolds a complete scroll page into your project.
@@ -714,7 +714,7 @@ import { ProductLaunch } from "@kino/templates/product-launch";
     { value: 99, label: "Uptime", format: (n) => `${n}%` },
   ]}
   features={[
-    { title: "Zero deps", description: "Only React as peer dep.", icon: "⚡" },
+    { title: "Tiny core", description: "Core engine under 1 KB gzipped.", icon: "⚡" },
     { title: "GPU accelerated", description: "Compositor-only properties.", icon: "🚀" },
   ]}
 />
@@ -730,13 +730,13 @@ import { ProductLaunch } from "@kino/templates/product-launch";
 
 ## shadcn Registry
 
-Install any component directly into your project using the shadcn CLI:
+Install a thin wrapper component directly into your project using the shadcn CLI:
 
 ```bash
 npx shadcn add https://react-kino.dev/registry/components/scene.json
 ```
 
-Or install the full package (recommended):
+Each wrapper re-exports from `react-kino`, so install the package as well (recommended):
 
 ```bash
 npm install react-kino
@@ -746,12 +746,13 @@ npm install react-kino
 
 ## SSR / Next.js
 
-react-kino is SSR-safe. All components include the `"use client"` directive and defer scroll logic to `useEffect`.
+react-kino is SSR-safe and defers scroll logic to `useEffect`.
 
-**Next.js App Router:** Components work out of the box. Import directly -- no dynamic imports needed.
+**Next.js App Router:** Use react-kino inside a client component boundary (`"use client"`).
 
 ```tsx
 // app/page.tsx
+"use client";
 import { Kino, Scene, Reveal } from "react-kino";
 
 export default function Page() {
@@ -789,9 +790,8 @@ No additional configuration is required. This behavior is automatic.
 - **requestAnimationFrame batching** -- scroll updates are batched via RAF to avoid layout thrashing
 - **GPU-accelerated transforms** -- parallax and reveal animations use `transform` and `opacity` (composite-only properties)
 - **`will-change` hints** -- applied to animating elements for browser optimization
-- **Sub-3 KB core** -- `@kino/core` contains all scroll math with zero dependencies
+- **Sub-1 KB core** -- `@kino/core` contains all scroll math with zero dependencies
 - **Tree-shakeable** -- import only the components you use; unused code is eliminated at build time
-- **CSS Scroll Timeline** -- native scroll-linked animations where browser support allows (Chrome 115+, Firefox 121+)
 
 ---
 
@@ -800,11 +800,8 @@ No additional configuration is required. This behavior is automatic.
 | Feature | Chrome | Firefox | Safari | Edge |
 |---------|--------|---------|--------|------|
 | Core scroll tracking | 64+ | 60+ | 13+ | 79+ |
-| CSS Scroll Timeline | 115+ | 121+ | -- | 115+ |
 | `position: sticky` | 56+ | 59+ | 13+ | 79+ |
 | `prefers-reduced-motion` | 74+ | 63+ | 10.1+ | 79+ |
-
-All components work without CSS Scroll Timeline -- it is a progressive enhancement, not a requirement.
 
 ---
 

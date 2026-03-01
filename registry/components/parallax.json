@@ -4,13 +4,17 @@
   "type": "registry:component",
   "title": "Parallax",
   "description": "Speed-shifted scroll layer. Elements move faster or slower than natural scroll speed for depth effects.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["kino"],
+  "registryDependencies": [
+    "kino"
+  ],
   "files": [
     {
       "path": "components/kino/parallax.tsx",
-      "content": "\"use client\";\nimport React, { useEffect, useState, type CSSProperties, type ReactNode } from \"react\";\nimport { ScrollTracker } from \"@kino/core\";\n\ninterface ParallaxProps {\n  /** Speed multiplier: 1 = normal scroll, <1 = slower (background), >1 = faster (foreground) */\n  speed?: number;\n  /** Scroll direction */\n  direction?: \"vertical\" | \"horizontal\";\n  children: ReactNode;\n  className?: string;\n  style?: CSSProperties;\n}\n\nexport function Parallax({\n  speed = 0.5,\n  direction = \"vertical\",\n  children,\n  className,\n  style,\n}: ParallaxProps) {\n  const [offset, setOffset] = useState(0);\n  const [reducedMotion, setReducedMotion] = useState(false);\n\n  useEffect(() => {\n    const mql = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    setReducedMotion(mql.matches);\n    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);\n    mql.addEventListener(\"change\", handler);\n    return () => mql.removeEventListener(\"change\", handler);\n  }, []);\n\n  useEffect(() => {\n    if (reducedMotion) return;\n\n    const tracker = new ScrollTracker();\n\n    const unsub = tracker.subscribe(({ scrollY }) => {\n      setOffset(scrollY * (1 - speed));\n    });\n\n    tracker.start();\n    return () => {\n      tracker.stop();\n      unsub();\n    };\n  }, [speed, reducedMotion]);\n\n  const transform =\n    reducedMotion\n      ? undefined\n      : direction === \"vertical\"\n        ? `translateY(${offset}px)`\n        : `translateX(${offset}px)`;\n\n  const parallaxStyle: CSSProperties = {\n    ...style,\n    ...(transform ? { transform, willChange: \"transform\" } : {}),\n  };\n\n  return (\n    <div className={className} style={parallaxStyle}>\n      {children}\n    </div>\n  );\n}\n",
+      "content": "\"use client\";\nexport { Parallax } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/parallax.tsx"
     }

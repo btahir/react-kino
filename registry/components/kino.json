@@ -4,13 +4,15 @@
   "type": "registry:component",
   "title": "Kino",
   "description": "Root provider that initializes the shared scroll tracker for all react-kino components.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
   "registryDependencies": [],
   "files": [
     {
       "path": "components/kino/kino.tsx",
-      "content": "\"use client\";\nimport React, {\n  createContext,\n  useContext,\n  useEffect,\n  useRef,\n  type ReactNode,\n} from \"react\";\nimport { ScrollTracker } from \"@kino/core\";\n\ninterface KinoContextValue {\n  tracker: ScrollTracker;\n}\n\nconst KinoContext = createContext<KinoContextValue | null>(null);\n\nexport function useKino(): KinoContextValue {\n  const ctx = useContext(KinoContext);\n  if (!ctx) throw new Error(\"<Kino> provider is required\");\n  return ctx;\n}\n\ninterface KinoProps {\n  children: ReactNode;\n}\n\nexport function Kino({ children }: KinoProps) {\n  const trackerRef = useRef<ScrollTracker>(new ScrollTracker());\n\n  useEffect(() => {\n    const tracker = trackerRef.current;\n    tracker.start();\n    return () => tracker.stop();\n  }, []);\n\n  return (\n    <KinoContext.Provider value={{ tracker: trackerRef.current }}>\n      {children}\n    </KinoContext.Provider>\n  );\n}\n",
+      "content": "\"use client\";\nexport { Kino, useKino } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/kino.tsx"
     }

@@ -4,13 +4,18 @@
   "type": "registry:component",
   "title": "TextReveal",
   "description": "Progressive text reveal that highlights words, characters, or lines as the user scrolls.",
-  "dependencies": ["react-kino"],
+  "dependencies": [
+    "react-kino"
+  ],
   "devDependencies": [],
-  "registryDependencies": ["kino", "scene"],
+  "registryDependencies": [
+    "kino",
+    "scene"
+  ],
   "files": [
     {
       "path": "components/kino/text-reveal.tsx",
-      "content": "\"use client\";\nimport React, { useEffect, useState, type CSSProperties } from \"react\";\nimport { useSceneContext } from \"./scene\";\n\ntype TextRevealMode = \"word\" | \"char\" | \"line\";\n\ninterface TextRevealProps {\n  /** The text to reveal */\n  children: string;\n  /** Reveal mode: word by word, char by char, or line by line. Default: \"word\" */\n  mode?: TextRevealMode;\n  /** Progress value 0-1. If inside Scene, reads from context. */\n  progress?: number;\n  /** Progress value (0-1) when reveal starts. Default: 0 */\n  at?: number;\n  /** How much progress the full reveal spans. Default: 0.8 */\n  span?: number;\n  /** Color of revealed text. Default: currentColor */\n  color?: string;\n  /** Color of unrevealed text. Default: rgba(currentColor, 0.15) */\n  dimColor?: string;\n  className?: string;\n}\n\nfunction useProgress(propProgress?: number): number {\n  try {\n    const ctx = useSceneContext();\n    return propProgress ?? ctx.progress;\n  } catch {\n    return propProgress ?? 0;\n  }\n}\n\nfunction usePrefersReducedMotion(): boolean {\n  const [reduced, setReduced] = useState(false);\n  useEffect(() => {\n    const mql = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    setReduced(mql.matches);\n    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);\n    mql.addEventListener(\"change\", handler);\n    return () => mql.removeEventListener(\"change\", handler);\n  }, []);\n  return reduced;\n}\n\nfunction splitTokens(text: string, mode: TextRevealMode): string[] {\n  switch (mode) {\n    case \"char\":\n      return text.split(\"\");\n    case \"line\":\n      return text.split(\"\\n\");\n    case \"word\":\n    default:\n      return text.split(/(\\s+)/).filter((t) => t.length > 0);\n  }\n}\n\nexport function TextReveal({\n  children,\n  mode = \"word\",\n  progress: progressProp,\n  at = 0,\n  span = 0.8,\n  color,\n  dimColor,\n  className,\n}: TextRevealProps) {\n  const progress = useProgress(progressProp);\n  const reducedMotion = usePrefersReducedMotion();\n\n  const tokens = splitTokens(children, mode);\n  // Only count non-whitespace tokens for threshold calculation\n  const contentTokens = tokens.filter((t) => t.trim().length > 0);\n  const totalContent = contentTokens.length;\n\n  if (reducedMotion) {\n    return (\n      <div className={className} data-testid=\"text-reveal\">\n        {children}\n      </div>\n    );\n  }\n\n  let contentIndex = 0;\n\n  return (\n    <div className={className} data-testid=\"text-reveal\">\n      {tokens.map((token, i) => {\n        const isWhitespace = token.trim().length === 0;\n\n        if (isWhitespace) {\n          return (\n            <span key={i} data-testid=\"text-reveal-token\">\n              {token}\n            </span>\n          );\n        }\n\n        const threshold =\n          totalContent > 1\n            ? at + (contentIndex / (totalContent - 1)) * span\n            : at;\n        contentIndex++;\n        const isRevealed = progress >= threshold;\n\n        const tokenStyle: CSSProperties = {\n          color: isRevealed ? color || undefined : dimColor || undefined,\n          opacity: isRevealed ? 1 : 0.15,\n          transition: \"color 0.15s, opacity 0.15s\",\n        };\n\n        return (\n          <span key={i} style={tokenStyle} data-testid=\"text-reveal-token\">\n            {token}\n          </span>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "content": "\"use client\";\nexport { TextReveal } from \"react-kino\";\n",
       "type": "registry:component",
       "target": "components/kino/text-reveal.tsx"
     }

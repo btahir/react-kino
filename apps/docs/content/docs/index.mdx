@@ -55,17 +55,18 @@ That is a complete scroll experience: the section pins in place, content fades i
 
 ## Why react-kino
 
-- **Tiny** -- the core scroll engine is under 3 KB gzipped. GSAP ScrollTrigger alone is 33 KB.
+- **Tiny** -- the core scroll engine is under 1 KB gzipped. GSAP ScrollTrigger alone is 33 KB.
 - **Declarative** -- compose `<Scene>`, `<Reveal>`, `<Parallax>`, and `<Counter>` like regular React components. No imperative timelines.
-- **Zero dependencies** -- no runtime deps. React is a peer dependency. Framer Motion is optional.
-- **SSR-safe** -- every component renders children on the server, animates on the client. Works with Next.js App Router out of the box.
+- **Lightweight runtime** -- `react-kino` uses a tiny internal engine package (`@kino/core`) plus React peers.
+- **SSR-safe** -- every component renders children on the server and animates on the client.
 
 ## SSR / Next.js
 
-react-kino is SSR-safe. All components include the `"use client"` directive and defer scroll logic to `useEffect`.
+react-kino is SSR-safe and defers scroll logic to `useEffect`.
 
 ```tsx
 // app/page.tsx
+"use client";
 import { Kino, Scene, Reveal } from "react-kino";
 
 export default function Page() {
@@ -95,17 +96,16 @@ No additional configuration is required.
 
 ## Animation Engine
 
-react-kino uses a progressive enhancement strategy for animations:
+react-kino uses a lightweight JavaScript scroll engine with CSS transforms and opacity transitions:
 
-1. **CSS Scroll Timeline API** (Chrome 115+, Firefox 121+) -- native, best performance
-2. **Web Animations API (WAAPI)** -- JS-controlled but GPU-accelerated fallback
-3. **Framer Motion** -- optional enhancement if installed
+1. **Shared scroll tracker** -- one provider can drive all scroll subscribers.
+2. **requestAnimationFrame batching** -- updates are coalesced for smoother rendering.
+3. **GPU-friendly styles** -- reveal/parallax use transform and opacity.
 
 ## Browser Support
 
 | Feature | Chrome | Firefox | Safari | Edge |
 |---------|--------|---------|--------|------|
 | Core scroll tracking | 64+ | 60+ | 13+ | 79+ |
-| CSS Scroll Timeline | 115+ | 121+ | -- | 115+ |
 | `position: sticky` | 56+ | 59+ | 13+ | 79+ |
 | `prefers-reduced-motion` | 74+ | 63+ | 10.1+ | 79+ |
