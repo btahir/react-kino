@@ -145,8 +145,8 @@ export function CompareSlider({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
-      {/* Before layer — always fully visible underneath */}
-      <div style={layerStyle}>{before}</div>
+      {/* Before layer — position relative so it establishes container height */}
+      <div style={{ ...layerStyle, position: "relative" }}>{before}</div>
 
       {/* After layer — clipped to reveal from left */}
       <div style={afterStyle}>{after}</div>

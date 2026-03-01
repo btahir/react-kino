@@ -57,7 +57,11 @@ export function Scene({
       if (!spacerRef.current) return;
       const rect = spacerRef.current.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
-      setProgress(calcSceneProgress(scrollY, offsetTop, durationPx));
+      // Use effective duration (spacer - viewport) so progress 0→1
+      // maps exactly to the time the sticky content is pinned on screen.
+      // Without this, progress outruns the sticky and animations complete off-screen.
+      const effectiveDuration = pin ? Math.max(1, durationPx - viewportHeight) : durationPx;
+      setProgress(calcSceneProgress(scrollY, offsetTop, effectiveDuration));
     });
 
     tracker.start();
