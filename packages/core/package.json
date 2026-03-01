@@ -26,5 +26,15 @@
     "typescript": "^5",
     "vitest": "^4"
   },
-  "license": "MIT"
+  "author": "Bilal Tahir",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/btahir/react-kino.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/btahir/react-kino#readme",
+  "bugs": {
+    "url": "https://github.com/btahir/react-kino/issues"
+  }
 }

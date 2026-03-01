@@ -53,5 +53,15 @@
     "react", "scroll", "animation", "storytelling", "parallax",
     "scroll-driven", "apple", "cinematic", "pinned", "sticky"
   ],
-  "license": "MIT"
+  "author": "Bilal Tahir",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/btahir/react-kino.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/btahir/react-kino#readme",
+  "bugs": {
+    "url": "https://github.com/btahir/react-kino/issues"
+  }
 }
