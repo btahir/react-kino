@@ -95,6 +95,34 @@ importers:
         specifier: ^7
         version: 7.3.1(@types/node@22.19.13)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)
 
+  apps/test:
+    dependencies:
+      react:
+        specifier: ^19
+        version: 19.2.4
+      react-dom:
+        specifier: ^19
+        version: 19.2.4(react@19.2.4)
+      react-kino:
+        specifier: ^0.1.2
+        version: 0.1.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+    devDependencies:
+      '@types/react':
+        specifier: ^19
+        version: 19.1.17
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.1.11(@types/react@19.1.17)
+      '@vitejs/plugin-react':
+        specifier: ^5
+        version: 5.1.4(vite@7.3.1(@types/node@22.19.13)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0))
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vite:
+        specifier: ^7
+        version: 7.3.1(@types/node@22.19.13)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)
+
   apps/video:
     dependencies:
       '@remotion/cli':
@@ -1502,6 +1530,9 @@ packages:
 
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
+
+  '@react-kino/core@0.1.2':
+    resolution: {integrity: sha512-WriP/xGZm56jh4f4g5hLJrrqwFKFT8bvp7JEflIW52ce/Q7WE4g0U/0wZrsdbVP0ztzCiIveTvjvSMuM43ILMw==}
 
   '@remotion/bundler@4.0.242':
     resolution: {integrity: sha512-+NO/DtBAEDVisTQYitbeRBIQ5z1G6VYQIVS8ZfqopRa5RfuhcNrDwZA5nNgA6uz3hHaKjRaT38j7X/BBgKH07Q==}
@@ -3384,6 +3415,12 @@ packages:
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
+  react-kino@0.1.2:
+    resolution: {integrity: sha512-8K9JyBIh0AVEc7Zv9qZVSyOdPNgwRkPnPMmYEJHxtQ9nQQu50nTaD/16XbwYzeU+Gar/suuHEPVhykDs7h7wLQ==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+
   react-medium-image-zoom@5.4.1:
     resolution: {integrity: sha512-DD2iZYaCfAwiQGR8AN62r/cDJYoXhezlYJc5HY4TzBUGuGge43CptG0f7m0PEIM72aN6GfpjohvY1yYdtCJB7g==}
     peerDependencies:
@@ -5243,18 +5280,20 @@ snapshots:
 
   '@radix-ui/rect@1.1.1': {}
 
+  '@react-kino/core@0.1.2': {}
+
   '@remotion/bundler@4.0.242(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@remotion/studio': 4.0.242(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@remotion/studio-shared': 4.0.242(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      css-loader: 5.2.7(webpack@5.96.1(esbuild@0.24.0))
+      css-loader: 5.2.7(webpack@5.96.1)
       esbuild: 0.24.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-refresh: 0.9.0
       remotion: 4.0.242(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       source-map: 0.7.3
-      style-loader: 2.0.0(webpack@5.96.1(esbuild@0.24.0))
+      style-loader: 2.0.0(webpack@5.96.1)
       webpack: 5.96.1(esbuild@0.24.0)
     transitivePeerDependencies:
       - '@swc/core'
@@ -6010,7 +6049,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  css-loader@5.2.7(webpack@5.96.1(esbuild@0.24.0)):
+  css-loader@5.2.7(webpack@5.96.1):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.6)
       loader-utils: 2.0.4
@@ -7542,6 +7581,12 @@ snapshots:
 
   react-is@17.0.2: {}
 
+  react-kino@0.1.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+    dependencies:
+      '@react-kino/core': 0.1.2
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+
   react-medium-image-zoom@5.4.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
       react: 19.2.4
@@ -7910,7 +7955,7 @@ snapshots:
 
   strip-final-newline@2.0.0: {}
 
-  style-loader@2.0.0(webpack@5.96.1(esbuild@0.24.0)):
+  style-loader@2.0.0(webpack@5.96.1):
     dependencies:
       loader-utils: 2.0.4
       schema-utils: 3.3.0

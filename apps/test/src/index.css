@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0a0a0a;
+  color: #e8e8e8;
+  font-family: system-ui, -apple-system, sans-serif;
+  display: block;
+}
+
+.section-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 12px;
+  font-family: monospace;
+  color: #dc2626;
+  opacity: 0.8;
+  z-index: 10;
+}

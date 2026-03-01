@@ -1,0 +1,21 @@
+{
+  "name": "@react-kino/test",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "react": "^19",
+    "react-dom": "^19",
+    "react-kino": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5",
+    "typescript": "^5",
+    "vite": "^7"
+  }
+}
