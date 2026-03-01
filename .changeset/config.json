@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@kino/docs", "@kino/cli"]
+  "ignore": ["@kino/docs"]
 }
