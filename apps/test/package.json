@@ -9,7 +9,7 @@
   "dependencies": {
     "react": "^19",
     "react-dom": "^19",
-    "react-kino": "^0.1.2"
+    "react-kino": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19",

@@ -11,6 +11,7 @@ import {
   TextReveal,
   Marquee,
   StickyHeader,
+  ScrollTransform,
 } from "react-kino";
 
 // ─── Design tokens ──────────────────────────────────────────────
@@ -290,160 +291,140 @@ function App() {
 
       {/* ━━━ DEVICE TILT — MacBook-style 3D rotation ━━━━━━━━━━━ */}
       <Scene duration="350vh">
-        {(progress) => {
-          // Tilt settles over the first 50% of scroll progress
-          const t = Math.min(1, progress / 0.5);
-          const ease = 1 - Math.pow(1 - t, 3); // ease-out cubic
-
-          const rotateX = 40 * (1 - ease);
-          const rotateY = -12 * (1 - ease);
-          const scale = 0.82 + 0.18 * ease;
-          const translateY = 80 * (1 - ease);
-          const cardOpacity = 0.3 + 0.7 * ease;
-
-          // Shadow intensifies as device flattens
-          const shadowSpread = Math.round(24 + 40 * ease);
-          const shadowAlpha = (0.15 + 0.15 * ease).toFixed(2);
-
-          return (
-            <section
-              style={{
-                height: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "48px",
-                fontFamily: font.sans,
-              }}
+        {() => (
+          <section
+            style={{
+              height: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "48px",
+              fontFamily: font.sans,
+            }}
+          >
+            <ScrollTransform
+              from={{ rotateX: 40, rotateY: -12, scale: 0.82, y: 80, opacity: 0.3 }}
+              to={{ rotateX: 0, rotateY: 0, scale: 1, y: 0, opacity: 1 }}
+              perspective={1200}
+              span={0.5}
+              easing="ease-out-cubic"
+              transformOrigin="center bottom"
             >
-              {/* Perspective container */}
               <div
                 style={{
-                  perspective: "1200px",
-                  perspectiveOrigin: "center 60%",
+                  width: "min(85vw, 680px)",
+                  aspectRatio: "16 / 10",
+                  borderRadius: "20px",
+                  background:
+                    "linear-gradient(145deg, #0a0a1a, #12082a, #0a0a1a)",
+                  boxShadow: [
+                    "0 0 0 0.5px rgba(255,255,255,0.06)",
+                    "0 2px 4px rgba(0,0,0,0.4)",
+                    "0 48px 96px -16px rgba(110, 86, 207, 0.25)",
+                  ].join(", "),
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                  overflow: "hidden",
                 }}
               >
                 <div
                   style={{
-                    width: "min(85vw, 680px)",
-                    aspectRatio: "16 / 10",
-                    borderRadius: "20px",
+                    position: "absolute",
+                    width: "320px",
+                    height: "320px",
+                    borderRadius: "50%",
+                    top: "-80px",
+                    right: "-60px",
                     background:
-                      "linear-gradient(145deg, #0a0a1a, #12082a, #0a0a1a)",
-                    boxShadow: [
-                      "0 0 0 0.5px rgba(255,255,255,0.06)",
-                      "0 2px 4px rgba(0,0,0,0.4)",
-                      `0 ${shadowSpread}px ${shadowSpread * 2}px -16px rgba(110, 86, 207, ${shadowAlpha})`,
-                    ].join(", "),
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+                      "radial-gradient(circle, rgba(41,151,255,0.12), transparent 70%)",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    width: "240px",
+                    height: "240px",
+                    borderRadius: "50%",
+                    bottom: "-60px",
+                    left: "-40px",
+                    background:
+                      "radial-gradient(circle, rgba(191,90,242,0.10), transparent 70%)",
+                  }}
+                />
+                <pre
+                  style={{
+                    fontSize: "clamp(13px, 1.8vw, 17px)",
+                    color: "rgba(255,255,255,0.4)",
+                    fontFamily: font.mono,
+                    textAlign: "left",
+                    lineHeight: 2,
                     position: "relative",
-                    overflow: "hidden",
-                    transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale}) translateY(${translateY}px)`,
-                    opacity: cardOpacity,
-                    transformOrigin: "center bottom",
-                    willChange: "transform, opacity",
-                    backfaceVisibility: "hidden",
+                    zIndex: 1,
                   }}
                 >
-                  <div
-                    style={{
-                      position: "absolute",
-                      width: "320px",
-                      height: "320px",
-                      borderRadius: "50%",
-                      top: "-80px",
-                      right: "-60px",
-                      background:
-                        "radial-gradient(circle, rgba(41,151,255,0.12), transparent 70%)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      width: "240px",
-                      height: "240px",
-                      borderRadius: "50%",
-                      bottom: "-60px",
-                      left: "-40px",
-                      background:
-                        "radial-gradient(circle, rgba(191,90,242,0.10), transparent 70%)",
-                    }}
-                  />
-                  <pre
-                    style={{
-                      fontSize: "clamp(13px, 1.8vw, 17px)",
-                      color: "rgba(255,255,255,0.4)",
-                      fontFamily: font.mono,
-                      textAlign: "left",
-                      lineHeight: 2,
-                      position: "relative",
-                      zIndex: 1,
-                    }}
-                  >
-                    <span style={{ color: c.subtle }}>{"<"}</span>
-                    <span style={{ color: c.blue }}>Scene</span>
-                    <span style={{ color: c.subtle }}>{" duration="}</span>
-                    <span style={{ color: c.green }}>{'"300vh"'}</span>
-                    <span style={{ color: c.subtle }}>{">"}</span>
-                    {"\n"}
-                    {"  "}
-                    <span style={{ color: c.subtle }}>{"<"}</span>
-                    <span style={{ color: c.purple }}>Reveal</span>
-                    <span style={{ color: c.subtle }}>{" animation="}</span>
-                    <span style={{ color: c.green }}>{'"fade-up"'}</span>
-                    <span style={{ color: c.subtle }}>{">"}</span>
-                    {"\n"}
-                    {"    "}
-                    <span style={{ color: c.text }}>Your content here</span>
-                    {"\n"}
-                    {"  "}
-                    <span style={{ color: c.subtle }}>{"</"}</span>
-                    <span style={{ color: c.purple }}>Reveal</span>
-                    <span style={{ color: c.subtle }}>{">"}</span>
-                    {"\n"}
-                    <span style={{ color: c.subtle }}>{"</"}</span>
-                    <span style={{ color: c.blue }}>Scene</span>
-                    <span style={{ color: c.subtle }}>{">"}</span>
-                  </pre>
-                </div>
+                  <span style={{ color: c.subtle }}>{"<"}</span>
+                  <span style={{ color: c.blue }}>Scene</span>
+                  <span style={{ color: c.subtle }}>{" duration="}</span>
+                  <span style={{ color: c.green }}>{'"300vh"'}</span>
+                  <span style={{ color: c.subtle }}>{">"}</span>
+                  {"\n"}
+                  {"  "}
+                  <span style={{ color: c.subtle }}>{"<"}</span>
+                  <span style={{ color: c.purple }}>Reveal</span>
+                  <span style={{ color: c.subtle }}>{" animation="}</span>
+                  <span style={{ color: c.green }}>{'"fade-up"'}</span>
+                  <span style={{ color: c.subtle }}>{">"}</span>
+                  {"\n"}
+                  {"    "}
+                  <span style={{ color: c.text }}>Your content here</span>
+                  {"\n"}
+                  {"  "}
+                  <span style={{ color: c.subtle }}>{"</"}</span>
+                  <span style={{ color: c.purple }}>Reveal</span>
+                  <span style={{ color: c.subtle }}>{">"}</span>
+                  {"\n"}
+                  <span style={{ color: c.subtle }}>{"</"}</span>
+                  <span style={{ color: c.blue }}>Scene</span>
+                  <span style={{ color: c.subtle }}>{">"}</span>
+                </pre>
               </div>
+            </ScrollTransform>
 
-              {/* Text reveals after the tilt settles */}
-              <div style={{ textAlign: "center" }}>
-                <Reveal animation="fade-up" at={0.55} duration={800}>
-                  <h2
-                    style={{
-                      fontSize: "clamp(32px, 5vw, 56px)",
-                      fontWeight: 700,
-                      letterSpacing: "-0.03em",
-                      color: c.text,
-                    }}
-                  >
-                    Pinned. Precise. Performant.
-                  </h2>
-                </Reveal>
-                <Reveal animation="fade-up" at={0.65} duration={800}>
-                  <p
-                    style={{
-                      fontSize: "17px",
-                      color: c.muted,
-                      maxWidth: "460px",
-                      lineHeight: 1.5,
-                      margin: "16px auto 0",
-                    }}
-                  >
-                    CSS sticky positioning and hardware-accelerated transforms.
-                    No JavaScript scroll hijacking. Just the platform, used
-                    right.
-                  </p>
-                </Reveal>
-              </div>
-            </section>
-          );
-        }}
+            {/* Text reveals after the tilt settles */}
+            <div style={{ textAlign: "center" }}>
+              <Reveal animation="fade-up" at={0.55} duration={800}>
+                <h2
+                  style={{
+                    fontSize: "clamp(32px, 5vw, 56px)",
+                    fontWeight: 700,
+                    letterSpacing: "-0.03em",
+                    color: c.text,
+                  }}
+                >
+                  Pinned. Precise. Performant.
+                </h2>
+              </Reveal>
+              <Reveal animation="fade-up" at={0.65} duration={800}>
+                <p
+                  style={{
+                    fontSize: "17px",
+                    color: c.muted,
+                    maxWidth: "460px",
+                    lineHeight: 1.5,
+                    margin: "16px auto 0",
+                  }}
+                >
+                  CSS sticky positioning and hardware-accelerated transforms.
+                  No JavaScript scroll hijacking. Just the platform, used
+                  right.
+                </p>
+              </Reveal>
+            </div>
+          </section>
+        )}
       </Scene>
 
       {/* ━━━ STATS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -485,7 +466,7 @@ function App() {
               <Stat label="Components" at={0.15}>
                 <Counter
                   from={0}
-                  to={12}
+                  to={13}
                   at={0.15}
                   span={0.3}
                   format={(n) => Math.round(n).toString()}
@@ -1073,6 +1054,7 @@ function App() {
             "CompareSlider",
             "HorizontalScroll",
             "VideoScroll",
+            "ScrollTransform",
             "Progress",
             "Marquee",
             "StickyHeader",
