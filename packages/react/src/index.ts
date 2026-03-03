@@ -13,6 +13,8 @@ export { Marquee } from "./marquee";
 export type { MarqueeProps } from "./marquee";
 export { StickyHeader } from "./sticky-header";
 export type { StickyHeaderProps } from "./sticky-header";
+export { ScrollTransform } from "./scroll-transform";
+export type { ScrollTransformProps, TransformState } from "./scroll-transform";
 
 // Hooks
 export { useScrollProgress } from "./hooks/use-scroll-progress";
