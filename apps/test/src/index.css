@@ -4,20 +4,35 @@
   box-sizing: border-box;
 }
 
-body {
-  background: #0a0a0a;
-  color: #e8e8e8;
-  font-family: system-ui, -apple-system, sans-serif;
-  display: block;
+html {
+  scroll-behavior: smooth;
 }
 
-.section-label {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  font-size: 12px;
-  font-family: monospace;
-  color: #dc2626;
-  opacity: 0.8;
-  z-index: 10;
+body {
+  background: #000;
+  color: #f5f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', 'Segoe UI', Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(41, 151, 255, 0.3);
+  color: #fff;
+}
+
+@keyframes scroll-hint {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.2;
+  }
+}
+
+.scroll-hint {
+  animation: scroll-hint 2.5s ease-in-out infinite;
 }
