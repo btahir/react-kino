@@ -254,7 +254,7 @@ export function Portfolio({
                     justifyContent: "center",
                     maxWidth: "1080px",
                     margin: "0 auto",
-                    padding: "0 48px",
+                    padding: "0 clamp(16px, 4vw, 48px)",
                   }}
                 >
                   <p
@@ -272,13 +272,13 @@ export function Portfolio({
                   <div
                     style={{
                       display: "flex",
-                      gap: "clamp(40px, 6vw, 80px)",
+                      gap: "clamp(20px, 4vw, 80px)",
                     }}
                   >
                     {/* Left: Timeline */}
                     <div
                       style={{
-                        width: "180px",
+                        width: "clamp(80px, 22vw, 180px)",
                         flexShrink: 0,
                         position: "relative",
                       }}
@@ -287,9 +287,9 @@ export function Portfolio({
                       <div
                         style={{
                           position: "absolute",
-                          left: "10px",
-                          top: "10px",
-                          bottom: "10px",
+                          left: "clamp(6px, 1.2vw, 10px)",
+                          top: "clamp(6px, 1.2vw, 10px)",
+                          bottom: "clamp(6px, 1.2vw, 10px)",
                           width: "2px",
                           background: "rgba(255,255,255,0.06)",
                           borderRadius: "1px",
@@ -321,7 +321,7 @@ export function Portfolio({
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: "18px",
+                              gap: "clamp(8px, 2vw, 18px)",
                               position: "relative",
                               zIndex: 1,
                               cursor: "default",
@@ -329,8 +329,8 @@ export function Portfolio({
                           >
                             <div
                               style={{
-                                width: "22px",
-                                height: "22px",
+                                width: "clamp(14px, 3vw, 22px)",
+                                height: "clamp(14px, 3vw, 22px)",
                                 borderRadius: "50%",
                                 background:
                                   i <= active
@@ -346,7 +346,7 @@ export function Portfolio({
                             />
                             <span
                               style={{
-                                fontSize: "15px",
+                                fontSize: "clamp(12px, 2vw, 15px)",
                                 fontWeight: i === active ? 600 : 400,
                                 color:
                                   i <= active

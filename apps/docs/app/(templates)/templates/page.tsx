@@ -118,7 +118,7 @@ export default function TemplatesPage() {
             margin: "0 auto",
             padding: "0 24px 100px",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
             gap: 24,
           }}
         >
