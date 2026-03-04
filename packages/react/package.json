@@ -25,7 +25,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@react-kino/core": "workspace:*"
+    "@react-kino/core": "workspace:^"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
