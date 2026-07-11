@@ -1,5 +1,12 @@
 # @react-kino/templates
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [c781aeb]
+  - react-kino@0.5.0
+
 ## 0.1.4
 
 ### Patch Changes

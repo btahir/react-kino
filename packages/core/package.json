@@ -1,6 +1,6 @@
 {
   "name": "@react-kino/core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Framework-agnostic scroll engine powering react-kino",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

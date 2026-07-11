@@ -1,6 +1,6 @@
 {
   "name": "@react-kino/templates",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Pre-built full-page scroll experience templates for react-kino",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
