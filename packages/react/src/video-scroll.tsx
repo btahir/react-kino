@@ -9,6 +9,7 @@ import React, {
 import { calcSceneProgress, parseDuration } from "@react-kino/core";
 import { useIsClient } from "./hooks/use-is-client";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
+import { useGatedScroll } from "./hooks/use-gated-scroll";
 import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface VideoScrollProps {
@@ -35,66 +36,73 @@ export function VideoScroll({
 }: VideoScrollProps) {
   const spacerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [progress, setProgress] = useState(0);
-  const [viewportHeight, setViewportHeight] = useState(0);
   const isClient = useIsClient();
   const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
 
+  // Latest progress lives in a ref so the imperative scrub and the
+  // loadedmetadata handler can read it without re-rendering.
+  const progressRef = useRef(0);
+
+  const isRenderProp = typeof children === "function";
+  const isRenderPropRef = useRef(isRenderProp);
+  isRenderPropRef.current = isRenderProp;
+  const [renderProgress, setRenderProgress] = useState(0);
+
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const lastVhRef = useRef(-1);
+
   useEffect(() => {
     if (!isClient) return;
-
+    lastVhRef.current = window.innerHeight;
     setViewportHeight(window.innerHeight);
+  }, [isClient]);
 
-    const unsub = tracker.subscribe(({ scrollY, viewportHeight: vh }) => {
-      // Re-derive from the freshly emitted viewport height on every tick
-      // (rather than a value captured when the effect ran) so a window
-      // resize keeps progress and the spacer height correct.
-      setViewportHeight(vh);
-      if (!spacerRef.current) return;
-      const rect = spacerRef.current.getBoundingClientRect();
+  const seek = () => {
+    const video = videoRef.current;
+    if (!video || reducedMotion) return;
+    const dur = video.duration;
+    if (!isFinite(dur) || dur === 0) return;
+    video.currentTime = progressRef.current * dur;
+  };
+
+  useGatedScroll({
+    ref: spacerRef,
+    tracker,
+    isOwned,
+    enabled: isClient,
+    deps: [isClient, duration, pin, reducedMotion],
+    compute: ({ scrollY, viewportHeight: vh }) => {
+      if (vh !== lastVhRef.current) {
+        lastVhRef.current = vh;
+        setViewportHeight(vh);
+      }
+      const spacer = spacerRef.current;
+      if (!spacer) return;
+      const rect = spacer.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
       const durationPx = parseDuration(duration, vh);
       const effectiveDuration = pin ? Math.max(1, durationPx - vh) : durationPx;
-      setProgress(calcSceneProgress(scrollY, offsetTop, effectiveDuration));
-    });
+      const p = calcSceneProgress(scrollY, offsetTop, effectiveDuration);
+      progressRef.current = p;
+      if (isRenderPropRef.current) setRenderProgress(p);
+      seek();
+    },
+  });
 
-    if (isOwned) tracker.start();
-    return () => {
-      unsub();
-      if (isOwned) tracker.stop();
-    };
-  }, [isClient, duration, pin, tracker, isOwned]);
-
-  // Scrub the video based on scroll progress
+  // The scrub above bails until video.duration is known. Seek to the correct
+  // frame as soon as metadata loads.
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !isClient || reducedMotion) return;
-
-    const dur = video.duration;
-    if (!isFinite(dur) || dur === 0) return;
-
-    video.currentTime = progress * dur;
-  }, [progress, isClient, reducedMotion]);
-
-  // The scrub effect above bails out when `video.duration` isn't known yet
-  // (NaN/0 before metadata loads), and never re-runs once it becomes
-  // available since `progress` may not change afterwards. Listen for
-  // `loadedmetadata` so the video seeks to the correct frame as soon as its
-  // duration is known, fixing first-frame sync on slow-loading videos.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !isClient || reducedMotion) return;
-
     const handleLoadedMetadata = () => {
       const dur = video.duration;
       if (!isFinite(dur) || dur === 0) return;
-      video.currentTime = progress * dur;
+      video.currentTime = progressRef.current * dur;
     };
-
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
     return () => video.removeEventListener("loadedmetadata", handleLoadedMetadata);
-  }, [isClient, reducedMotion, progress]);
+  }, [isClient, reducedMotion]);
 
   const durationPx = isClient ? parseDuration(duration, viewportHeight) : 0;
 
@@ -125,8 +133,9 @@ export function VideoScroll({
     pointerEvents: "auto",
   };
 
-  const resolvedChildren =
-    typeof children === "function" ? children(progress) : children;
+  const resolvedChildren = isRenderProp
+    ? (children as (progress: number) => ReactNode)(renderProgress)
+    : children;
 
   return (
     <div ref={spacerRef} style={spacerStyle} className={className}>

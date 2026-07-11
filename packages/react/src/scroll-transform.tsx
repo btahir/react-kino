@@ -1,7 +1,12 @@
 "use client";
-import React, { type ReactNode, type CSSProperties } from "react";
+import React, {
+  useEffect,
+  useRef,
+  type ReactNode,
+  type CSSProperties,
+} from "react";
 import { lerp, clamp, EASINGS, type EasingFn, type EasingName } from "@react-kino/core";
-import { useSceneContextOptional } from "./scene";
+import { useSceneProgressValueOptional } from "./scene";
 import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface TransformState {
@@ -53,11 +58,6 @@ export interface ScrollTransformProps {
   style?: CSSProperties;
 }
 
-function useProgress(propProgress?: number): number {
-  const ctx = useSceneContextOptional();
-  return propProgress ?? ctx?.progress ?? 0;
-}
-
 function resolveEasing(easing?: EasingName | EasingFn): EasingFn {
   if (typeof easing === "function") return easing;
   if (typeof easing === "string" && EASINGS[easing]) return EASINGS[easing];
@@ -103,7 +103,6 @@ function buildTransformString(
     parts.push(`perspective(${perspective}px)`);
   }
 
-  // Order: translateX/Y/Z -> scale/scaleX/scaleY -> rotateX/Y/Z -> skewX/Y
   if (values.x != null) parts.push(`translateX(${values.x}px)`);
   if (values.y != null) parts.push(`translateY(${values.y}px)`);
   if (values.z != null) parts.push(`translateZ(${values.z}px)`);
@@ -119,6 +118,64 @@ function buildTransformString(
   return parts.join(" ");
 }
 
+interface TransformConfig {
+  from: TransformState;
+  to: TransformState;
+  at: number;
+  span: number;
+  easingFn: EasingFn;
+  perspective?: number;
+  reducedMotion: boolean;
+}
+
+/**
+ * Pure computation shared by the initial React render and the imperative
+ * scroll-frame updates, so both paths produce identical output.
+ */
+function computeTransform(
+  progress: number,
+  cfg: TransformConfig
+): { transform: string; opacity: number | undefined } {
+  const { from, to, at, span, easingFn, perspective, reducedMotion } = cfg;
+
+  const targetState = reducedMotion && progress >= at ? to : null;
+
+  const rawT = span > 0 ? (progress - at) / span : progress >= at ? 1 : 0;
+  const t = clamp(rawT, 0, 1);
+  const easedT = easingFn(t);
+
+  const interpolated: Record<TransformKey, number | undefined> = {} as Record<
+    TransformKey,
+    number | undefined
+  >;
+
+  for (const key of TRANSFORM_KEYS) {
+    const fromVal = targetState ? targetState[key] : from[key];
+    const toVal = targetState ? targetState[key] : to[key];
+
+    if (fromVal != null && toVal != null) {
+      interpolated[key] = targetState ? toVal : lerp(fromVal, toVal, easedT);
+    } else if (fromVal != null || toVal != null) {
+      const f = fromVal ?? getIdentity(key);
+      const t2 = toVal ?? getIdentity(key);
+      interpolated[key] = targetState ? t2 : lerp(f, t2, easedT);
+    }
+  }
+
+  let opacity: number | undefined;
+  const fromOpacity = targetState ? targetState.opacity : from.opacity;
+  const toOpacity = targetState ? targetState.opacity : to.opacity;
+  if (fromOpacity != null && toOpacity != null) {
+    opacity = targetState ? toOpacity : lerp(fromOpacity, toOpacity, easedT);
+  } else if (fromOpacity != null || toOpacity != null) {
+    const f = fromOpacity ?? 1;
+    const t2 = toOpacity ?? 1;
+    opacity = targetState ? t2 : lerp(f, t2, easedT);
+  }
+
+  return { transform: buildTransformString(interpolated, perspective), opacity };
+}
+
 export function ScrollTransform({
   from,
   to,
@@ -132,56 +189,59 @@ export function ScrollTransform({
   className,
   style,
 }: ScrollTransformProps) {
-  const progress = useProgress(progressProp);
+  const elRef = useRef<HTMLDivElement>(null);
   const reducedMotion = usePrefersReducedMotion();
   const easingFn = resolveEasing(easing);
+  const pv = useSceneProgressValueOptional();
 
-  // Determine which state to use for interpolation
-  const targetState = reducedMotion && progress >= at ? to : null;
+  const cfg: TransformConfig = {
+    from,
+    to,
+    at,
+    span,
+    easingFn,
+    perspective,
+    reducedMotion,
+  };
 
-  // Map progress in [at, at+span] to t in [0, 1]
-  const rawT = span > 0 ? (progress - at) / span : progress >= at ? 1 : 0;
-  const t = clamp(rawT, 0, 1);
-  const easedT = easingFn(t);
+  // Controlled (progress prop) renders statically; otherwise we start from the
+  // current ProgressValue (or 0) so SSR/first paint is correct, then update
+  // imperatively on scroll.
+  const controlled = progressProp != null;
+  const initialProgress = controlled ? progressProp : pv ? pv.get() : 0;
+  const initial = computeTransform(initialProgress, cfg);
 
-  // Interpolate each defined transform key
-  const interpolated: Record<TransformKey, number | undefined> = {} as Record<
-    TransformKey,
-    number | undefined
-  >;
-
-  for (const key of TRANSFORM_KEYS) {
-    const fromVal = targetState ? targetState[key] : from[key];
-    const toVal = targetState ? targetState[key] : to[key];
-
-    if (fromVal != null && toVal != null) {
-      interpolated[key] = targetState ? toVal : lerp(fromVal, toVal, easedT);
-    } else if (fromVal != null || toVal != null) {
-      // If only one side defined, treat undefined as identity
-      const f = fromVal ?? getIdentity(key);
-      const t2 = toVal ?? getIdentity(key);
-      interpolated[key] = targetState ? t2 : lerp(f, t2, easedT);
-    }
-  }
-
-  // Handle opacity separately
-  let opacity: number | undefined;
-  const fromOpacity = targetState ? targetState.opacity : from.opacity;
-  const toOpacity = targetState ? targetState.opacity : to.opacity;
-  if (fromOpacity != null && toOpacity != null) {
-    opacity = targetState ? toOpacity : lerp(fromOpacity, toOpacity, easedT);
-  } else if (fromOpacity != null || toOpacity != null) {
-    const f = fromOpacity ?? 1;
-    const t2 = toOpacity ?? 1;
-    opacity = targetState ? t2 : lerp(f, t2, easedT);
-  }
-
-  const transformStr = buildTransformString(interpolated, perspective);
   const is3D = has3D(from, to, perspective);
 
+  // Imperative fast path: subscribe to the ProgressValue and write style
+  // directly, never re-rendering. Skipped when controlled (no pv to read).
+  useEffect(() => {
+    if (controlled || !pv) return;
+    const el = elRef.current;
+    if (!el) return;
+    const apply = (p: number) => {
+      const { transform, opacity } = computeTransform(p, cfg);
+      el.style.transform = transform;
+      if (opacity != null) el.style.opacity = String(opacity);
+    };
+    apply(pv.get());
+    return pv.on(apply);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    pv,
+    controlled,
+    reducedMotion,
+    at,
+    span,
+    perspective,
+    easing,
+    JSON.stringify(from),
+    JSON.stringify(to),
+  ]);
+
   const computedStyle: CSSProperties = {
-    ...(transformStr ? { transform: transformStr } : {}),
-    ...(opacity != null ? { opacity } : {}),
+    ...(initial.transform ? { transform: initial.transform } : {}),
+    ...(initial.opacity != null ? { opacity: initial.opacity } : {}),
     transformOrigin,
     willChange: "transform, opacity",
     ...(is3D ? { backfaceVisibility: "hidden" as const } : {}),
@@ -189,7 +249,7 @@ export function ScrollTransform({
   };
 
   return (
-    <div className={className} style={computedStyle}>
+    <div ref={elRef} className={className} style={computedStyle}>
       {children}
     </div>
   );

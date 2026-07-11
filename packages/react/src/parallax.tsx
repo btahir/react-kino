@@ -1,6 +1,7 @@
 "use client";
-import React, { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import React, { useRef, type CSSProperties, type ReactNode } from "react";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
+import { useGatedScroll } from "./hooks/use-gated-scroll";
 import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface ParallaxProps {
@@ -20,30 +21,36 @@ export function Parallax({
   className,
   style,
 }: ParallaxProps) {
-  const [offset, setOffset] = useState(0);
+  const elRef = useRef<HTMLDivElement>(null);
   const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
 
-  useEffect(() => {
-    if (reducedMotion) return;
+  // Ref-based fast path: write the parallax transform directly on every scroll
+  // frame without re-rendering, gated so off-screen parallax costs nothing.
+  useGatedScroll({
+    ref: elRef,
+    tracker,
+    isOwned,
+    enabled: !reducedMotion,
+    deps: [speed, direction],
+    compute: ({ scrollY }) => {
+      const el = elRef.current;
+      if (!el) return;
+      const offset = scrollY * (1 - speed);
+      el.style.transform =
+        direction === "vertical"
+          ? `translateY(${offset}px)`
+          : `translateX(${offset}px)`;
+      el.style.willChange = "transform";
+    },
+  });
 
-    const unsub = tracker.subscribe(({ scrollY }) => {
-      setOffset(scrollY * (1 - speed));
-    });
-
-    if (isOwned) tracker.start();
-    return () => {
-      unsub();
-      if (isOwned) tracker.stop();
-    };
-  }, [speed, reducedMotion, tracker, isOwned]);
-
-  const transform =
-    reducedMotion
-      ? undefined
-      : direction === "vertical"
-        ? `translateY(${offset}px)`
-        : `translateX(${offset}px)`;
+  // Initial transform (offset 0) so first paint matches, then updated imperatively.
+  const transform = reducedMotion
+    ? undefined
+    : direction === "vertical"
+      ? "translateY(0px)"
+      : "translateX(0px)";
 
   const parallaxStyle: CSSProperties = {
     ...style,
@@ -51,7 +58,7 @@ export function Parallax({
   };
 
   return (
-    <div className={className} style={parallaxStyle}>
+    <div ref={elRef} className={className} style={parallaxStyle}>
       {children}
     </div>
   );

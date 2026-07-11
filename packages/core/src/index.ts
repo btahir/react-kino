@@ -4,3 +4,5 @@ export * from "./lerp";
 export * from "./easing";
 export * from "./scroll-tracker";
 export * from "./pin-engine";
+export * from "./progress-value";
+export * from "./offset";

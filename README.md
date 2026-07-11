@@ -637,13 +637,56 @@ function CustomScene() {
 | `spacerRef` | `RefObject<HTMLElement \| null>` | Ref to the spacer/container element |
 | `durationPx` | `number` | Total scroll distance in pixels |
 
-**Returns:** `number` -- progress from `0` to `1`.
+**Returns:** `number` -- progress from `0` to `1`. **Re-renders** each frame; for hot animations use the value hooks below.
+
+---
+
+### `useSceneProgressValue()` / `useScrollProgressValue()` -- the fast path
+
+Return a stable `ProgressValue` (a Motion-style motion value) that you subscribe to imperatively and write to the DOM directly — **no re-render per scroll frame**. `useSceneProgressValue()` reads the enclosing `<Scene>`; `useScrollProgressValue()` tracks whole-page scroll. This is exactly what the built-in components use internally.
+
+```tsx
+import { useRef, useEffect } from "react";
+import { useSceneProgressValue } from "react-kino";
+
+function FastFade() {
+  const ref = useRef<HTMLDivElement>(null);
+  const progress = useSceneProgressValue();
+  useEffect(() => {
+    const apply = (p: number) => (ref.current!.style.opacity = String(p));
+    apply(progress.get());
+    return progress.on(apply); // direct DOM write, zero re-renders
+  }, [progress]);
+  return <div ref={ref}>I fade in without re-rendering</div>;
+}
+```
+
+**Returns:** `ProgressValue` (`get()` / `set(n)` / `on(fn) => unsubscribe`). `useSceneProgressValue()` throws outside a `<Scene>`.
+
+---
+
+### `useElementProgress(ref, { offset })` / `useElementProgressValue(ref, { offset })`
+
+Element-relative scroll progress **without pinning**. Maps an element's viewport entry/exit to `0`→`1` using Motion-style `offset` pairs (e.g. `["start end", "end start"]`), gated behind an `IntersectionObserver`. `useElementProgress` returns a re-rendering number; `useElementProgressValue` returns a `ProgressValue`.
+
+```tsx
+import { useRef } from "react";
+import { useElementProgress } from "react-kino";
+
+function FadeOnView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const progress = useElementProgress(ref); // no <Scene> required
+  return <div ref={ref} style={{ opacity: progress }}>Tied to my own position</div>;
+}
+```
+
+Offset edges accept `"start"` / `"center"` / `"end"`, a fraction (`0`–`1`), or a percentage string. Default: `["start end", "end start"]`.
 
 ---
 
 ### `useSceneContext()`
 
-Access the progress value from a parent `<Scene>`. Useful for building custom components that react to scene progress.
+Access the numeric progress value from a parent `<Scene>`. Useful for building custom components that react to scene progress. **Re-renders** the calling component each frame (the backward-compatible path); prefer `useSceneProgressValue()` for hot animations.
 
 ```tsx
 import { useSceneContext } from "react-kino";
@@ -987,6 +1030,17 @@ No additional configuration is required. This behavior is automatic.
 ---
 
 ## Performance
+
+### The ref-based engine
+
+react-kino writes to the DOM **imperatively** on the scroll hot path — the same approach as Motion's `MotionValue`s and GSAP's ScrollTrigger — instead of calling `setState` every frame.
+
+- **`ProgressValue`, not `setState`** -- `<Scene>` exposes progress as a stable `ProgressValue` from `@react-kino/core`. The built-in components (`<Parallax>`, `<ScrollTransform>`, `<Reveal>`, `<HorizontalScroll>`, `<Counter>`, `<TextReveal>`, `<VideoScroll>`) subscribe and write `transform` / `opacity` / `textContent` directly to their own elements. Scrolling a scene triggers **zero React re-renders** for them.
+- **Backward-compatible dual path** -- the numeric `useSceneContext()` and render-prop (`<Scene>{(p) => …}</Scene>`) APIs are unchanged; they just opt back into re-rendering. Use `useSceneProgressValue()` / `useScrollProgressValue()` to get the fast path in your own components.
+- **IntersectionObserver gating** -- scenes only do per-frame work while near the viewport (generous `100%` `rootMargin`); off-screen scenes cost nothing, and progress snaps to its exact value on fast re-entry rather than a stale one.
+- **Element-relative offsets** -- `useElementProgress` and `<Reveal trigger="visibility">` tie animation to an element's own position without pinning, via pure offset math in the core.
+
+### Under the hood
 
 - **Passive scroll listeners** -- all scroll event listeners use `{ passive: true }`
 - **requestAnimationFrame batching** -- scroll updates are batched via RAF to avoid layout thrashing

@@ -1,7 +1,7 @@
 "use client";
-import React, { type ReactNode } from "react";
+import React, { useEffect, useRef } from "react";
 import { lerp, clamp, EASINGS, type EasingFn, type EasingName } from "@react-kino/core";
-import { useSceneContextOptional } from "./scene";
+import { useSceneProgressValueOptional } from "./scene";
 import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface CounterProps {
@@ -22,11 +22,6 @@ export interface CounterProps {
   className?: string;
 }
 
-function useProgress(propProgress?: number): number {
-  const ctx = useSceneContextOptional();
-  return propProgress ?? ctx?.progress ?? 0;
-}
-
 function resolveEasing(easing?: EasingName | EasingFn): EasingFn {
   if (typeof easing === "function") return easing;
   if (typeof easing === "string" && EASINGS[easing]) return EASINGS[easing];
@@ -39,6 +34,29 @@ function isInteger(n: number): boolean {
 
 const defaultFormat = (n: number): string => n.toLocaleString();
 
+interface CounterConfig {
+  from: number;
+  to: number;
+  at: number;
+  span: number;
+  easingFn: EasingFn;
+  format: (value: number) => string;
+  reducedMotion: boolean;
+}
+
+/** Shared computation for both the initial render and imperative updates. */
+function computeCounterText(progress: number, cfg: CounterConfig): string {
+  const { from, to, at, span, easingFn, format, reducedMotion } = cfg;
+  if (reducedMotion && progress >= at) return format(to);
+
+  const rawT = span > 0 ? (progress - at) / span : progress >= at ? 1 : 0;
+  const t = clamp(rawT, 0, 1);
+  const easedT = easingFn(t);
+  let value = lerp(from, to, easedT);
+  if (isInteger(from) && isInteger(to)) value = Math.round(value);
+  return format(value);
+}
+
 export function Counter({
   from,
   to,
@@ -49,25 +67,33 @@ export function Counter({
   progress: progressProp,
   className,
 }: CounterProps) {
-  const progress = useProgress(progressProp);
+  const spanRef = useRef<HTMLSpanElement>(null);
   const reducedMotion = usePrefersReducedMotion();
   const easingFn = resolveEasing(easing);
+  const pv = useSceneProgressValueOptional();
 
-  // If reduced motion and progress has reached the trigger, show final value
-  if (reducedMotion && progress >= at) {
-    return <span className={className}>{format(to)}</span>;
-  }
+  const cfg: CounterConfig = { from, to, at, span, easingFn, format, reducedMotion };
 
-  // Map progress in [at, at+span] to t in [0, 1]
-  const rawT = span > 0 ? (progress - at) / span : progress >= at ? 1 : 0;
-  const t = clamp(rawT, 0, 1);
-  const easedT = easingFn(t);
-  let value = lerp(from, to, easedT);
+  const controlled = progressProp != null;
+  const initialProgress = controlled ? progressProp : pv ? pv.get() : 0;
+  const initialText = computeCounterText(initialProgress, cfg);
 
-  // Round to integer if both from and to are integers
-  if (isInteger(from) && isInteger(to)) {
-    value = Math.round(value);
-  }
+  // Imperative fast path: write textContent directly, no re-render per frame.
+  useEffect(() => {
+    if (controlled || !pv) return;
+    const el = spanRef.current;
+    if (!el) return;
+    const apply = (p: number) => {
+      el.textContent = computeCounterText(p, cfg);
+    };
+    apply(pv.get());
+    return pv.on(apply);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pv, controlled, reducedMotion, from, to, at, span, easing, format]);
 
-  return <span className={className}>{format(value)}</span>;
+  return (
+    <span ref={spanRef} className={className}>
+      {initialText}
+    </span>
+  );
 }

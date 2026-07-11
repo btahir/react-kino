@@ -12,6 +12,25 @@ vi.mock("@react-kino/core", () => ({
   },
   calcSceneProgress: vi.fn(() => 0),
   parseDuration: vi.fn(() => 1600),
+  ProgressValue: class MockProgressValue {
+    private v: number;
+    private l = new Set<(n: number) => void>();
+    constructor(initial = 0) {
+      this.v = initial;
+    }
+    get() {
+      return this.v;
+    }
+    set(n: number) {
+      if (n === this.v) return;
+      this.v = n;
+      this.l.forEach((fn) => fn(n));
+    }
+    on(fn: (n: number) => void) {
+      this.l.add(fn);
+      return () => this.l.delete(fn);
+    }
+  },
 }));
 
 describe("Scene", () => {

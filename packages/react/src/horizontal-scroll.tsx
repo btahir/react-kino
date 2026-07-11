@@ -1,15 +1,13 @@
 "use client";
 import React, {
   Children,
-  useEffect,
   useRef,
-  useState,
   type CSSProperties,
   type ReactNode,
 } from "react";
 import { calcSceneProgress } from "@react-kino/core";
-import { useIsClient } from "./hooks/use-is-client";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
+import { useGatedScroll } from "./hooks/use-gated-scroll";
 import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface HorizontalScrollProps {
@@ -47,42 +45,42 @@ export function HorizontalScroll({
 }: HorizontalScrollProps) {
   const spacerRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
-  const [translateX, setTranslateX] = useState(0);
-  const isClient = useIsClient();
   const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
 
   const childCount = Children.count(children);
 
-  useEffect(() => {
-    if (!isClient || !spacerRef.current || reducedMotion) return;
+  // Ref-based fast path: translate the strip imperatively on scroll, no
+  // per-frame re-render. Gated so off-screen sections cost nothing.
+  useGatedScroll({
+    ref: spacerRef,
+    tracker,
+    isOwned,
+    enabled: !reducedMotion,
+    deps: [childCount],
+    compute: ({ scrollY, viewportHeight }) => {
+      const spacer = spacerRef.current;
+      const strip = stripRef.current;
+      if (!spacer || !strip) return;
 
-    const unsub = tracker.subscribe(({ scrollY, viewportHeight }) => {
-      if (!spacerRef.current || !stripRef.current) return;
-
-      const rect = spacerRef.current.getBoundingClientRect();
+      const rect = spacer.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
-      const spacerHeight = spacerRef.current.offsetHeight;
+      const spacerHeight = spacer.offsetHeight;
       const stickyHeight =
-        (spacerRef.current.firstElementChild as HTMLElement | null)?.offsetHeight ??
+        (spacer.firstElementChild as HTMLElement | null)?.offsetHeight ??
         viewportHeight;
       const duration = spacerHeight - stickyHeight;
 
       if (duration <= 0) return;
 
       const progress = calcSceneProgress(scrollY, offsetTop, duration);
-      const totalStripWidth = stripRef.current.scrollWidth;
+      const totalStripWidth = strip.scrollWidth;
       const maxTranslate = totalStripWidth - window.innerWidth;
 
-      setTranslateX(progress * maxTranslate);
-    });
-
-    if (isOwned) tracker.start();
-    return () => {
-      unsub();
-      if (isOwned) tracker.stop();
-    };
-  }, [isClient, childCount, tracker, isOwned, reducedMotion]);
+      strip.style.transform = `translateX(-${progress * maxTranslate}px)`;
+      strip.style.willChange = "transform";
+    },
+  });
 
   // Spacer height: one panel height per child
   const spacerStyle: CSSProperties = {
@@ -99,15 +97,14 @@ export function HorizontalScroll({
   };
 
   // When reduced motion is preferred, render the strip without the
-  // scroll-linked translate (like Parallax does), rather than scroll-jacking
-  // the user horizontally.
+  // scroll-linked translate (like Parallax does).
   const stripStyle: CSSProperties = {
     display: "flex",
     flexDirection: "row",
     height: "100%",
     ...(reducedMotion
       ? {}
-      : { transform: `translateX(-${translateX}px)`, willChange: "transform" }),
+      : { transform: "translateX(-0px)", willChange: "transform" }),
   };
 
   return (
