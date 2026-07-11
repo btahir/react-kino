@@ -20,22 +20,39 @@ export function useKino(): KinoContextValue {
   return ctx;
 }
 
+/**
+ * Non-throwing variant of {@link useKino}. Returns `null` instead of
+ * throwing when used outside a `<Kino>` provider, so callers can branch on
+ * the result rather than relying on try/catch around a hook call.
+ */
+export function useKinoOptional(): KinoContextValue | null {
+  return useContext(KinoContext);
+}
+
 interface KinoProps {
   children: ReactNode;
 }
 
 export function Kino({ children }: KinoProps) {
-  const trackerRef = useRef<ScrollTracker>(new ScrollTracker());
+  // Lazy init: useRef(new ScrollTracker()) would allocate a tracker on
+  // every render even though only the first one is ever used. Passing a
+  // function to useState-style lazy init isn't available for useRef, so we
+  // guard the assignment instead.
+  const trackerRef = useRef<ScrollTracker | null>(null);
+  if (trackerRef.current === null) {
+    trackerRef.current = new ScrollTracker();
+  }
 
   useEffect(() => {
-    const tracker = trackerRef.current;
+    const tracker = trackerRef.current!;
     tracker.start();
     return () => tracker.stop();
   }, []);
 
   return (
-    <KinoContext.Provider value={{ tracker: trackerRef.current }}>
+    <KinoContext.Provider value={{ tracker: trackerRef.current! }}>
       {children}
     </KinoContext.Provider>
   );
 }
+

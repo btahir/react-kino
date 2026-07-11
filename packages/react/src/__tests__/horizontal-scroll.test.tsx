@@ -41,6 +41,58 @@ describe("HorizontalScroll", () => {
   });
 });
 
+describe("HorizontalScroll reduced motion", () => {
+  it("omits the scroll-linked translate when prefers-reduced-motion is set", () => {
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === "(prefers-reduced-motion: reduce)",
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    const { container } = render(
+      <HorizontalScroll>
+        <Panel>
+          <div>Panel 1</div>
+        </Panel>
+      </HorizontalScroll>
+    );
+
+    const spacer = container.firstElementChild as HTMLElement;
+    const sticky = spacer.firstElementChild as HTMLElement;
+    const strip = sticky.firstElementChild as HTMLElement;
+    expect(strip.style.transform).toBe("");
+
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: originalMatchMedia,
+    });
+  });
+
+  it("applies the scroll-linked translate when reduced motion is not preferred", () => {
+    const { container } = render(
+      <HorizontalScroll>
+        <Panel>
+          <div>Panel 1</div>
+        </Panel>
+      </HorizontalScroll>
+    );
+
+    const spacer = container.firstElementChild as HTMLElement;
+    const sticky = spacer.firstElementChild as HTMLElement;
+    const strip = sticky.firstElementChild as HTMLElement;
+    expect(strip.style.transform).toBe("translateX(-0px)");
+  });
+});
+
 describe("Panel", () => {
   it("renders its children", () => {
     render(

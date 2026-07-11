@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface StickyHeaderProps {
   /** Scroll distance (px) before the header becomes solid. Default: 80 */
@@ -22,15 +23,7 @@ export function StickyHeader({
   style,
 }: StickyHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
+  const reducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const onScroll = () => {

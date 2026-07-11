@@ -107,8 +107,8 @@ importers:
         specifier: ^19
         version: 19.2.4(react@19.2.4)
       react-kino:
-        specifier: ^0.3.1
-        version: 0.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: workspace:^
+        version: link:../../packages/react
     devDependencies:
       '@types/react':
         specifier: ^19
@@ -231,7 +231,7 @@ importers:
         specifier: '>=18.0.0'
         version: 19.2.4(react@19.2.4)
       react-kino:
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../react
     devDependencies:
       '@types/react':
@@ -1534,9 +1534,6 @@ packages:
   '@radix-ui/rect@1.1.1':
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
 
-  '@react-kino/core@0.1.3':
-    resolution: {integrity: sha512-E8+7pCQEqlydiuPlRkWBzEQte7OcHT4ckgCneY8TgtMOTq2vVjnT/xdTTt0s1q2UEifGANUnLBN9ARA7+HyaYg==}
-
   '@remotion/bundler@4.0.242':
     resolution: {integrity: sha512-+NO/DtBAEDVisTQYitbeRBIQ5z1G6VYQIVS8ZfqopRa5RfuhcNrDwZA5nNgA6uz3hHaKjRaT38j7X/BBgKH07Q==}
     peerDependencies:
@@ -1915,6 +1912,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@vitejs/plugin-react@5.1.4':
     resolution: {integrity: sha512-VIcFLdRi/VYRU8OL/puL7QXMYafHmqOnwTZY50U1JPlCNj30PxCMx65c494b1K9be9hX83KVt0+gTEwTWLqToA==}
@@ -3417,12 +3415,6 @@ packages:
 
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
-
-  react-kino@0.3.1:
-    resolution: {integrity: sha512-H6ocBjaN4gv6TeXNEgUnZtavDBvLXCKWFxum47k0hv7RhwL+WGHh2+KO1+o68rbE1NlkrpzEbZSG8GjuV871JA==}
-    peerDependencies:
-      react: '>=18.0.0'
-      react-dom: '>=18.0.0'
 
   react-medium-image-zoom@5.4.1:
     resolution: {integrity: sha512-DD2iZYaCfAwiQGR8AN62r/cDJYoXhezlYJc5HY4TzBUGuGge43CptG0f7m0PEIM72aN6GfpjohvY1yYdtCJB7g==}
@@ -5282,8 +5274,6 @@ snapshots:
       '@types/react-dom': 19.1.11(@types/react@19.1.17)
 
   '@radix-ui/rect@1.1.1': {}
-
-  '@react-kino/core@0.1.3': {}
 
   '@remotion/bundler@4.0.242(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -7583,12 +7573,6 @@ snapshots:
       scheduler: 0.27.0
 
   react-is@17.0.2: {}
-
-  react-kino@0.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
-    dependencies:
-      '@react-kino/core': 0.1.3
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
 
   react-medium-image-zoom@5.4.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:

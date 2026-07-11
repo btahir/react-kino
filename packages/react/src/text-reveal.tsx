@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect, useState, type CSSProperties } from "react";
-import { useSceneContext } from "./scene";
+import React, { type CSSProperties } from "react";
+import { useSceneContextOptional } from "./scene";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 type TextRevealMode = "word" | "char" | "line";
 
-interface TextRevealProps {
+export interface TextRevealProps {
   /** The text to reveal */
   children: string;
   /** Reveal mode: word by word, char by char, or line by line. Default: "word" */
@@ -17,30 +18,17 @@ interface TextRevealProps {
   span?: number;
   /** Color of revealed text. Default: currentColor */
   color?: string;
-  /** Color of unrevealed text. Default: rgba(currentColor, 0.15) */
+  /**
+   * Color of unrevealed text. If unset, unrevealed tokens are dimmed via
+   * `opacity: 0.15` instead (not a color derived from `currentColor`).
+   */
   dimColor?: string;
   className?: string;
 }
 
 function useProgress(propProgress?: number): number {
-  try {
-    const ctx = useSceneContext();
-    return propProgress ?? ctx.progress;
-  } catch {
-    return propProgress ?? 0;
-  }
-}
-
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return reduced;
+  const ctx = useSceneContextOptional();
+  return propProgress ?? ctx?.progress ?? 0;
 }
 
 function splitTokens(text: string, mode: TextRevealMode): string[] {

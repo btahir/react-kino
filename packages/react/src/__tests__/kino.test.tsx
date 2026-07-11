@@ -1,10 +1,19 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import { Kino, useKino } from "../kino";
+import { render, screen, cleanup } from "@testing-library/react";
+import { Kino, useKino, useKinoOptional } from "../kino";
+
+afterEach(() => {
+  cleanup();
+});
+
+let constructorCalls = 0;
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    constructor() {
+      constructorCalls++;
+    }
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();
@@ -43,5 +52,50 @@ describe("Kino", () => {
     }
 
     expect(() => render(<BadConsumer />)).toThrow("<Kino> provider is required");
+  });
+
+  it("useKinoOptional returns null outside of Kino provider", () => {
+    function Consumer() {
+      const ctx = useKinoOptional();
+      return <div data-testid="ctx">{ctx === null ? "null" : "has-value"}</div>;
+    }
+
+    render(<Consumer />);
+    expect(screen.getByTestId("ctx").textContent).toBe("null");
+  });
+
+  it("useKinoOptional returns the context value inside a Kino provider", () => {
+    function Consumer() {
+      const ctx = useKinoOptional();
+      return <div data-testid="ctx">{ctx ? "has-value" : "null"}</div>;
+    }
+
+    render(
+      <Kino>
+        <Consumer />
+      </Kino>
+    );
+    expect(screen.getByTestId("ctx").textContent).toBe("has-value");
+  });
+
+  it("lazily creates exactly one ScrollTracker instance, not one per render", () => {
+    constructorCalls = 0;
+    const { rerender } = render(
+      <Kino>
+        <div>child</div>
+      </Kino>
+    );
+    rerender(
+      <Kino>
+        <div>child again</div>
+      </Kino>
+    );
+    rerender(
+      <Kino>
+        <div>child once more</div>
+      </Kino>
+    );
+
+    expect(constructorCalls).toBe(1);
   });
 });

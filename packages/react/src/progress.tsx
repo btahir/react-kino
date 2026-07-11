@@ -5,7 +5,7 @@ import { useScrollProgress } from "./hooks/use-scroll-progress";
 type ProgressType = "bar" | "dots" | "ring";
 type ProgressPosition = "top" | "bottom" | "left" | "right";
 
-interface ProgressProps {
+export interface ProgressProps {
   type?: ProgressType;
   position?: ProgressPosition;
   /** Color of the progress indicator */
@@ -47,10 +47,12 @@ function BarProgress({
   const fillStyle: CSSProperties = {
     backgroundColor: color,
     transition: "width 100ms linear, height 100ms linear",
+    // Vertical bars (position "left"/"right") always fill top-to-bottom,
+    // matching the natural reading direction of scroll progress — there's
+    // no separate "start" side to anchor from for a vertical track.
     ...(isHorizontal
       ? { height: "100%", width: `${progress * 100}%` }
       : { width: "100%", height: `${progress * 100}%` }),
-    ...(!isHorizontal && position === "right" ? {} : {}),
   };
 
   return (

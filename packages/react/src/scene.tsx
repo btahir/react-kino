@@ -24,9 +24,18 @@ export function useSceneContext(): SceneContextValue {
   return ctx;
 }
 
+/**
+ * Non-throwing variant of {@link useSceneContext}. Returns `null` instead of
+ * throwing when used outside a `<Scene>`, so callers can branch on the
+ * result rather than relying on try/catch around a hook call.
+ */
+export function useSceneContextOptional(): SceneContextValue | null {
+  return useContext(SceneContext);
+}
+
 type SceneChildren = ReactNode | ((progress: number) => ReactNode);
 
-interface SceneProps {
+export interface SceneProps {
   /** Scroll distance this scene spans, e.g. "200vh" or "1500px" */
   duration: string;
   /** Whether to pin (sticky) the inner content. Default: true */
@@ -45,23 +54,31 @@ export function Scene({
 }: SceneProps) {
   const spacerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const isClient = useIsClient();
   const { tracker, isOwned } = useScrollTracker();
 
   useEffect(() => {
     if (!isClient) return;
 
-    const viewportHeight = window.innerHeight;
-    const durationPx = parseDuration(duration, viewportHeight);
+    // Set the initial viewport height immediately; further updates (incl.
+    // on resize) arrive via the tracker subscription below.
+    setViewportHeight(window.innerHeight);
 
-    const unsub = tracker.subscribe(({ scrollY }) => {
+    const unsub = tracker.subscribe(({ scrollY, viewportHeight: vh }) => {
+      // Re-derive viewport/duration from the freshly emitted value on every
+      // tick instead of closing over the value captured when the effect
+      // ran, so a window resize (incl. mobile URL-bar show/hide) keeps
+      // progress and the spacer height correct.
+      setViewportHeight(vh);
       if (!spacerRef.current) return;
       const rect = spacerRef.current.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
+      const durationPx = parseDuration(duration, vh);
       // Use effective duration (spacer - viewport) so progress 0→1
       // maps exactly to the time the sticky content is pinned on screen.
       // Without this, progress outruns the sticky and animations complete off-screen.
-      const effectiveDuration = pin ? Math.max(1, durationPx - viewportHeight) : durationPx;
+      const effectiveDuration = pin ? Math.max(1, durationPx - vh) : durationPx;
       setProgress(calcSceneProgress(scrollY, offsetTop, effectiveDuration));
     });
 
@@ -72,7 +89,6 @@ export function Scene({
     };
   }, [isClient, duration, pin, tracker, isOwned]);
 
-  const viewportHeight = isClient ? window.innerHeight : 0;
   const durationPx = isClient ? parseDuration(duration, viewportHeight) : 0;
 
   const spacerStyle: CSSProperties = {

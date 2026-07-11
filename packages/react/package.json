@@ -1,6 +1,6 @@
 {
   "name": "react-kino",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Cinematic scroll-driven storytelling components for React",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -10,7 +10,8 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"

@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState, type ReactNode, type CSSProperties } from "react";
-import { lerp, clamp, EASINGS, type EasingFn } from "@react-kino/core";
-import { useSceneContext } from "./scene";
+import React, { type ReactNode, type CSSProperties } from "react";
+import { lerp, clamp, EASINGS, type EasingFn, type EasingName } from "@react-kino/core";
+import { useSceneContextOptional } from "./scene";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 export interface TransformState {
   /** translateX (px) */
@@ -40,7 +41,7 @@ export interface ScrollTransformProps {
   /** How much of the progress range the transform spans */
   span?: number;
   /** Easing preset name or custom function */
-  easing?: string | ((t: number) => number);
+  easing?: EasingName | EasingFn;
   /** Perspective in px, prepended to the transform string */
   perspective?: number;
   /** CSS transform-origin */
@@ -53,27 +54,11 @@ export interface ScrollTransformProps {
 }
 
 function useProgress(propProgress?: number): number {
-  try {
-    const ctx = useSceneContext();
-    return propProgress ?? ctx.progress;
-  } catch {
-    return propProgress ?? 0;
-  }
+  const ctx = useSceneContextOptional();
+  return propProgress ?? ctx?.progress ?? 0;
 }
 
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return reduced;
-}
-
-function resolveEasing(easing?: string | EasingFn): EasingFn {
+function resolveEasing(easing?: EasingName | EasingFn): EasingFn {
   if (typeof easing === "function") return easing;
   if (typeof easing === "string" && EASINGS[easing]) return EASINGS[easing];
   return EASINGS["ease-out"];

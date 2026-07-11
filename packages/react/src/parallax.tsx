@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
-interface ParallaxProps {
+export interface ParallaxProps {
   /** Speed multiplier: 1 = normal scroll, <1 = slower (background), >1 = faster (foreground) */
   speed?: number;
   /** Scroll direction */
@@ -20,16 +21,8 @@ export function Parallax({
   style,
 }: ParallaxProps) {
   const [offset, setOffset] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
-
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
 
   useEffect(() => {
     if (reducedMotion) return;

@@ -42,7 +42,20 @@ export function easeInOutQuart(t: number): number {
   return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 }
 
-export const EASINGS: Record<string, EasingFn> = {
+/** Names of all built-in easing presets. */
+export type EasingName =
+  | "linear"
+  | "ease-in"
+  | "ease-out"
+  | "ease-in-out"
+  | "ease-in-cubic"
+  | "ease-out-cubic"
+  | "ease-in-out-cubic"
+  | "ease-in-quart"
+  | "ease-out-quart"
+  | "ease-in-out-quart";
+
+export const EASINGS: Record<EasingName, EasingFn> = {
   linear,
   "ease-in": easeIn,
   "ease-out": easeOut,

@@ -1,15 +1,14 @@
 "use client";
 import React, {
   useCallback,
-  useEffect,
   useRef,
   useState,
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { useSceneContext } from "./scene";
+import { useSceneContextOptional } from "./scene";
 
-interface CompareSliderProps {
+export interface CompareSliderProps {
   before: ReactNode;
   after: ReactNode;
   /** If true, slider follows scroll progress (0-1) instead of drag */
@@ -18,17 +17,18 @@ interface CompareSliderProps {
   progress?: number;
   /** Initial slider position 0-1 (default: 0.5) */
   initialPosition?: number;
+  /** Accessible label for the drag handle. Default: "Comparison slider" */
+  ariaLabel?: string;
   className?: string;
 }
 
 function useProgress(propProgress?: number): number | null {
-  try {
-    const ctx = useSceneContext();
-    return propProgress ?? ctx.progress;
-  } catch {
-    return propProgress ?? null;
-  }
+  const ctx = useSceneContextOptional();
+  return propProgress ?? ctx?.progress ?? null;
 }
+
+/** Step (0-1) applied per arrow-key press when adjusting the handle. */
+const KEYBOARD_STEP = 0.05;
 
 export function CompareSlider({
   before,
@@ -36,6 +36,7 @@ export function CompareSlider({
   scrollDriven = false,
   progress: progressProp,
   initialPosition = 0.5,
+  ariaLabel = "Comparison slider",
   className,
 }: CompareSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -71,6 +72,38 @@ export function CompareSlider({
   const handlePointerUp = useCallback(() => {
     setIsDragging(false);
   }, []);
+
+  const handlePointerCancel = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (scrollDriven) return;
+
+      let next: number | null = null;
+      switch (e.key) {
+        case "ArrowLeft":
+          next = Math.max(0, dragPosition - KEYBOARD_STEP);
+          break;
+        case "ArrowRight":
+          next = Math.min(1, dragPosition + KEYBOARD_STEP);
+          break;
+        case "Home":
+          next = 0;
+          break;
+        case "End":
+          next = 1;
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+      setDragPosition(next);
+    },
+    [scrollDriven, dragPosition]
+  );
 
   const rightClip = 100 - position * 100;
 
@@ -144,6 +177,7 @@ export function CompareSlider({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
     >
       {/* Before layer — position relative so it establishes container height */}
       <div style={{ ...layerStyle, position: "relative" }}>{before}</div>
@@ -152,7 +186,18 @@ export function CompareSlider({
       <div style={afterStyle}>{after}</div>
 
       {/* Handle */}
-      <div style={handleContainerStyle}>
+      <div
+        style={{ ...handleContainerStyle, pointerEvents: scrollDriven ? "none" : "auto" }}
+        role="slider"
+        aria-label={ariaLabel}
+        aria-valuenow={Math.round(position * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-orientation="horizontal"
+        aria-disabled={scrollDriven || undefined}
+        tabIndex={scrollDriven ? -1 : 0}
+        onKeyDown={handleKeyDown}
+      >
         <div style={lineStyle} />
         <div style={circleStyle}>
           <span style={arrowStyle}>&#x25C0;&#x25B6;</span>

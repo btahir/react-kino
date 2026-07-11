@@ -37,7 +37,10 @@ import { CompareSlider } from "react-kino";
 | `scrollDriven` | `boolean` | `false` | If `true`, slider position follows scroll progress instead of drag |
 | `progress` | `number` | -- | Progress override (0-1). When `scrollDriven`, defaults to parent `<Scene>` context |
 | `initialPosition` | `number` | `0.5` | Initial slider position (0-1) in drag mode |
+| `ariaLabel` | `string` | `"Comparison slider"` | Accessible label for the drag handle (`role="slider"`) |
 | `className` | `string` | -- | CSS class for the container |
+
+The handle exposes `role="slider"` with `aria-valuenow`/`aria-valuemin`/`aria-valuemax`, and supports keyboard control (`ArrowLeft`/`ArrowRight` to nudge, `Home`/`End` to jump to the ends) when not `scrollDriven`.
 
 ## Example: Scroll-driven comparison
 

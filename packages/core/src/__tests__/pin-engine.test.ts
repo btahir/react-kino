@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { calcSceneProgress, parseDuration, isSceneActive } from "../pin-engine";
 
 describe("calcSceneProgress", () => {
@@ -64,6 +64,41 @@ describe("parseDuration", () => {
   it("handles decimal values", () => {
     expect(parseDuration("2.5vh", 1000)).toBe(25);
     expect(parseDuration("150.5px", 800)).toBe(150.5);
+  });
+
+  describe("dev warning on invalid input", () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+      vi.restoreAllMocks();
+    });
+
+    it("warns in development when duration is unparseable", () => {
+      vi.stubEnv("NODE_ENV", "development");
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      expect(parseDuration("abc", 800)).toBe(0);
+
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy.mock.calls[0][0]).toContain("parseDuration");
+    });
+
+    it("does not warn in production when duration is unparseable", () => {
+      vi.stubEnv("NODE_ENV", "production");
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      expect(parseDuration("abc", 800)).toBe(0);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it("does not warn for valid input", () => {
+      vi.stubEnv("NODE_ENV", "development");
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      expect(parseDuration("200vh", 800)).toBe(1600);
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
   });
 });
 

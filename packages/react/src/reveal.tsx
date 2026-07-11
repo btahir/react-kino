@@ -1,17 +1,11 @@
 "use client";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
-import { useSceneContext } from "./scene";
+import React, { type CSSProperties, type ReactNode } from "react";
+import { useSceneContextOptional } from "./scene";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
 type RevealAnimation = "fade" | "fade-up" | "fade-down" | "scale" | "blur";
 
-interface RevealProps {
+export interface RevealProps {
   /** Progress value (0-1) when animation triggers */
   at?: number;
   /** Animation preset */
@@ -43,24 +37,8 @@ const VISIBLE_STYLES: Record<RevealAnimation, CSSProperties> = {
 };
 
 function useProgress(propProgress?: number): number {
-  try {
-    const ctx = useSceneContext();
-    return propProgress ?? ctx.progress;
-  } catch {
-    return propProgress ?? 0;
-  }
-}
-
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return reduced;
+  const ctx = useSceneContextOptional();
+  return propProgress ?? ctx?.progress ?? 0;
 }
 
 export function Reveal({

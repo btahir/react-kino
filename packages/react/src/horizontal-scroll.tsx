@@ -10,15 +10,16 @@ import React, {
 import { calcSceneProgress } from "@react-kino/core";
 import { useIsClient } from "./hooks/use-is-client";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
-interface HorizontalScrollProps {
+export interface HorizontalScrollProps {
   children: ReactNode;
   className?: string;
   /** Height of each panel as CSS string (default: "100vh") */
   panelHeight?: string;
 }
 
-interface PanelProps {
+export interface PanelProps {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
@@ -48,12 +49,13 @@ export function HorizontalScroll({
   const stripRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState(0);
   const isClient = useIsClient();
+  const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
 
   const childCount = Children.count(children);
 
   useEffect(() => {
-    if (!isClient || !spacerRef.current) return;
+    if (!isClient || !spacerRef.current || reducedMotion) return;
 
     const unsub = tracker.subscribe(({ scrollY, viewportHeight }) => {
       if (!spacerRef.current || !stripRef.current) return;
@@ -80,7 +82,7 @@ export function HorizontalScroll({
       unsub();
       if (isOwned) tracker.stop();
     };
-  }, [isClient, childCount, tracker, isOwned]);
+  }, [isClient, childCount, tracker, isOwned, reducedMotion]);
 
   // Spacer height: one panel height per child
   const spacerStyle: CSSProperties = {
@@ -96,12 +98,16 @@ export function HorizontalScroll({
     overflow: "hidden",
   };
 
+  // When reduced motion is preferred, render the strip without the
+  // scroll-linked translate (like Parallax does), rather than scroll-jacking
+  // the user horizontally.
   const stripStyle: CSSProperties = {
     display: "flex",
     flexDirection: "row",
     height: "100%",
-    transform: `translateX(-${translateX}px)`,
-    willChange: "transform",
+    ...(reducedMotion
+      ? {}
+      : { transform: `translateX(-${translateX}px)`, willChange: "transform" }),
   };
 
   return (

@@ -42,7 +42,25 @@ export function parseDuration(
     return (num / 100) * viewportHeight;
   }
 
+  if (isDev()) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[react-kino] parseDuration: could not parse duration "${duration}", falling back to 0.`
+    );
+  }
+
   return 0;
+}
+
+/**
+ * Best-effort dev-mode check that doesn't require Node.js types, since
+ * `@react-kino/core` has zero runtime dependencies and may run in
+ * non-Node environments (browser, edge runtimes, etc.).
+ */
+function isDev(): boolean {
+  const proc = (globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process;
+  return proc?.env?.NODE_ENV !== "production";
 }
 
 /**

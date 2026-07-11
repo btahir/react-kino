@@ -1,6 +1,6 @@
 {
   "name": "@react-kino/templates",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Pre-built full-page scroll experience templates for react-kino",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -40,7 +40,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "react-kino": "workspace:*"
+    "react-kino": "workspace:^"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

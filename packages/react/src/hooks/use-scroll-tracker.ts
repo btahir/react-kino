@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { ScrollTracker } from "@react-kino/core";
-import { useKino } from "../kino";
+import { useKinoOptional } from "../kino";
 
 interface ScrollTrackerHandle {
   tracker: ScrollTracker;
@@ -14,14 +14,14 @@ interface ScrollTrackerHandle {
  */
 export function useScrollTracker(): ScrollTrackerHandle {
   const fallbackRef = useRef<ScrollTracker | null>(null);
+  const kino = useKinoOptional();
 
-  try {
-    const { tracker } = useKino();
-    return { tracker, isOwned: false };
-  } catch {
-    if (!fallbackRef.current) {
-      fallbackRef.current = new ScrollTracker();
-    }
-    return { tracker: fallbackRef.current, isOwned: true };
+  if (kino) {
+    return { tracker: kino.tracker, isOwned: false };
   }
+
+  if (!fallbackRef.current) {
+    fallbackRef.current = new ScrollTracker();
+  }
+  return { tracker: fallbackRef.current, isOwned: true };
 }

@@ -11,6 +11,7 @@ import {
   easeOutQuart,
   easeInOutQuart,
   EASINGS,
+  type EasingName,
 } from "../easing";
 
 const easingFns = [
@@ -59,7 +60,7 @@ describe("easing functions", () => {
 
 describe("EASINGS lookup", () => {
   it("contains all expected keys", () => {
-    const expectedKeys = [
+    const expectedKeys: EasingName[] = [
       "linear",
       "ease-in",
       "ease-out",
@@ -79,5 +80,25 @@ describe("EASINGS lookup", () => {
 
   it("has no extra keys", () => {
     expect(Object.keys(EASINGS)).toHaveLength(10);
+  });
+
+  it("EasingName is a valid key of EASINGS for every entry (type-level check)", () => {
+    // This is primarily a compile-time assertion: if EasingName drifts from
+    // the actual EASINGS keys, this file fails `pnpm typecheck`.
+    const names: EasingName[] = [
+      "linear",
+      "ease-in",
+      "ease-out",
+      "ease-in-out",
+      "ease-in-cubic",
+      "ease-out-cubic",
+      "ease-in-out-cubic",
+      "ease-in-quart",
+      "ease-out-quart",
+      "ease-in-out-quart",
+    ];
+    for (const name of names) {
+      expect(typeof EASINGS[name]).toBe("function");
+    }
   });
 });

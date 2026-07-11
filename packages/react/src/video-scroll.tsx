@@ -9,8 +9,9 @@ import React, {
 import { calcSceneProgress, parseDuration } from "@react-kino/core";
 import { useIsClient } from "./hooks/use-is-client";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 
-interface VideoScrollProps {
+export interface VideoScrollProps {
   /** URL of the video file (MP4 recommended, no audio needed) */
   src: string;
   /** Scroll distance. Default: "300vh" */
@@ -24,18 +25,6 @@ interface VideoScrollProps {
   poster?: string;
 }
 
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return reduced;
-}
-
 export function VideoScroll({
   src,
   duration = "300vh",
@@ -47,6 +36,7 @@ export function VideoScroll({
   const spacerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
   const isClient = useIsClient();
   const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
@@ -54,14 +44,18 @@ export function VideoScroll({
   useEffect(() => {
     if (!isClient) return;
 
-    const viewportHeight = window.innerHeight;
-    const durationPx = parseDuration(duration, viewportHeight);
+    setViewportHeight(window.innerHeight);
 
-    const unsub = tracker.subscribe(({ scrollY }) => {
+    const unsub = tracker.subscribe(({ scrollY, viewportHeight: vh }) => {
+      // Re-derive from the freshly emitted viewport height on every tick
+      // (rather than a value captured when the effect ran) so a window
+      // resize keeps progress and the spacer height correct.
+      setViewportHeight(vh);
       if (!spacerRef.current) return;
       const rect = spacerRef.current.getBoundingClientRect();
       const offsetTop = rect.top + scrollY;
-      const effectiveDuration = pin ? Math.max(1, durationPx - viewportHeight) : durationPx;
+      const durationPx = parseDuration(duration, vh);
+      const effectiveDuration = pin ? Math.max(1, durationPx - vh) : durationPx;
       setProgress(calcSceneProgress(scrollY, offsetTop, effectiveDuration));
     });
 
@@ -83,7 +77,25 @@ export function VideoScroll({
     video.currentTime = progress * dur;
   }, [progress, isClient, reducedMotion]);
 
-  const viewportHeight = isClient ? window.innerHeight : 0;
+  // The scrub effect above bails out when `video.duration` isn't known yet
+  // (NaN/0 before metadata loads), and never re-runs once it becomes
+  // available since `progress` may not change afterwards. Listen for
+  // `loadedmetadata` so the video seeks to the correct frame as soon as its
+  // duration is known, fixing first-frame sync on slow-loading videos.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isClient || reducedMotion) return;
+
+    const handleLoadedMetadata = () => {
+      const dur = video.duration;
+      if (!isFinite(dur) || dur === 0) return;
+      video.currentTime = progress * dur;
+    };
+
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    return () => video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+  }, [isClient, reducedMotion, progress]);
+
   const durationPx = isClient ? parseDuration(duration, viewportHeight) : 0;
 
   const spacerStyle: CSSProperties = {

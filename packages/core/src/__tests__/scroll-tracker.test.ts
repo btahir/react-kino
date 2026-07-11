@@ -27,6 +27,7 @@ beforeEach(() => {
 
   // Reset mocks
   mockWindow.scrollY = 0;
+  mockWindow.innerHeight = 768;
   mockWindow.addEventListener.mockClear();
   mockWindow.removeEventListener.mockClear();
 });
@@ -106,7 +107,8 @@ describe("ScrollTracker", () => {
     const tracker = new ScrollTracker();
     tracker.start();
     tracker.start();
-    expect(mockWindow.addEventListener).toHaveBeenCalledTimes(1);
+    // scroll + resize listeners added once, second start() is a no-op
+    expect(mockWindow.addEventListener).toHaveBeenCalledTimes(2);
     tracker.stop();
   });
 
@@ -115,7 +117,8 @@ describe("ScrollTracker", () => {
     tracker.start();
     tracker.stop();
     tracker.stop();
-    expect(mockWindow.removeEventListener).toHaveBeenCalledTimes(1);
+    // scroll + resize listeners removed once, second stop() is a no-op
+    expect(mockWindow.removeEventListener).toHaveBeenCalledTimes(2);
   });
 
   it("emits ProgressData with correct shape", () => {
@@ -139,5 +142,92 @@ describe("ScrollTracker", () => {
     expect(data.progress).toBeGreaterThanOrEqual(0);
     expect(data.progress).toBeLessThanOrEqual(1);
     tracker.stop();
+  });
+
+  describe("resize handling", () => {
+    it("adds a resize listener on start()", () => {
+      const tracker = new ScrollTracker();
+      tracker.start();
+      expect(mockWindow.addEventListener).toHaveBeenCalledWith(
+        "resize",
+        expect.any(Function),
+        { passive: true }
+      );
+      tracker.stop();
+    });
+
+    it("removes the resize listener on stop()", () => {
+      const tracker = new ScrollTracker();
+      tracker.start();
+      tracker.stop();
+      expect(mockWindow.removeEventListener).toHaveBeenCalledWith(
+        "resize",
+        expect.any(Function)
+      );
+    });
+
+    it("re-emits on resize even when scrollY is unchanged (debounced)", async () => {
+      vi.useFakeTimers();
+      try {
+        const tracker = new ScrollTracker();
+        const callback = vi.fn();
+        tracker.subscribe(callback);
+        tracker.start();
+        expect(callback).toHaveBeenCalledTimes(1);
+
+        // Grab the resize handler registered with addEventListener
+        const resizeCall = mockWindow.addEventListener.mock.calls.find(
+          (call) => call[0] === "resize"
+        );
+        expect(resizeCall).toBeTruthy();
+        const resizeHandler = resizeCall![1] as () => void;
+
+        // Simulate a viewport height change (e.g. mobile URL bar) with no
+        // scroll position change.
+        mockWindow.innerHeight = 600;
+        resizeHandler();
+
+        // Should be debounced — not emitted immediately.
+        expect(callback).toHaveBeenCalledTimes(1);
+
+        vi.advanceTimersByTime(150);
+
+        expect(callback).toHaveBeenCalledTimes(2);
+        const lastCall = callback.mock.calls[1][0];
+        expect(lastCall.viewportHeight).toBe(600);
+
+        tracker.stop();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("coalesces bursts of resize events into a single emit", () => {
+      vi.useFakeTimers();
+      try {
+        const tracker = new ScrollTracker();
+        const callback = vi.fn();
+        tracker.subscribe(callback);
+        tracker.start();
+        expect(callback).toHaveBeenCalledTimes(1);
+
+        const resizeCall = mockWindow.addEventListener.mock.calls.find(
+          (call) => call[0] === "resize"
+        );
+        const resizeHandler = resizeCall![1] as () => void;
+
+        resizeHandler();
+        vi.advanceTimersByTime(50);
+        resizeHandler();
+        vi.advanceTimersByTime(50);
+        resizeHandler();
+        vi.advanceTimersByTime(150);
+
+        expect(callback).toHaveBeenCalledTimes(2);
+        tracker.stop();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 });

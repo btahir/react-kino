@@ -1,18 +1,22 @@
 import { describe, it, expect, vi } from "vitest";
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent, act } from "@testing-library/react";
 import { VideoScroll } from "../video-scroll";
+
+let capturedSubscriber: ((data: { scrollY: number; viewportHeight: number }) => void) | null =
+  null;
 
 // Mock @react-kino/core to avoid real scroll tracking in tests
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class {
-    subscribe() {
+    subscribe(cb: (data: { scrollY: number; viewportHeight: number }) => void) {
+      capturedSubscriber = cb;
       return () => {};
     }
     start() {}
     stop() {}
   },
-  calcSceneProgress: vi.fn(() => 0),
+  calcSceneProgress: vi.fn(() => 0.5),
   parseDuration: vi.fn(() => 2400),
 }));
 
@@ -72,5 +76,87 @@ describe("VideoScroll", () => {
     );
     const spacer = container.firstElementChild as HTMLElement;
     expect(spacer.className).toBe("custom-video");
+  });
+
+  it("seeks to progress * duration once video metadata loads", () => {
+    capturedSubscriber = null;
+    const { container } = render(<VideoScroll src="/test-video.mp4" />);
+    const video = container.querySelector("video") as HTMLVideoElement;
+
+    // Make currentTime a plain read/write property so we can observe the
+    // seek — jsdom's real HTMLMediaElement implementation doesn't persist it.
+    let currentTimeValue = 0;
+    Object.defineProperty(video, "currentTime", {
+      get: () => currentTimeValue,
+      set: (v: number) => {
+        currentTimeValue = v;
+      },
+      configurable: true,
+    });
+    Object.defineProperty(video, "duration", {
+      value: 10,
+      configurable: true,
+    });
+
+    // Drive progress to 0.5 via the (mocked) scroll tracker subscription,
+    // as the real ScrollTracker would on scroll/resize.
+    act(() => {
+      capturedSubscriber?.({ scrollY: 100, viewportHeight: 800 });
+    });
+
+    // The scrub effect runs first, but bails out because duration was
+    // NaN/0 when it last ran (before we defined it above / before
+    // metadata "loaded"). Firing loadedmetadata should sync the video to
+    // the current progress.
+    fireEvent(video, new Event("loadedmetadata"));
+
+    expect(video.currentTime).toBeCloseTo(5);
+  });
+
+  it("does not seek on loadedmetadata when reduced motion is preferred", () => {
+    capturedSubscriber = null;
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === "(prefers-reduced-motion: reduce)",
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    const { container } = render(<VideoScroll src="/test-video.mp4" />);
+    const video = container.querySelector("video") as HTMLVideoElement;
+
+    let currentTimeValue = 0;
+    Object.defineProperty(video, "currentTime", {
+      get: () => currentTimeValue,
+      set: (v: number) => {
+        currentTimeValue = v;
+      },
+      configurable: true,
+    });
+    Object.defineProperty(video, "duration", {
+      value: 10,
+      configurable: true,
+    });
+
+    act(() => {
+      capturedSubscriber?.({ scrollY: 100, viewportHeight: 800 });
+    });
+
+    fireEvent(video, new Event("loadedmetadata"));
+
+    expect(video.currentTime).toBe(0);
+
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: originalMatchMedia,
+    });
   });
 });
