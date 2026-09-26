@@ -1,0 +1,438 @@
+.kino-landing {
+  background: #f2eee5;
+  color: #203d33;
+  font:
+    16px/1.55 system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.kino-landing * {
+  box-sizing: border-box;
+}
+.kino-landing a {
+  text-decoration: none;
+}
+.kino-landing a:focus-visible {
+  outline: 3px solid #c77043;
+  outline-offset: 5px;
+}
+.kl-nav {
+  max-width: 1400px;
+  margin: auto;
+  padding: 25px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #d8dcd0;
+  gap: 24px;
+}
+.kl-logo {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: 1;
+}
+.kl-logo span {
+  font-size: 10px;
+  vertical-align: top;
+  letter-spacing: 0;
+  margin-left: 4px;
+  line-height: 2;
+}
+.kl-nav > div {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.kl-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  background: #264d3f;
+  color: #f8f3e7 !important;
+  padding: 16px 22px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.kl-button:hover {
+  background: #35664f;
+}
+.kl-button-small {
+  padding: 11px 16px;
+  font-size: 12px;
+}
+.kl-hero {
+  text-align: center;
+  padding: 90px 24px 60px;
+}
+.kl-kicker {
+  font:
+    10px/1.5 ui-monospace,
+    monospace;
+  letter-spacing: 0.15em;
+  font-weight: 500;
+}
+.kl-hero .kl-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+.kl-kicker > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #9c5737;
+}
+.kl-hero h1,
+.kl-final h2 {
+  font-size: clamp(44px, 6.8vw, 94px);
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+  font-weight: 500;
+  margin: 28px 0;
+}
+.kl-hero em,
+.kl-final em {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: #597061;
+}
+.kl-hero > p {
+  font-size: clamp(15px, 1.7vw, 19px);
+  line-height: 1.65;
+  color: #637367;
+}
+.kl-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  margin: 28px 0 24px;
+  font-size: 13px;
+}
+.kl-install {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 10px;
+  color: #6f786d;
+}
+.kl-install code {
+  font-size: 12px;
+  color: #284b3d;
+}
+.kl-canvas-wrap {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 36px;
+}
+.kl-live {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #1b2927;
+  box-shadow: 0 24px 70px #24453622;
+  border: 1px solid #334d43;
+}
+.kl-live-header,
+.kl-scrub {
+  padding: 15px 24px;
+  color: #bfcfbd;
+  font:
+    10px ui-monospace,
+    monospace;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #47645655;
+}
+.kl-live [data-kino-story] h2 {
+  max-width: 13ch;
+}
+.kl-live [data-kino-story] [data-kino-content] > div {
+  padding-top: 42px !important;
+  padding-bottom: 38px !important;
+}
+.kl-scrub {
+  gap: 24px;
+  border-top: 1px solid #47645655;
+  border-bottom: 0;
+}
+.kl-scrub input {
+  flex: 1;
+  accent-color: #c6d4b4;
+  min-width: 40px;
+}
+.kl-caption {
+  font:
+    10px ui-monospace,
+    monospace;
+  color: #69786d;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+  gap: 16px;
+}
+.kl-workflow,
+.kl-principles {
+  max-width: 1220px;
+  margin: auto;
+  padding: 120px 36px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+}
+.kl-workflow h2,
+.kl-section-title h2,
+.kl-principles h2 {
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+  font-weight: 500;
+  margin: 22px 0;
+}
+.kl-workflow ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.kl-workflow li {
+  display: flex;
+  gap: 24px;
+  padding: 0 0 26px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #d8dcd0;
+}
+.kl-workflow li > span {
+  font:
+    11px ui-monospace,
+    monospace;
+  color: #8a6951;
+  padding-top: 5px;
+}
+.kl-workflow h3,
+.kl-recipe h3 {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+.kl-workflow p,
+.kl-recipe p {
+  font-size: 13px;
+  color: #69776d;
+  margin: 0;
+  line-height: 1.7;
+}
+.kl-recipes {
+  padding: 85px max(36px, calc((100vw - 1148px) / 2));
+  background: #e5e8db;
+  border-top: 1px solid #d8dcd0;
+  border-bottom: 1px solid #d8dcd0;
+}
+.kl-section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 28px;
+}
+.kl-section-title > a {
+  font-size: 12px;
+}
+.kl-recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px 24px;
+}
+.kl-recipe-art {
+  height: 215px;
+  border-radius: 7px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  background: #25483e;
+  color: #f5f0e2;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.kl-recipe-art > span {
+  font:
+    10px ui-monospace,
+    monospace;
+  opacity: 0.7;
+}
+.kl-recipe-art > strong {
+  font-family: Georgia, serif;
+  font-size: 31px;
+  font-weight: 400;
+  max-width: 160px;
+  line-height: 1.05;
+  z-index: 1;
+}
+.kl-recipe-art > i {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  font-style: normal;
+}
+.kl-recipe-art:after {
+  content: "";
+  position: absolute;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 30px solid #b8c3a526;
+  right: -45px;
+  top: 0;
+  transform: rotate(35deg);
+}
+.kl-art-1 {
+  background: #a46e4a;
+}
+.kl-art-2 {
+  background: #bbbda9;
+  color: #29493c;
+}
+.kl-art-3 {
+  background: #555f69;
+}
+.kl-art-4 {
+  background: #786766;
+}
+.kl-art-5 {
+  background: #343e33;
+}
+.kl-recipe:hover .kl-recipe-art {
+  transform: translateY(-3px);
+}
+.kl-principles {
+  align-items: center;
+}
+.kl-principles p {
+  font-size: 16px;
+  color: #637367;
+  line-height: 1.8;
+  margin: 0 0 22px;
+}
+.kl-principles a {
+  font-size: 13px;
+}
+.kl-final {
+  text-align: center;
+  padding: 70px 24px 110px;
+}
+.kl-final h2 {
+  font-size: clamp(48px, 7vw, 88px);
+  margin: 24px 0 35px;
+}
+.kl-footer {
+  border-top: 1px solid #d8dcd0;
+  padding: 36px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 11px;
+}
+.kl-footer .kl-logo {
+  font-size: 30px;
+}
+.kl-footer p {
+  color: #6b786b;
+}
+.kl-footer > div {
+  display: flex;
+  gap: 22px;
+}
+@media (max-width: 760px) {
+  .kl-nav {
+    padding: 20px;
+  }
+  .kl-nav > div {
+    gap: 16px;
+  }
+  .kl-nav > div > a:nth-child(2),
+  .kl-nav > div > a:nth-child(3) {
+    display: none;
+  }
+  .kl-hero {
+    padding-top: 65px;
+  }
+  .kl-desktop {
+    display: none;
+  }
+  .kl-canvas-wrap {
+    padding: 0 16px;
+  }
+  .kl-scrub {
+    gap: 12px;
+    padding: 15px;
+  }
+  .kl-scrub > span {
+    display: none;
+  }
+  .kl-caption {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .kl-workflow,
+  .kl-principles {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 70px 24px;
+  }
+  .kl-recipes {
+    padding: 55px 24px;
+  }
+  .kl-section-title {
+    display: block;
+  }
+  .kl-recipe-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px 16px;
+  }
+  .kl-recipe-art {
+    height: 170px;
+    padding: 15px;
+  }
+  .kl-recipe-art > strong {
+    font-size: 25px;
+  }
+  .kl-footer {
+    flex-wrap: wrap;
+    padding: 28px 24px;
+  }
+  .kl-final {
+    padding: 50px 20px 80px;
+  }
+  .kl-hero h1 {
+    font-size: clamp(42px, 9vw, 66px);
+  }
+  .kl-hero-actions {
+    gap: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kl-recipe:hover .kl-recipe-art {
+    transform: none;
+  }
+}
+
+.kino-lab h2 {
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+  margin: 35px 0 12px;
+}
+.kino-lab p {
+  margin: 12px 0 22px;
+}
+.kino-lab input {
+  accent-color: #264d3f;
+}

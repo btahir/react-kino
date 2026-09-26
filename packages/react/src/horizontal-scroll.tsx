@@ -26,8 +26,8 @@ export interface PanelProps {
 export function Panel({ children, className, style }: PanelProps) {
   const panelStyle: CSSProperties = {
     flexShrink: 0,
-    width: "100vw",
-    height: "var(--kino-panel-height, 100vh)",
+    width: "var(--kino-panel-width, 100vw)",
+    minHeight: "var(--kino-panel-height, 100vh)",
     ...style,
   };
 
@@ -64,7 +64,7 @@ export function HorizontalScroll({
       if (!spacer || !strip) return;
 
       const rect = spacer.getBoundingClientRect();
-      const offsetTop = rect.top + scrollY;
+      const offsetTop = tracker.offsetTop(spacer, scrollY);
       const spacerHeight = spacer.offsetHeight;
       const stickyHeight =
         (spacer.firstElementChild as HTMLElement | null)?.offsetHeight ??
@@ -75,7 +75,10 @@ export function HorizontalScroll({
 
       const progress = calcSceneProgress(scrollY, offsetTop, duration);
       const totalStripWidth = strip.scrollWidth;
-      const maxTranslate = totalStripWidth - window.innerWidth;
+      const maxTranslate = Math.max(
+        0,
+        totalStripWidth - (tracker.getRoot()?.clientWidth ?? window.innerWidth),
+      );
 
       strip.style.transform = `translateX(-${progress * maxTranslate}px)`;
       strip.style.willChange = "transform";
@@ -85,22 +88,23 @@ export function HorizontalScroll({
   // Spacer height: one panel height per child
   const spacerStyle: CSSProperties = {
     position: "relative",
-    height: `calc(${childCount} * ${panelHeight})`,
+    height: reducedMotion ? "auto" : `calc(${childCount} * ${panelHeight})`,
+    ["--kino-panel-width" as string]: "100%",
     ["--kino-panel-height" as string]: panelHeight,
   };
 
   const stickyStyle: CSSProperties = {
-    position: "sticky",
+    position: reducedMotion ? "relative" : "sticky",
     top: 0,
-    height: panelHeight,
-    overflow: "hidden",
+    height: reducedMotion ? "auto" : panelHeight,
+    overflow: reducedMotion ? "visible" : "hidden",
   };
 
   // When reduced motion is preferred, render the strip without the
   // scroll-linked translate (like Parallax does).
   const stripStyle: CSSProperties = {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: reducedMotion ? "column" : "row",
     height: "100%",
     ...(reducedMotion
       ? {}

@@ -10,10 +10,7 @@ class MockIntersectionObserver {
     this.cb = cb;
   }
   observe(el: Element) {
-    this.cb(
-      [{ isIntersecting: true, target: el, intersectionRatio: 1 }],
-      this
-    );
+    this.cb([{ isIntersecting: true, target: el, intersectionRatio: 1 }], this);
   }
   unobserve() {}
   disconnect() {}
@@ -22,11 +19,13 @@ global.IntersectionObserver =
   MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
 // Mock ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+global.ResizeObserver = vi.fn().mockImplementation(function () {
+  return {
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  };
+});
 
 // Mock requestAnimationFrame
 global.requestAnimationFrame = vi.fn((cb) => {

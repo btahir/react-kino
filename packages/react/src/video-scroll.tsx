@@ -24,20 +24,41 @@ export interface VideoScrollProps {
   className?: string;
   /** Poster image shown before video loads */
   poster?: string;
+  /** Accessible description of the visual content. */
+  label?: string;
+  preload?: "none" | "metadata" | "auto";
+  fallback?: ReactNode;
 }
 
-export function VideoScroll({
+export function VideoScroll(props: VideoScrollProps) {
+  return <VideoScrollMedia key={props.src} {...props} />;
+}
+
+function VideoScrollMedia({
   src,
   duration = "300vh",
   pin = true,
   children,
   className,
   poster,
+  label = "Scroll-linked video",
+  preload = "metadata",
+  fallback,
 }: VideoScrollProps) {
+  const [mediaState, setMediaState] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
   const spacerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const isClient = useIsClient();
   const reducedMotion = usePrefersReducedMotion();
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    setMediaState(
+      video.error ? "error" : video.readyState >= 2 ? "ready" : "loading",
+    );
+  }, [src, isClient, reducedMotion]);
   const { tracker, isOwned } = useScrollTracker();
 
   // Latest progress lives in a ref so the imperative scrub and the
@@ -60,10 +81,15 @@ export function VideoScroll({
 
   const seek = () => {
     const video = videoRef.current;
-    if (!video || reducedMotion) return;
+    if (!video || reducedMotion || video.seeking) return;
     const dur = video.duration;
     if (!isFinite(dur) || dur === 0) return;
-    video.currentTime = progressRef.current * dur;
+    const nextTime = Math.min(
+      Math.max(0, dur - 0.001),
+      progressRef.current * dur,
+    );
+    if (Math.abs(video.currentTime - nextTime) > 0.016)
+      video.currentTime = nextTime;
   };
 
   useGatedScroll({
@@ -80,7 +106,7 @@ export function VideoScroll({
       const spacer = spacerRef.current;
       if (!spacer) return;
       const rect = spacer.getBoundingClientRect();
-      const offsetTop = rect.top + scrollY;
+      const offsetTop = tracker.offsetTop(spacer, scrollY);
       const durationPx = parseDuration(duration, vh);
       const effectiveDuration = pin ? Math.max(1, durationPx - vh) : durationPx;
       const p = calcSceneProgress(scrollY, offsetTop, effectiveDuration);
@@ -101,34 +127,47 @@ export function VideoScroll({
       video.currentTime = progressRef.current * dur;
     };
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
-    return () => video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+    return () =>
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
   }, [isClient, reducedMotion]);
 
   const durationPx = isClient ? parseDuration(duration, viewportHeight) : 0;
 
   const spacerStyle: CSSProperties = {
     position: "relative",
-    height: isClient ? `${durationPx}px` : duration,
+    height:
+      reducedMotion || mediaState === "error"
+        ? "auto"
+        : isClient
+          ? `${durationPx}px`
+          : duration,
   };
 
-  const stickyStyle: CSSProperties = pin
-    ? {
-        position: "sticky",
-        top: 0,
-        height: "100vh",
-        overflow: "hidden",
-      }
-    : {};
+  const stickyStyle: CSSProperties =
+    pin && !reducedMotion && mediaState !== "error"
+      ? {
+          position: "sticky",
+          top: 0,
+          height: viewportHeight ? `${viewportHeight}px` : "100vh",
+          overflow: "hidden",
+        }
+      : {};
 
   const videoStyle: CSSProperties = {
     width: "100%",
-    height: "100vh",
+    height:
+      reducedMotion || mediaState === "error"
+        ? "auto"
+        : viewportHeight
+          ? `${viewportHeight}px`
+          : "100vh",
+    aspectRatio: "16 / 9",
     objectFit: "cover",
     display: "block",
   };
 
   const overlayStyle: CSSProperties = {
-    position: "absolute",
+    position: reducedMotion || mediaState === "error" ? "relative" : "absolute",
     inset: 0,
     pointerEvents: "auto",
   };
@@ -140,16 +179,51 @@ export function VideoScroll({
   return (
     <div ref={spacerRef} style={spacerStyle} className={className}>
       <div style={stickyStyle}>
-        <video
-          ref={videoRef}
-          src={src}
-          preload="auto"
-          muted
-          playsInline
-          autoPlay={false}
-          poster={poster}
-          style={videoStyle}
-        />
+        {mediaState === "error" ? (
+          <div role="status" style={{ padding: 32, minHeight: 200 }}>
+            {fallback ?? (
+              <>
+                <p>{label} is unavailable.</p>
+                {poster && (
+                  <img src={poster} alt={label} style={{ maxWidth: "100%" }} />
+                )}
+                <p>Continue reading the story below.</p>
+              </>
+            )}
+          </div>
+        ) : (
+          <video
+            key={src}
+            ref={videoRef}
+            src={isClient && !reducedMotion ? src : undefined}
+            aria-label={label}
+            preload={reducedMotion ? "none" : preload}
+            onLoadedData={() => setMediaState("ready")}
+            onError={() => setMediaState("error")}
+            onSeeked={seek}
+            muted
+            playsInline
+            autoPlay={false}
+            poster={poster}
+            style={videoStyle}
+          />
+        )}
+        {!reducedMotion && mediaState === "loading" && (
+          <span
+            role="status"
+            style={{
+              position: "absolute",
+              top: 12,
+              left: 12,
+              background: "#171c20",
+              color: "#fff",
+              padding: "4px 8px",
+              borderRadius: 4,
+            }}
+          >
+            Loading video…
+          </span>
+        )}
         {resolvedChildren && <div style={overlayStyle}>{resolvedChildren}</div>}
       </div>
     </div>

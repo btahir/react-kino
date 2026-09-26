@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -23,24 +19,19 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "fumadocs-mdx:collections/*": [
-        "./.source/*"
-      ]
+      "@/*": ["./*"],
+      "fumadocs-mdx:collections/*": ["./.source/*"]
     }
   },
   "include": [
     "**/*.mdx",
     "**/*.ts",
     "**/*.tsx",
+    ".next/types/**/*.ts",
     ".source/**/*.js",
     ".source/**/*.ts",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
+    ".next-production/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

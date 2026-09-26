@@ -2,7 +2,7 @@
 
 <p align="center">
 Framework-agnostic scroll engine powering <a href="https://www.npmjs.com/package/react-kino">react-kino</a>.<br/>
-Pure TypeScript, zero dependencies, under 1 KB gzipped.
+Pure TypeScript, zero runtime dependencies.
 </p>
 
 ---
@@ -51,7 +51,11 @@ const p = calcElementProgress(["start end", "end start"], {
 ```
 
 ```ts
-import { ScrollTracker, calcSceneProgress, parseDuration } from "@react-kino/core";
+import {
+  ScrollTracker,
+  calcSceneProgress,
+  parseDuration,
+} from "@react-kino/core";
 
 const tracker = new ScrollTracker();
 const unsubscribe = tracker.subscribe(({ scrollY, viewportHeight }) => {
@@ -70,7 +74,7 @@ tracker.start();
 
 - **Zero dependencies** -- pure TypeScript, runs anywhere (browser, edge runtimes) with no Node.js assumptions.
 - **Framework-agnostic** -- no React (or any UI framework) in this package; `react-kino` is the React binding.
-- **Tiny** -- the entire engine is under 1 KB gzipped.
+- **Tiny** -- import only the engine utilities you need.
 - **Type-safe** -- ships full `.d.ts` declarations and source maps.
 
 ---
@@ -84,3 +88,11 @@ MIT
 <p align="center">
   <a href="https://github.com/btahir/react-kino">GitHub</a>
 </p>
+
+## Portable story documents
+
+The separate `@react-kino/core/document` entry exports version 1 types, `validateStory`, `parseStory`, `serializeStory`, `inspectStory`, and `sampleTrack`. These pure APIs work without React or a DOM. Browser scroll tracking remains in the main entry.
+
+## Support independent maintenance
+
+[Support this project](https://react-tourlight.vercel.app/support). Contributions support maintenance, documentation and development across Tourlight, Kino, Clickmap and Redact. Every feature remains MIT licensed.

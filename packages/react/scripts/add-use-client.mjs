@@ -1,6 +1,9 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-const files = ["dist/index.js", "dist/index.mjs"];
+const files = ["index", "story", "studio", "recipe-kit"].flatMap((name) => [
+  `dist/${name}.js`,
+  `dist/${name}.mjs`,
+]);
 const directive = '"use client";\n';
 
 for (const file of files) {

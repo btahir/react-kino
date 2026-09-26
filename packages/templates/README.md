@@ -44,24 +44,28 @@ import { ProductLaunch } from "@react-kino/templates/product-launch";
   ]}
   features={[
     { title: "Tiny core", description: "Under 1 KB gzipped.", icon: "⚡" },
-    { title: "GPU accelerated", description: "Compositor-only properties.", icon: "🚀" },
+    {
+      title: "GPU accelerated",
+      description: "Compositor-only properties.",
+      icon: "🚀",
+    },
   ]}
-/>
+/>;
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | **required** | Product name (hero heading + sticky header) |
-| `tagline` | `string` | **required** | Hero subtitle |
-| `heroBackground` | `string` | dark gradient | CSS background for the hero |
-| `accentColor` | `string` | `"#dc2626"` | Brand accent color used throughout |
-| `stats` | `Array<{ value, label, format? }>` | 3 defaults | Animated counters section |
-| `features` | `Array<{ title, description, icon? }>` | 3 defaults | Horizontal scroll feature panels |
-| `navItems` | `Array<{ label, href? }>` | -- | Sticky header navigation links |
-| `headerCtaText` | `string` | `"Get Started"` | CTA button text in sticky header |
-| `headerCtaHref` | `string` | `"#"` | CTA button link |
-| `showScrollHint` | `boolean` | `true` | Show scroll-down arrow on hero |
-| `marqueeItems` | `string[]` | feature titles | Custom items for the ticker between features and CTA |
+| Prop             | Type                                   | Default         | Description                                          |
+| ---------------- | -------------------------------------- | --------------- | ---------------------------------------------------- |
+| `name`           | `string`                               | **required**    | Product name (hero heading + sticky header)          |
+| `tagline`        | `string`                               | **required**    | Hero subtitle                                        |
+| `heroBackground` | `string`                               | dark gradient   | CSS background for the hero                          |
+| `accentColor`    | `string`                               | `"#dc2626"`     | Brand accent color used throughout                   |
+| `stats`          | `Array<{ value, label, format? }>`     | 3 defaults      | Animated counters section                            |
+| `features`       | `Array<{ title, description, icon? }>` | 3 defaults      | Horizontal scroll feature panels                     |
+| `navItems`       | `Array<{ label, href? }>`              | --              | Sticky header navigation links                       |
+| `headerCtaText`  | `string`                               | `"Get Started"` | CTA button text in sticky header                     |
+| `headerCtaHref`  | `string`                               | `"#"`           | CTA button link                                      |
+| `showScrollHint` | `boolean`                              | `true`          | Show scroll-down arrow on hero                       |
+| `marqueeItems`   | `string[]`                             | feature titles  | Custom items for the ticker between features and CTA |
 
 **Sections:** Sticky header -- Hero (scroll-away) -- Feature cards -- Stat counters -- Horizontal scroll features -- Marquee ticker -- CTA
 
@@ -86,23 +90,23 @@ import { CaseStudy } from "@react-kino/templates/case-study";
     { metric: "Revenue increase", value: 3.2, format: (n) => `${n}x` },
   ]}
   nextProject={{ title: "Project Atlas", href: "/work/atlas" }}
-/>
+/>;
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | **required** | Project title (hero heading) |
-| `client` | `string` | **required** | Client name (sticky header + hero subtitle) |
-| `year` | `string \| number` | **required** | Project year |
-| `heroImage` | `string` | -- | Hero background image URL |
-| `overview` | `string` | **required** | Project overview (rendered word-by-word via TextReveal) |
-| `challenge` | `string` | **required** | The challenge description |
-| `solution` | `string` | **required** | The solution description |
-| `results` | `Array<{ metric, value, format? }>` | `[]` | Animated result counters |
-| `nextProject` | `{ title, href }` | -- | Link to the next project |
-| `navItems` | `Array<{ label, href? }>` | -- | Sticky header navigation links |
-| `showScrollHint` | `boolean` | `true` | Show scroll-down arrow on hero |
-| `marqueeItems` | `string[]` | formatted results | Custom items for the results ticker |
+| Prop             | Type                                | Default           | Description                                             |
+| ---------------- | ----------------------------------- | ----------------- | ------------------------------------------------------- |
+| `title`          | `string`                            | **required**      | Project title (hero heading)                            |
+| `client`         | `string`                            | **required**      | Client name (sticky header + hero subtitle)             |
+| `year`           | `string \| number`                  | **required**      | Project year                                            |
+| `heroImage`      | `string`                            | --                | Hero background image URL                               |
+| `overview`       | `string`                            | **required**      | Project overview (rendered word-by-word via TextReveal) |
+| `challenge`      | `string`                            | **required**      | The challenge description                               |
+| `solution`       | `string`                            | **required**      | The solution description                                |
+| `results`        | `Array<{ metric, value, format? }>` | `[]`              | Animated result counters                                |
+| `nextProject`    | `{ title, href }`                   | --                | Link to the next project                                |
+| `navItems`       | `Array<{ label, href? }>`           | --                | Sticky header navigation links                          |
+| `showScrollHint` | `boolean`                           | `true`            | Show scroll-down arrow on hero                          |
+| `marqueeItems`   | `string[]`                          | formatted results | Custom items for the results ticker                     |
 
 **Sections:** Sticky header -- Hero (scroll-away) -- Overview (TextReveal) -- Challenge & Solution (ScrollTransform) -- Result counters -- Marquee ticker -- Next project
 
@@ -121,26 +125,36 @@ import { Portfolio } from "@react-kino/templates/portfolio";
   bio="I craft interfaces that feel alive. Ten years of turning complex products into experiences people love."
   accentColor="#3b82f6"
   projects={[
-    { title: "Project Alpha", description: "A design system for scale.", year: 2024, tags: ["React", "Design Systems"] },
-    { title: "Project Beta", description: "Real-time collaboration tool.", year: 2023, tags: ["WebSocket", "Canvas"] },
+    {
+      title: "Project Alpha",
+      description: "A design system for scale.",
+      year: 2024,
+      tags: ["React", "Design Systems"],
+    },
+    {
+      title: "Project Beta",
+      description: "Real-time collaboration tool.",
+      year: 2023,
+      tags: ["WebSocket", "Canvas"],
+    },
   ]}
   skills={["React", "TypeScript", "Figma", "Three.js", "Motion Design"]}
   contactEmail="jane@example.com"
-/>
+/>;
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `name` | `string` | **required** | Your name (hero heading + sticky header) |
-| `role` | `string` | **required** | Your role/title (hero subtitle) |
-| `bio` | `string` | **required** | Bio text (rendered word-by-word via TextReveal) |
-| `accentColor` | `string` | `"#3b82f6"` | Accent color for highlights and tags |
-| `projects` | `Array<{ title, description, year, tags? }>` | `[]` | Project cards with scroll-driven entrance |
-| `skills` | `string[]` | `[]` | Skills shown in horizontal scroll panels |
-| `contactEmail` | `string` | -- | Contact email shown in header and footer |
-| `navItems` | `Array<{ label, href? }>` | -- | Sticky header navigation links |
-| `showScrollHint` | `boolean` | `true` | Show scroll-down arrow on hero |
-| `marqueeItems` | `string[]` | skills list | Custom items for the skills ticker |
+| Prop             | Type                                         | Default      | Description                                     |
+| ---------------- | -------------------------------------------- | ------------ | ----------------------------------------------- |
+| `name`           | `string`                                     | **required** | Your name (hero heading + sticky header)        |
+| `role`           | `string`                                     | **required** | Your role/title (hero subtitle)                 |
+| `bio`            | `string`                                     | **required** | Bio text (rendered word-by-word via TextReveal) |
+| `accentColor`    | `string`                                     | `"#3b82f6"`  | Accent color for highlights and tags            |
+| `projects`       | `Array<{ title, description, year, tags? }>` | `[]`         | Project cards with scroll-driven entrance       |
+| `skills`         | `string[]`                                   | `[]`         | Skills shown in horizontal scroll panels        |
+| `contactEmail`   | `string`                                     | --           | Contact email shown in header and footer        |
+| `navItems`       | `Array<{ label, href? }>`                    | --           | Sticky header navigation links                  |
+| `showScrollHint` | `boolean`                                    | `true`       | Show scroll-down arrow on hero                  |
+| `marqueeItems`   | `string[]`                                   | skills list  | Custom items for the skills ticker              |
 
 **Sections:** Sticky header -- Hero (scroll-away) -- Bio (TextReveal) -- Projects (ScrollTransform) -- Skills marquee -- Skills horizontal scroll -- Contact
 
@@ -150,18 +164,18 @@ import { Portfolio } from "@react-kino/templates/portfolio";
 
 Every template is built with these react-kino components:
 
-| Component | Used for |
-|-----------|----------|
-| `StickyHeader` | Transparent-to-solid navigation bar |
-| `ScrollTransform` | Hero scroll-away effect, fluid card entrances |
-| `TextReveal` | Word-by-word text reveal on scroll |
-| `Marquee` | Infinitely scrolling ticker |
-| `Scene` | Pinned scroll sections with progress tracking |
-| `Reveal` | Scroll-triggered entrance animations |
-| `Parallax` | Background depth layers |
-| `Counter` | Animated stat numbers |
-| `HorizontalScroll` / `Panel` | Horizontal feature/skill panels |
-| `Progress` | Fixed scroll progress bar |
+| Component                    | Used for                                      |
+| ---------------------------- | --------------------------------------------- |
+| `StickyHeader`               | Transparent-to-solid navigation bar           |
+| `ScrollTransform`            | Hero scroll-away effect, fluid card entrances |
+| `TextReveal`                 | Word-by-word text reveal on scroll            |
+| `Marquee`                    | Infinitely scrolling ticker                   |
+| `Scene`                      | Pinned scroll sections with progress tracking |
+| `Reveal`                     | Scroll-triggered entrance animations          |
+| `Parallax`                   | Background depth layers                       |
+| `Counter`                    | Animated stat numbers                         |
+| `HorizontalScroll` / `Panel` | Horizontal feature/skill panels               |
+| `Progress`                   | Fixed scroll progress bar                     |
 
 ---
 
@@ -201,3 +215,7 @@ export default function Page() {
 ## License
 
 MIT
+
+## Support independent maintenance
+
+[Support this project](https://react-tourlight.vercel.app/support). Contributions support maintenance, documentation and development across Tourlight, Kino, Clickmap and Redact. Every feature remains MIT licensed.

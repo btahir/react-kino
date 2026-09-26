@@ -3,17 +3,37 @@ import React from "react";
 import { renderHook, render, act, cleanup } from "@testing-library/react";
 import type { ProgressData } from "@react-kino/core";
 import { useScrollProgressValue } from "../hooks/use-scroll-progress-value";
-import { Scene, useSceneProgressValue, useSceneContextOptional } from "../scene";
+import {
+  Scene,
+  useSceneProgressValue,
+  useSceneContextOptional,
+} from "../scene";
 
 // Real ProgressValue + math, capturing ScrollTracker for deterministic driving.
 let pageSubscriber: ((d: ProgressData) => void) | null = null;
 vi.mock("@react-kino/core", async () => {
-  const actual = await vi.importActual<typeof import("@react-kino/core")>(
-    "@react-kino/core"
-  );
+  const actual =
+    await vi.importActual<typeof import("@react-kino/core")>(
+      "@react-kino/core",
+    );
   return {
     ...actual,
     ScrollTracker: class {
+      getRoot() {
+        return null;
+      }
+      snapshot() {
+        return {
+          scrollY: window.scrollY,
+          viewportHeight: window.innerHeight,
+          scrollHeight: document.documentElement.scrollHeight,
+          progress: 0,
+        };
+      }
+      offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+        return el.getBoundingClientRect().top + scrollY;
+      }
+
       subscribe(cb: (d: ProgressData) => void) {
         pageSubscriber = cb;
         return () => {
@@ -43,7 +63,7 @@ describe("useScrollProgressValue", () => {
         viewportHeight: 800,
         scrollHeight: 3000,
         progress: 0.42,
-      })
+      }),
     );
     expect(pv.get()).toBeCloseTo(0.42);
 
@@ -74,7 +94,7 @@ describe("Scene dual-path context", () => {
       <Scene duration="200vh">
         <Capture />
         <NumericConsumer />
-      </Scene>
+      </Scene>,
     );
 
     const pv = captured!;

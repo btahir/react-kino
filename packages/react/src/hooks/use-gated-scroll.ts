@@ -55,12 +55,7 @@ export function useGatedScroll({
     // so the value is always exact regardless of whether the tracker has
     // emitted a tick yet.
     const syncNow = () => {
-      onTick({
-        scrollY: window.scrollY,
-        viewportHeight: window.innerHeight,
-        scrollHeight: document.documentElement.scrollHeight,
-        progress: 0,
-      });
+      onTick(tracker.snapshot());
     };
 
     let unsub: (() => void) | null = null;
@@ -101,7 +96,7 @@ export function useGatedScroll({
           if (entry && entry.isIntersecting) activate();
           else deactivate();
         },
-        { rootMargin }
+        { rootMargin, root: tracker.getRoot() },
       );
       io.observe(el);
     } else {

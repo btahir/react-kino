@@ -28,7 +28,7 @@ export interface ElementProgressOptions {
  */
 export function useElementProgressValue(
   ref: RefObject<HTMLElement | null>,
-  options: ElementProgressOptions = {}
+  options: ElementProgressOptions = {},
 ): ProgressValue {
   const { offset = DEFAULT_ELEMENT_OFFSET, enabled = true } = options;
 
@@ -56,14 +56,14 @@ export function useElementProgressValue(
       const el = ref.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const elementTop = rect.top + scrollY;
+      const elementTop = tracker.offsetTop(el, scrollY);
       pv.set(
         calcElementProgress(offsetRef.current, {
           elementTop,
           elementHeight: rect.height,
           viewportHeight,
           scrollY,
-        })
+        }),
       );
     },
   });
@@ -78,7 +78,7 @@ export function useElementProgressValue(
  */
 export function useElementProgress(
   ref: RefObject<HTMLElement | null>,
-  options: ElementProgressOptions = {}
+  options: ElementProgressOptions = {},
 ): number {
   const pv = useElementProgressValue(ref, options);
   const [progress, setProgress] = useState(() => pv.get());

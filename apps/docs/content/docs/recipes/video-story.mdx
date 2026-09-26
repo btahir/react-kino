@@ -1,0 +1,27 @@
+---
+title: Scroll-linked video with a readable fallback
+description: Prepare media for scroll seeking, avoid eager full downloads, and provide poster and error states.
+---
+
+See the [live component lab](/playground) for a real four-second original sample and an intentional media-error example. The reproducible source is `scripts/generate-demo-video.sh`; the sample is MIT licensed with the repository.
+
+```tsx
+<VideoScroll
+  src="/product-motion.mp4"
+  poster="/product-still.jpg"
+  label="A close view of the product hinge opening"
+  preload="metadata"
+  duration="300vh"
+  fallback={
+    <p>The motion preview is unavailable. The hinge folds flat for storage.</p>
+  }
+>
+  <p>The same explanation remains part of the page.</p>
+</VideoScroll>
+```
+
+The default is metadata preload. Set `preload="none"` if you want to defer loading further, or `auto` only when the media cost is justified. Reduced-motion mode does not attach the video source and keeps the poster plus a readable overlay. Media errors remove the pinned spacer and show the fallback. A visible loading status remains until playable data arrives.
+
+The seek loop waits for an in-flight seek and then applies the latest requested position. This prevents queuing every intermediate scroll frame, but it cannot make a poorly encoded or unavailable video scrub smoothly. Use a short muted video, sensible dimensions/bitrate, frequent keyframes, and an HTTP server that supports range requests. Test your actual file on Safari and mobile devices.
+
+Keep critical text outside the pixels of the video. A poster needs a useful description, and any spoken content needs an accessible text or caption alternative. For an editorial sequence with text entering over a fixed visual, combine ordinary semantic text with Scene and explicit transform ranges rather than baking the words into the video.

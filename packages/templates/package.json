@@ -1,35 +1,57 @@
 {
   "name": "@react-kino/templates",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Pre-built full-page scroll experience templates for react-kino",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./product-launch": {
-      "types": "./dist/product-launch.d.ts",
-      "import": "./dist/product-launch.mjs",
-      "require": "./dist/product-launch.js"
+      "import": {
+        "types": "./dist/product-launch.d.mts",
+        "default": "./dist/product-launch.mjs"
+      },
+      "require": {
+        "types": "./dist/product-launch.d.ts",
+        "default": "./dist/product-launch.js"
+      }
     },
     "./case-study": {
-      "types": "./dist/case-study.d.ts",
-      "import": "./dist/case-study.mjs",
-      "require": "./dist/case-study.js"
+      "import": {
+        "types": "./dist/case-study.d.mts",
+        "default": "./dist/case-study.mjs"
+      },
+      "require": {
+        "types": "./dist/case-study.d.ts",
+        "default": "./dist/case-study.js"
+      }
     },
     "./portfolio": {
-      "types": "./dist/portfolio.d.ts",
-      "import": "./dist/portfolio.mjs",
-      "require": "./dist/portfolio.js"
+      "import": {
+        "types": "./dist/portfolio.d.mts",
+        "default": "./dist/portfolio.mjs"
+      },
+      "require": {
+        "types": "./dist/portfolio.d.ts",
+        "default": "./dist/portfolio.js"
+      }
     }
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "sideEffects": false,
   "scripts": {
@@ -59,8 +81,25 @@
     "url": "https://github.com/btahir/react-kino.git",
     "directory": "packages/templates"
   },
-  "homepage": "https://github.com/btahir/react-kino#readme",
+  "homepage": "https://www.react-kino.dev/docs",
   "bugs": {
     "url": "https://github.com/btahir/react-kino/issues"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://react-tourlight.vercel.app/support"
+  },
+  "typesVersions": {
+    "*": {
+      "product-launch": [
+        "dist/product-launch.d.ts"
+      ],
+      "case-study": [
+        "dist/case-study.d.ts"
+      ],
+      "portfolio": [
+        "dist/portfolio.d.ts"
+      ]
+    }
   }
 }

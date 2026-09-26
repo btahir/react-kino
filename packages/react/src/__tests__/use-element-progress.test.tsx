@@ -10,12 +10,28 @@ import {
 // ScrollTracker so we can drive scroll deterministically.
 let captured: ((d: ProgressData) => void) | null = null;
 vi.mock("@react-kino/core", async () => {
-  const actual = await vi.importActual<typeof import("@react-kino/core")>(
-    "@react-kino/core"
-  );
+  const actual =
+    await vi.importActual<typeof import("@react-kino/core")>(
+      "@react-kino/core",
+    );
   return {
     ...actual,
     ScrollTracker: class {
+      getRoot() {
+        return null;
+      }
+      snapshot() {
+        return {
+          scrollY: window.scrollY,
+          viewportHeight: window.innerHeight,
+          scrollHeight: document.documentElement.scrollHeight,
+          progress: 0,
+        };
+      }
+      offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+        return el.getBoundingClientRect().top + scrollY;
+      }
+
       subscribe(cb: (d: ProgressData) => void) {
         captured = cb;
         return () => {
@@ -55,7 +71,7 @@ function scrollTo(y: number) {
       viewportHeight: 768,
       scrollHeight: 3000,
       progress: 0,
-    })
+    }),
   );
 }
 
@@ -93,7 +109,7 @@ describe("useElementProgressValue", () => {
     // ['start end','start center']: targets 232 and (1000 - 0.5*768 = 616)
     const ref = { current: makeElement(1000, 500) };
     const { result } = renderHook(() =>
-      useElementProgressValue(ref, { offset: ["start end", "start center"] })
+      useElementProgressValue(ref, { offset: ["start end", "start center"] }),
     );
     const pv = result.current;
 

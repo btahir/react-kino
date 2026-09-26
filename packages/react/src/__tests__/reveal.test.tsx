@@ -6,6 +6,21 @@ import { Scene } from "../scene";
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();
@@ -40,7 +55,7 @@ describe("Reveal", () => {
     render(
       <Reveal progress={0}>
         <span data-testid="child">Hello</span>
-      </Reveal>
+      </Reveal>,
     );
     expect(screen.getByTestId("child")).toBeTruthy();
   });
@@ -49,7 +64,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="fade">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("0");
@@ -59,7 +74,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0.6} at={0.5} animation="fade">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("1");
@@ -84,7 +99,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="fade-up">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     // When reduced motion, renders VISIBLE styles without transition
@@ -102,7 +117,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} className="custom-reveal">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.className).toBe("custom-reveal");
@@ -112,7 +127,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="fade">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("0");
@@ -122,7 +137,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="fade-up">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("0");
@@ -133,7 +148,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="fade-down">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("0");
@@ -144,7 +159,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="scale">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("0");
@@ -155,7 +170,7 @@ describe("Reveal", () => {
     const { container } = render(
       <Reveal progress={0} at={0.5} animation="blur">
         <span>Content</span>
-      </Reveal>
+      </Reveal>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.opacity).toBe("0");
@@ -168,7 +183,7 @@ describe("Reveal", () => {
         <Reveal at={0} animation="fade">
           <span data-testid="reveal-child">Content</span>
         </Reveal>
-      </Scene>
+      </Scene>,
     );
     // Scene provides progress=0 by default (from mock), which satisfies at=0
     expect(screen.getByTestId("reveal-child")).toBeTruthy();

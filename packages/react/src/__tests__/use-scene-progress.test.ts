@@ -4,6 +4,21 @@ import { useSceneProgress } from "../hooks/use-scene-progress";
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();

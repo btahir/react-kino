@@ -5,7 +5,7 @@ import { useScrollTracker } from "./use-scroll-tracker";
 
 export function useSceneProgress(
   spacerRef: RefObject<HTMLElement | null>,
-  durationPx: number
+  durationPx: number,
 ): number {
   const [progress, setProgress] = useState(0);
   const { tracker, isOwned } = useScrollTracker();
@@ -13,8 +13,7 @@ export function useSceneProgress(
   useEffect(() => {
     const unsub = tracker.subscribe(({ scrollY }) => {
       if (!spacerRef.current) return;
-      const offsetTop =
-        spacerRef.current.getBoundingClientRect().top + scrollY;
+      const offsetTop = tracker.offsetTop(spacerRef.current, scrollY);
       setProgress(calcSceneProgress(scrollY, offsetTop, durationPx));
     });
     if (isOwned) tracker.start();

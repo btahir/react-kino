@@ -51,3 +51,7 @@ export type {
   OffsetEntry,
   OffsetEdge,
 } from "@react-kino/core";
+
+export { Story } from "./story";
+export type { StoryProps } from "./story";
+export type { KinoProps } from "./kino";

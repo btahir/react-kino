@@ -11,6 +11,21 @@ let constructorCalls = 0;
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     constructor() {
       constructorCalls++;
     }
@@ -25,7 +40,7 @@ describe("Kino", () => {
     render(
       <Kino>
         <div data-testid="child">Hello</div>
-      </Kino>
+      </Kino>,
     );
     expect(screen.getByTestId("child")).toBeTruthy();
     expect(screen.getByText("Hello")).toBeTruthy();
@@ -34,13 +49,15 @@ describe("Kino", () => {
   it("provides context with a tracker via useKino", () => {
     function Consumer() {
       const { tracker } = useKino();
-      return <div data-testid="tracker">{tracker ? "has-tracker" : "none"}</div>;
+      return (
+        <div data-testid="tracker">{tracker ? "has-tracker" : "none"}</div>
+      );
     }
 
     render(
       <Kino>
         <Consumer />
-      </Kino>
+      </Kino>,
     );
     expect(screen.getByTestId("tracker").textContent).toBe("has-tracker");
   });
@@ -51,7 +68,9 @@ describe("Kino", () => {
       return <div>Should not render</div>;
     }
 
-    expect(() => render(<BadConsumer />)).toThrow("<Kino> provider is required");
+    expect(() => render(<BadConsumer />)).toThrow(
+      "<Kino> provider is required",
+    );
   });
 
   it("useKinoOptional returns null outside of Kino provider", () => {
@@ -73,7 +92,7 @@ describe("Kino", () => {
     render(
       <Kino>
         <Consumer />
-      </Kino>
+      </Kino>,
     );
     expect(screen.getByTestId("ctx").textContent).toBe("has-value");
   });
@@ -83,17 +102,17 @@ describe("Kino", () => {
     const { rerender } = render(
       <Kino>
         <div>child</div>
-      </Kino>
+      </Kino>,
     );
     rerender(
       <Kino>
         <div>child again</div>
-      </Kino>
+      </Kino>,
     );
     rerender(
       <Kino>
         <div>child once more</div>
-      </Kino>
+      </Kino>,
     );
 
     expect(constructorCalls).toBe(1);

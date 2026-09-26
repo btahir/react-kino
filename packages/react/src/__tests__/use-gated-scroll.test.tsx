@@ -47,6 +47,13 @@ function makeTracker() {
   let subscriber: ((d: ProgressData) => void) | null = null;
   const unsub = vi.fn();
   const tracker = {
+    getRoot: () => null,
+    snapshot: () => ({
+      scrollY: window.scrollY,
+      viewportHeight: window.innerHeight,
+      scrollHeight: document.documentElement.scrollHeight,
+      progress: 0,
+    }),
     subscribe: vi.fn((cb: (d: ProgressData) => void) => {
       subscriber = cb;
       return unsub;

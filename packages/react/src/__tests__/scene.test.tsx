@@ -6,6 +6,21 @@ import { Scene } from "../scene";
 // Mock @react-kino/core to avoid real scroll tracking in tests
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();
@@ -38,7 +53,7 @@ describe("Scene", () => {
     render(
       <Scene duration="200vh">
         <div data-testid="child">Hello</div>
-      </Scene>
+      </Scene>,
     );
     expect(screen.getByTestId("child")).toBeTruthy();
     expect(screen.getByText("Hello")).toBeTruthy();
@@ -50,7 +65,7 @@ describe("Scene", () => {
         {(progress) => (
           <div data-testid="render-prop">Progress: {progress}</div>
         )}
-      </Scene>
+      </Scene>,
     );
     expect(screen.getByTestId("render-prop")).toBeTruthy();
   });
@@ -59,7 +74,7 @@ describe("Scene", () => {
     render(
       <Scene duration="200vh">
         {(progress) => <div data-testid="progress">{progress}</div>}
-      </Scene>
+      </Scene>,
     );
     expect(screen.getByTestId("progress").textContent).toBe("0");
   });
@@ -68,7 +83,7 @@ describe("Scene", () => {
     const { container } = render(
       <Scene duration="200vh">
         <div>Content</div>
-      </Scene>
+      </Scene>,
     );
     const spacer = container.firstElementChild as HTMLElement;
     expect(spacer).toBeTruthy();
@@ -81,20 +96,20 @@ describe("Scene", () => {
     const { container } = render(
       <Scene duration="200vh">
         <div>Content</div>
-      </Scene>
+      </Scene>,
     );
     const spacer = container.firstElementChild as HTMLElement;
     const sticky = spacer.firstElementChild as HTMLElement;
     expect(sticky.style.position).toBe("sticky");
     expect(sticky.style.top).toBe("0px");
-    expect(sticky.style.height).toBe("100vh");
+    expect(sticky.style.height).toBe(`${window.innerHeight}px`);
   });
 
   it("does not apply sticky styles when pin is false", () => {
     const { container } = render(
       <Scene duration="200vh" pin={false}>
         <div>Content</div>
-      </Scene>
+      </Scene>,
     );
     const spacer = container.firstElementChild as HTMLElement;
     const inner = spacer.firstElementChild as HTMLElement;
@@ -105,7 +120,7 @@ describe("Scene", () => {
     const { container } = render(
       <Scene duration="200vh" className="custom-scene">
         <div>Content</div>
-      </Scene>
+      </Scene>,
     );
     const spacer = container.firstElementChild as HTMLElement;
     expect(spacer.className).toBe("custom-scene");

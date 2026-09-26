@@ -6,6 +6,21 @@ let mockSubscriber: ((data: { progress: number }) => void) | null = null;
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe(cb: (data: { progress: number }) => void) {
       mockSubscriber = cb;
       return vi.fn();

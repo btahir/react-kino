@@ -31,7 +31,9 @@ function App() {
     <Kino>
       <Scene duration="300vh">
         {(progress) => (
-          <div style={{ height: "100vh", display: "grid", placeItems: "center" }}>
+          <div
+            style={{ height: "100vh", display: "grid", placeItems: "center" }}
+          >
             <Reveal animation="fade-up" at={0}>
               <h1>Welcome</h1>
             </Reveal>
@@ -41,7 +43,11 @@ function App() {
             </Reveal>
 
             <Reveal animation="fade" at={0.6}>
-              <Counter from={0} to={10000} format={(n) => `${n.toLocaleString()}+ users`} />
+              <Counter
+                from={0}
+                to={10000}
+                format={(n) => `${n.toLocaleString()}+ users`}
+              />
             </Reveal>
           </div>
         )}
@@ -55,7 +61,7 @@ That is a complete scroll experience: the section pins in place, content fades i
 
 ## Why react-kino
 
-- **Tiny** -- the core scroll engine is under 1 KB gzipped. GSAP ScrollTrigger alone is 33 KB.
+- **Separate tools** -- runtime, pure documents, recipes and optional Storyboard have explicit imports.
 - **Declarative** -- compose `<Scene>`, `<Reveal>`, `<ScrollTransform>`, `<Parallax>`, and `<Counter>` like regular React components. No imperative timelines.
 - **Lightweight runtime** -- `react-kino` uses a tiny internal engine package (`@kino/core`) plus React peers.
 - **SSR-safe** -- every component renders children on the server and animates on the client.
@@ -105,8 +111,12 @@ react-kino uses a lightweight JavaScript scroll engine with CSS transforms and o
 
 ## Browser Support
 
-| Feature | Chrome | Firefox | Safari | Edge |
-|---------|--------|---------|--------|------|
-| Core scroll tracking | 64+ | 60+ | 13+ | 79+ |
-| `position: sticky` | 56+ | 59+ | 13+ | 79+ |
-| `prefers-reduced-motion` | 74+ | 63+ | 10.1+ | 79+ |
+| Feature                  | Chrome | Firefox | Safari | Edge |
+| ------------------------ | ------ | ------- | ------ | ---- |
+| Core scroll tracking     | 64+    | 60+     | 13+    | 79+  |
+| `position: sticky`       | 56+    | 59+     | 13+    | 79+  |
+| `prefers-reduced-motion` | 74+    | 63+     | 10.1+  | 79+  |
+
+## Author a complete story
+
+Open [Storyboard](/studio) to edit a recipe in the actual renderer, or start with [portable documents](/docs/authoring). Read the [responsive layout policy](/docs/responsive-stories) before building pinned content.

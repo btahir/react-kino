@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ../.. && pnpm exec turbo run build --filter=@react-kino/docs",
+  "installCommand": "pnpm install --frozen-lockfile"
+}
