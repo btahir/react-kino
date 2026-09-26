@@ -5,6 +5,21 @@ import { CompareSlider } from "../compare-slider";
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();
@@ -19,7 +34,7 @@ describe("CompareSlider", () => {
       <CompareSlider
         before={<div data-testid="before">Before</div>}
         after={<div data-testid="after">After</div>}
-      />
+      />,
     );
     expect(screen.getByTestId("before")).toBeTruthy();
     expect(screen.getByTestId("after")).toBeTruthy();
@@ -27,10 +42,7 @@ describe("CompareSlider", () => {
 
   it("renders in drag mode by default", () => {
     const { container } = render(
-      <CompareSlider
-        before={<div>Before</div>}
-        after={<div>After</div>}
-      />
+      <CompareSlider before={<div>Before</div>} after={<div>After</div>} />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.cursor).toBe("ew-resize");
@@ -43,7 +55,7 @@ describe("CompareSlider", () => {
         after={<div>After</div>}
         scrollDriven
         progress={0.3}
-      />
+      />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.cursor).toBe("default");
@@ -55,7 +67,7 @@ describe("CompareSlider", () => {
         before={<div>Before</div>}
         after={<div>After</div>}
         initialPosition={0.75}
-      />
+      />,
     );
     // The handle position should reflect initialPosition (75%)
     const wrapper = container.firstElementChild as HTMLElement;
@@ -70,7 +82,7 @@ describe("CompareSlider", () => {
         before={<div>Before</div>}
         after={<div>After</div>}
         className="custom-slider"
-      />
+      />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.className).toBe("custom-slider");
@@ -83,7 +95,7 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           initialPosition={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -102,11 +114,13 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           ariaLabel="Before and after image slider"
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
-      expect(handle.getAttribute("aria-label")).toBe("Before and after image slider");
+      expect(handle.getAttribute("aria-label")).toBe(
+        "Before and after image slider",
+      );
     });
 
     it("is not keyboard-focusable when scrollDriven", () => {
@@ -116,7 +130,7 @@ describe("CompareSlider", () => {
           after={<div>After</div>}
           scrollDriven
           progress={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -132,7 +146,7 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           initialPosition={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -148,7 +162,7 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           initialPosition={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -164,7 +178,7 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           initialPosition={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -180,7 +194,7 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           initialPosition={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -196,7 +210,7 @@ describe("CompareSlider", () => {
           before={<div>Before</div>}
           after={<div>After</div>}
           initialPosition={0.02}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -213,7 +227,7 @@ describe("CompareSlider", () => {
           after={<div>After</div>}
           scrollDriven
           progress={0.5}
-        />
+        />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
       const handle = wrapper.children[2] as HTMLElement;
@@ -227,7 +241,7 @@ describe("CompareSlider", () => {
   describe("pointer cancel", () => {
     it("stops dragging on pointercancel", () => {
       const { container } = render(
-        <CompareSlider before={<div>Before</div>} after={<div>After</div>} />
+        <CompareSlider before={<div>Before</div>} after={<div>After</div>} />,
       );
       const wrapper = container.firstElementChild as HTMLElement;
 

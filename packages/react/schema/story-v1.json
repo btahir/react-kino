@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.react-kino.dev/schema/story-v1.json",
+  "title": "Kino story document v1",
+  "description": "Use validateStory for additional unique-ID and start-before-end checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-zA-Z][\\w-]*$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "duration": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 1200
+          },
+          "layout": {
+            "enum": ["stack", "split"]
+          },
+          "background": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$"
+          },
+          "pin": {
+            "type": "boolean"
+          },
+          "layers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 30,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "pattern": "^[a-zA-Z][\\w-]*$"
+                },
+                "kind": {
+                  "enum": ["heading", "text", "image", "component"]
+                },
+                "content": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 10000
+                },
+                "alt": {
+                  "type": "string",
+                  "maxLength": 1000
+                },
+                "track": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "start": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "end": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "from": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": -4000,
+                          "maximum": 4000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": -4000,
+                          "maximum": 4000
+                        },
+                        "rotate": {
+                          "type": "number",
+                          "minimum": -4000,
+                          "maximum": 4000
+                        },
+                        "scale": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 10
+                        },
+                        "opacity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "required": []
+                    },
+                    "to": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": -4000,
+                          "maximum": 4000
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": -4000,
+                          "maximum": 4000
+                        },
+                        "rotate": {
+                          "type": "number",
+                          "minimum": -4000,
+                          "maximum": 4000
+                        },
+                        "scale": {
+                          "type": "number",
+                          "minimum": 0.01,
+                          "maximum": 10
+                        },
+                        "opacity": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        }
+                      },
+                      "required": []
+                    },
+                    "easing": {
+                      "enum": ["linear", "ease-out", "ease-in-out"]
+                    }
+                  },
+                  "required": ["start", "end", "from", "to"]
+                }
+              },
+              "required": ["id", "kind", "content"],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "image"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": ["alt"],
+                    "properties": {
+                      "content": {
+                        "pattern": "^(https?://|/(?!/)|\\.\\.?/)[^\\u0000-\\u0020\\\\]*$"
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "component"
+                      }
+                    }
+                  },
+                  "then": {
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80,
+                        "pattern": "^[a-zA-Z][\\w-]*$"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "duration",
+          "layout",
+          "background",
+          "color",
+          "pin",
+          "layers"
+        ]
+      }
+    }
+  },
+  "required": ["version", "title", "scenes"]
+}

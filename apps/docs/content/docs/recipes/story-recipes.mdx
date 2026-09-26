@@ -1,0 +1,41 @@
+---
+title: Complete story recipes
+description: Start a React product launch, editorial essay, case study, comparison, feature story, or portfolio from an editable document.
+---
+
+Each recipe contains a complete sequence of scenes and layers, with timing, color, and reading fallback. The copy is a writing scaffold, not a claim about your product. Replace it with your own evidence and voice.
+
+| Recipe             | Live example                | CLI ID       |
+| ------------------ | --------------------------- | ------------ |
+| Product launch     | [Open](/recipes/launch)     | `launch`     |
+| Editorial essay    | [Open](/recipes/editorial)  | `editorial`  |
+| Case study         | [Open](/recipes/case-study) | `case-study` |
+| Before and after   | [Open](/recipes/comparison) | `comparison` |
+| Feature chapters   | [Open](/recipes/gallery)    | `gallery`    |
+| Personal portfolio | [Open](/recipes/portfolio)  | `portfolio`  |
+
+```tsx
+"use client";
+import { Story } from "react-kino/story";
+import { createStoryRecipe } from "react-kino/recipes";
+import { createRecipeComponents } from "react-kino/recipe-kit";
+const document = createStoryRecipe("editorial");
+export default function Page() {
+  return <Story document={document} components={createRecipeComponents()} />;
+}
+```
+
+Recipes are ordinary version 1 documents. `createStoryRecipe` returns a fresh copy for editing. The optional `react-kino/recipe-kit` entry provides original SVG art, an interactive comparison, project cards, a quotation and an honest evidence template. These are sample components you can replace with your own registrations. They are included automatically in Storyboard, but not in the default runtime. The comparison recipe expects `Before` and `After` component registrations; our live example uses original schematic layouts, not fabricated client results.
+
+```tsx
+<Story
+  document={createStoryRecipe("comparison")}
+  components={{ Before: <OldDesign />, After: <NewDesign /> }}
+/>
+```
+
+Use a component registration for meaningful links and media behavior. Set an image layer's `alt` description, use assets you have permission to publish, and check unavailable-image states. Source is not extracted from your React components; Storyboard adjusts their containing layer.
+
+## Work with your coding agent
+
+The package includes `skills/kino/SKILL.md` with the current contract, safe editing workflow, and checks. Ask your agent to create a story document, run validation, and then preview it in the real renderer. A JSON document and explicit diagnostics are usually sufficient; this release does not require an MCP server.

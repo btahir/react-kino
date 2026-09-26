@@ -43,5 +43,6 @@ export async function generateMetadata(props: {
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: { canonical: `https://www.react-kino.dev${page.url}` },
   };
 }

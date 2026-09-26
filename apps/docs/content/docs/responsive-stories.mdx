@@ -1,0 +1,49 @@
+---
+title: Responsive scroll stories that keep their content
+description: Handle tall pinned sections, nested scroll roots, reduced motion, local parallax, and changing content in React.
+---
+
+A pinned scene is a layout constraint: its content must fit the available viewport. Kino measures the scene content and falls back to natural flow when it is too tall. Late images, font changes, container resizing, and window resizing can change that decision.
+
+```tsx
+<Scene duration="300vh" stickyOffset={64} unpinBelow={640}>
+  <Reveal at={0.8}>
+    <LongArticle />
+  </Reveal>
+</Scene>
+```
+
+The default `overflow="auto"` policy preserves the whole article. Natural reading fallback advances the scene to its final progress, so late reveals remain visible. `overflow="clip"` opts into the older deliberately clipped cinematic treatment. In Story documents, reading fallback additionally neutralizes layer transforms and opacity, including exit animations.
+
+Reduced-motion users receive an unpinned scene without scroll-distance padding. Horizontal galleries become a vertical list. Do not put essential content behind animation-only callbacks.
+
+## A nested scroll area
+
+```tsx
+const root = useRef<HTMLDivElement>(null);
+return (
+  <div ref={root} style={{ height: 600, overflow: "auto" }}>
+    <Kino root={root}>
+      <Scene duration="250vh">
+        <YourContent />
+      </Scene>
+    </Kino>
+  </div>
+);
+```
+
+Keep the root ref attached for the provider lifetime. Scroll coordinates, viewport height, intersection gating, and resize invalidation use that root. `tracker.refresh()` is available through `useKino()` after application-specific layout changes.
+
+## Text entering from outside the viewport
+
+```tsx
+<Parallax from={180} to={-80}>
+  <p>This paragraph moves relative to its own passage through the viewport.</p>
+</Parallax>
+```
+
+Both range values are pixels. Existing `speed` and `direction` props remain available, but speed now uses a local element origin rather than page-top displacement. This intentionally fixes accumulating offsets far down a page. Test existing compositions if they compensated for the old global behavior.
+
+## Verify your story
+
+Check 320px and 390px mobile layouts, keyboard traversal, 200% zoom, reduced motion, browser back/scroll restoration, and delayed media. Test tall content with a reveal near the end of the scene, not just the first heading. Browser engines and actual video encodings can behave differently; a jsdom test does not establish visual correctness.

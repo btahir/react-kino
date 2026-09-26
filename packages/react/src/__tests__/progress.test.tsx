@@ -5,6 +5,21 @@ import { Progress } from "../progress";
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();
@@ -24,7 +39,7 @@ describe("Progress", () => {
 
   it("renders dots type", () => {
     const { container } = render(
-      <Progress type="dots" progress={0.5} dotCount={5} />
+      <Progress type="dots" progress={0.5} dotCount={5} />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper).toBeTruthy();
@@ -35,9 +50,7 @@ describe("Progress", () => {
   });
 
   it("renders ring type", () => {
-    const { container } = render(
-      <Progress type="ring" progress={0.5} />
-    );
+    const { container } = render(<Progress type="ring" progress={0.5} />);
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper).toBeTruthy();
     const ringContainer = wrapper.firstElementChild as HTMLElement;
@@ -50,7 +63,7 @@ describe("Progress", () => {
 
   it("accepts color and trackColor props", () => {
     const { container } = render(
-      <Progress progress={0.5} color="red" trackColor="gray" />
+      <Progress progress={0.5} color="red" trackColor="gray" />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     const track = wrapper.firstElementChild as HTMLElement;
@@ -69,7 +82,7 @@ describe("Progress", () => {
 
   it("accepts className prop", () => {
     const { container } = render(
-      <Progress progress={0.5} className="custom-progress" />
+      <Progress progress={0.5} className="custom-progress" />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.className).toBe("custom-progress");

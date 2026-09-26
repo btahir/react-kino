@@ -13,6 +13,7 @@ import {
   parseDuration,
   ProgressValue,
 } from "@react-kino/core";
+import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 import { useIsClient } from "./hooks/use-is-client";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
 import { useGatedScroll } from "./hooks/use-gated-scroll";
@@ -23,6 +24,11 @@ import { useGatedScroll } from "./hooks/use-gated-scroll";
  * re-render), so subscribing components never re-render when progress changes —
  * they read the value imperatively and write to the DOM directly.
  */
+const SceneReadingContext = createContext(false);
+export function useSceneReading(): boolean {
+  return useContext(SceneReadingContext);
+}
+
 const SceneProgressValueContext = createContext<ProgressValue | null>(null);
 
 /** Legacy numeric context shape (kept for backward compatibility). */
@@ -86,6 +92,13 @@ export interface SceneProps {
   duration: string;
   /** Whether to pin (sticky) the inner content. Default: true */
   pin?: boolean;
+  /** Auto unpins content taller than its viewport; clip preserves the old behavior. */
+  overflow?: "auto" | "clip";
+  stickyOffset?: number;
+  /** Use a natural reading layout below this width. */
+  unpinBelow?: number;
+  /** Controlled scene progress for authoring previews (0–1). */
+  progress?: number;
   children: SceneChildren;
   className?: string;
   style?: CSSProperties;
@@ -94,10 +107,17 @@ export interface SceneProps {
 export function Scene({
   duration,
   pin = true,
+  overflow = "auto",
+  stickyOffset = 0,
+  unpinBelow = 0,
+  progress: controlledProgress,
   children,
   className,
   style,
 }: SceneProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
+  const [natural, setNatural] = useState(false);
   const spacerRef = useRef<HTMLDivElement>(null);
   const isClient = useIsClient();
   const { tracker, isOwned } = useScrollTracker();
@@ -129,12 +149,55 @@ export function Scene({
     setViewportHeight(window.innerHeight);
   }, [isClient]);
 
+  useEffect(() => {
+    const content = contentRef.current;
+    if (!content) return;
+    const measure = () => {
+      const root = tracker.getRoot();
+      const vh = tracker.snapshot().viewportHeight;
+      const width = root?.clientWidth ?? window.innerWidth;
+      setNatural(
+        width < unpinBelow ||
+          (overflow === "auto" && content.scrollHeight > vh - stickyOffset + 2),
+      );
+      setViewportHeight(vh);
+    };
+    measure();
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(measure);
+    observer?.observe(content);
+    const rootElement = tracker.getRoot();
+    if (rootElement) observer?.observe(rootElement);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [tracker, overflow, stickyOffset, unpinBelow, children]);
+  const activePin = pin && !natural && !reducedMotion;
+  useEffect(() => {
+    if (controlledProgress !== undefined || reducedMotion || natural) {
+      const value =
+        reducedMotion || natural
+          ? 1
+          : Math.max(0, Math.min(1, controlledProgress!));
+      progressValue.set(value);
+      setRenderProgress(value);
+    }
+  }, [controlledProgress, reducedMotion, natural, progressValue]);
+
   useGatedScroll({
     ref: spacerRef,
     tracker,
     isOwned,
-    enabled: isClient,
-    deps: [isClient, duration, pin],
+    enabled:
+      isClient &&
+      controlledProgress === undefined &&
+      !reducedMotion &&
+      !natural,
+    deps: [isClient, duration, activePin, stickyOffset],
     compute: ({ scrollY, viewportHeight: vh }) => {
       if (vh !== lastVhRef.current) {
         lastVhRef.current = vh;
@@ -143,12 +206,18 @@ export function Scene({
       const spacer = spacerRef.current;
       if (!spacer) return;
       const rect = spacer.getBoundingClientRect();
-      const offsetTop = rect.top + scrollY;
+      const offsetTop = tracker.offsetTop(spacer, scrollY);
       const durationPx = parseDuration(duration, vh);
       // Effective duration (spacer - viewport) maps progress 0→1 exactly to the
       // time the sticky content is pinned on screen.
-      const effectiveDuration = pin ? Math.max(1, durationPx - vh) : durationPx;
-      const p = calcSceneProgress(scrollY, offsetTop, effectiveDuration);
+      const effectiveDuration = activePin
+        ? Math.max(1, durationPx - vh)
+        : durationPx;
+      const p = calcSceneProgress(
+        scrollY,
+        offsetTop - stickyOffset,
+        effectiveDuration,
+      );
       progressValue.set(p);
       if (isRenderPropRef.current) setRenderProgress(p);
     },
@@ -158,17 +227,26 @@ export function Scene({
 
   const spacerStyle: CSSProperties = {
     position: "relative",
-    height: isClient ? `${durationPx}px` : duration,
+    ["--kino-viewport" as string]: viewportHeight
+      ? `${viewportHeight}px`
+      : "100svh",
+    height:
+      natural || reducedMotion || controlledProgress !== undefined
+        ? "auto"
+        : isClient
+          ? `${durationPx}px`
+          : duration,
   };
 
-  const stickyStyle: CSSProperties = pin
-    ? {
-        position: "sticky",
-        top: 0,
-        height: "100vh",
-        overflow: "hidden",
-      }
-    : {};
+  const stickyStyle: CSSProperties =
+    activePin && controlledProgress === undefined
+      ? {
+          position: "sticky",
+          top: stickyOffset,
+          height: viewportHeight ? viewportHeight - stickyOffset : "100vh",
+          overflow: overflow === "clip" ? "hidden" : "visible",
+        }
+      : {};
 
   const resolvedChildren = isRenderProp
     ? (children as (progress: number) => ReactNode)(renderProgress)
@@ -177,9 +255,17 @@ export function Scene({
   return (
     <div ref={spacerRef} style={spacerStyle} className={className}>
       <div style={{ ...stickyStyle, ...style }}>
-        <SceneProgressValueContext.Provider value={progressValue}>
-          {resolvedChildren}
-        </SceneProgressValueContext.Provider>
+        <div
+          ref={contentRef}
+          data-kino-content
+          style={{ display: "flow-root" }}
+        >
+          <SceneReadingContext.Provider value={natural || reducedMotion}>
+            <SceneProgressValueContext.Provider value={progressValue}>
+              {resolvedChildren}
+            </SceneProgressValueContext.Provider>
+          </SceneReadingContext.Provider>
+        </div>
       </div>
     </div>
   );

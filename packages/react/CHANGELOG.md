@@ -1,11 +1,25 @@
 # react-kino
 
+## 0.6.0
+
+### Minor Changes
+
+- Add portable version 1 story documents, a real Story renderer, optional local Storyboard with direct timing handles, undo/redo, drafts, import/export, six distinct recipes and optional original visual components. Add safe CLI scaffolding, recipe generation, validation and diagnostics, schema and an agent skill.
+
+  Fix tall pinned content, local parallax ranges, reduced-motion reading paths, nested scroll roots, late layout changes and video loading/error handling. Keep editor code out of runtime imports, correct ESM/CJS type export conditions, repair registry serving and add consumer/browser release checks.
+
+  Rebuild the site around real authoring and reading workflows, align canonical/discovery metadata and npm READMEs, and link voluntary shared maintainer support without adding payment gates or automatic workflows.
+
+### Patch Changes
+
+- Updated dependencies
+  - @react-kino/core@0.4.0
+
 ## 0.5.0
 
 ### Minor Changes
 
 - c781aeb: Performance re-architecture: ref-based rendering engine (backward-compatible).
-
   - **`ProgressValue` primitive** in `@react-kino/core` — a tiny, React-free motion value (`get` / `set` / `on`) that skips redundant notifications. It's the backbone of the new engine.
   - **Ref-based rendering path** — `<Scene>` now exposes progress as a stable `ProgressValue`, and the built-in components (`Parallax`, `ScrollTransform`, `Reveal`, `HorizontalScroll`, `Counter`, `TextReveal`, `VideoScroll`) subscribe to it and write `transform` / `opacity` / `textContent` directly to the DOM. Scrolling a scene now triggers **zero React re-renders** for these components. The numeric `useSceneContext()` and render-prop APIs still work unchanged (they opt back into re-rendering).
   - **New fast-path hooks** — `useSceneProgressValue()` and `useScrollProgressValue()` return a `ProgressValue` you subscribe to imperatively; `useSceneProgress()` / `useScrollProgress()` remain for the re-rendering path.
@@ -23,7 +37,6 @@
 ### Minor Changes
 
 - Bug fixes and new APIs from a full audit:
-
   - Fix: `ScrollTracker` now emits on window resize (debounced + rAF-coalesced); `Scene`, `VideoScroll`, and `HorizontalScroll` recompute viewport-dependent values, so pinned scenes no longer desync after resize or mobile URL-bar changes
   - Fix: `VideoScroll` seeks to the correct frame as soon as video metadata loads (no more stale first frame)
   - Fix: `HorizontalScroll` honors `prefers-reduced-motion`

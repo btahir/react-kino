@@ -5,6 +5,21 @@ import { Parallax } from "../parallax";
 
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class MockScrollTracker {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe = vi.fn(() => vi.fn());
     start = vi.fn();
     stop = vi.fn();
@@ -16,7 +31,7 @@ describe("Parallax", () => {
     render(
       <Parallax>
         <div data-testid="child">Hello</div>
-      </Parallax>
+      </Parallax>,
     );
     expect(screen.getByTestId("child")).toBeTruthy();
     expect(screen.getByText("Hello")).toBeTruthy();
@@ -26,7 +41,7 @@ describe("Parallax", () => {
     const { container } = render(
       <Parallax>
         <div>Content</div>
-      </Parallax>
+      </Parallax>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     // After useEffect fires, offset=0 but transform is still applied
@@ -37,7 +52,7 @@ describe("Parallax", () => {
     const { container } = render(
       <Parallax speed={0.8}>
         <div>Content</div>
-      </Parallax>
+      </Parallax>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper).toBeTruthy();
@@ -47,7 +62,7 @@ describe("Parallax", () => {
     const { container } = render(
       <Parallax direction="horizontal">
         <div>Content</div>
-      </Parallax>
+      </Parallax>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper).toBeTruthy();
@@ -57,7 +72,7 @@ describe("Parallax", () => {
     const { container } = render(
       <Parallax className="custom-parallax">
         <div>Content</div>
-      </Parallax>
+      </Parallax>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.className).toBe("custom-parallax");
@@ -67,7 +82,7 @@ describe("Parallax", () => {
     const { container } = render(
       <Parallax style={{ backgroundColor: "red" }}>
         <div>Content</div>
-      </Parallax>
+      </Parallax>,
     );
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.backgroundColor).toBe("red");

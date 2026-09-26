@@ -1,20 +1,80 @@
 {
   "name": "react-kino",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Cinematic scroll-driven storytelling components for React",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./document": {
+      "import": {
+        "types": "./dist/document.d.mts",
+        "default": "./dist/document.mjs"
+      },
+      "require": {
+        "types": "./dist/document.d.ts",
+        "default": "./dist/document.js"
+      }
+    },
+    "./story": {
+      "import": {
+        "types": "./dist/story.d.mts",
+        "default": "./dist/story.mjs"
+      },
+      "require": {
+        "types": "./dist/story.d.ts",
+        "default": "./dist/story.js"
+      }
+    },
+    "./recipes": {
+      "import": {
+        "types": "./dist/recipes.d.mts",
+        "default": "./dist/recipes.mjs"
+      },
+      "require": {
+        "types": "./dist/recipes.d.ts",
+        "default": "./dist/recipes.js"
+      }
+    },
+    "./studio": {
+      "import": {
+        "types": "./dist/studio.d.mts",
+        "default": "./dist/studio.mjs"
+      },
+      "require": {
+        "types": "./dist/studio.d.ts",
+        "default": "./dist/studio.js"
+      }
+    },
+    "./recipe-kit": {
+      "import": {
+        "types": "./dist/recipe-kit.d.mts",
+        "default": "./dist/recipe-kit.mjs"
+      },
+      "require": {
+        "types": "./dist/recipe-kit.d.ts",
+        "default": "./dist/recipe-kit.js"
+      }
+    }
   },
   "files": [
-    "dist"
+    "dist",
+    "schema",
+    "skills",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
   ],
   "sideEffects": false,
   "scripts": {
@@ -62,8 +122,31 @@
     "url": "https://github.com/btahir/react-kino.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/btahir/react-kino#readme",
+  "homepage": "https://www.react-kino.dev",
   "bugs": {
     "url": "https://github.com/btahir/react-kino/issues"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://react-tourlight.vercel.app/support"
+  },
+  "typesVersions": {
+    "*": {
+      "document": [
+        "dist/document.d.ts"
+      ],
+      "story": [
+        "dist/story.d.ts"
+      ],
+      "recipes": [
+        "dist/recipes.d.ts"
+      ],
+      "studio": [
+        "dist/studio.d.ts"
+      ],
+      "recipe-kit": [
+        "dist/recipe-kit.d.ts"
+      ]
+    }
   }
 }

@@ -1,1605 +1,176 @@
-"use client";
-
-import {
-  Kino,
-  Scene,
-  Reveal,
-  Parallax,
-  Counter,
-  CompareSlider,
-  TextReveal,
-  Progress,
-  Marquee,
-  StickyHeader,
-  ScrollTransform,
-} from "react-kino";
 import Link from "next/link";
-import { useState } from "react";
-
-/* ─── Hero ─── */
-function Hero() {
+import { storyRecipes } from "react-kino/recipes";
+import { LandingStory } from "@/components/landing-story";
+import "./landing.css";
+export default function Page() {
   return (
-    <section
-      style={{
-        position: "relative",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-      }}
-    >
-      {/* Main red glow orb */}
-      <Parallax speed={0.15}>
-        <div
-          style={{
-            position: "absolute",
-            top: "5%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "900px",
-            height: "900px",
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(220, 38, 38, 0.25) 0%, rgba(180, 20, 20, 0.1) 35%, transparent 65%)",
-            filter: "blur(60px)",
-            pointerEvents: "none",
-          }}
-        />
-      </Parallax>
-
-      {/* Secondary warm glow - offset */}
-      <Parallax speed={0.25}>
-        <div
-          style={{
-            position: "absolute",
-            top: "30%",
-            left: "30%",
-            width: "500px",
-            height: "500px",
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, transparent 60%)",
-            filter: "blur(80px)",
-            pointerEvents: "none",
-          }}
-        />
-      </Parallax>
-
-      {/* Third glow - bottom right accent */}
-      <Parallax speed={0.35}>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10%",
-            right: "20%",
-            width: "400px",
-            height: "400px",
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(153, 27, 27, 0.15) 0%, transparent 60%)",
-            filter: "blur(60px)",
-            pointerEvents: "none",
-          }}
-        />
-      </Parallax>
-
-      {/* Grid pattern */}
-      <Parallax speed={0.3}>
-        <div
-          style={{
-            position: "absolute",
-            inset: "-60%",
-            backgroundImage:
-              "linear-gradient(rgba(220, 38, 38, 0.06) 1px, transparent 1px), " +
-              "linear-gradient(90deg, rgba(220, 38, 38, 0.06) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-            pointerEvents: "none",
-            maskImage:
-              "radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse at 50% 50%, black 20%, transparent 70%)",
-          }}
-        />
-      </Parallax>
-
-      {/* Diagonal light streaks */}
-      <Parallax speed={0.4}>
-        <div
-          style={{
-            position: "absolute",
-            top: "-20%",
-            left: "10%",
-            width: "200%",
-            height: "200%",
-            backgroundImage:
-              "linear-gradient(135deg, transparent 40%, rgba(220, 38, 38, 0.03) 40.5%, rgba(220, 38, 38, 0.03) 41%, transparent 41.5%, transparent 55%, rgba(220, 38, 38, 0.02) 55.5%, rgba(220, 38, 38, 0.02) 56%, transparent 56.5%)",
-            pointerEvents: "none",
-          }}
-        />
-      </Parallax>
-
-      {/* Diamond accent shapes */}
-      <Parallax speed={0.5}>
-        <div
-          style={{
-            position: "absolute",
-            top: "18%",
-            right: "14%",
-            width: "100px",
-            height: "100px",
-            border: "1px solid rgba(220, 38, 38, 0.15)",
-            transform: "rotate(45deg)",
-            pointerEvents: "none",
-            boxShadow: "0 0 30px rgba(220, 38, 38, 0.05)",
-          }}
-        />
-      </Parallax>
-      <Parallax speed={0.7}>
-        <div
-          style={{
-            position: "absolute",
-            bottom: "22%",
-            left: "10%",
-            width: "70px",
-            height: "70px",
-            border: "1px solid rgba(220, 38, 38, 0.12)",
-            transform: "rotate(45deg)",
-            pointerEvents: "none",
-            boxShadow: "0 0 20px rgba(220, 38, 38, 0.04)",
-          }}
-        />
-      </Parallax>
-      <Parallax speed={0.6}>
-        <div
-          style={{
-            position: "absolute",
-            top: "60%",
-            right: "8%",
-            width: "40px",
-            height: "40px",
-            border: "1px solid rgba(220, 38, 38, 0.08)",
-            transform: "rotate(45deg)",
-            pointerEvents: "none",
-          }}
-        />
-      </Parallax>
-      <Parallax speed={0.45}>
-        <div
-          style={{
-            position: "absolute",
-            top: "35%",
-            left: "20%",
-            width: "24px",
-            height: "24px",
-            background: "rgba(220, 38, 38, 0.08)",
-            transform: "rotate(45deg)",
-            pointerEvents: "none",
-          }}
-        />
-      </Parallax>
-
-      {/* Main content */}
-      <Parallax speed={1.1}>
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            textAlign: "center",
-            maxWidth: "900px",
-            padding: "0 24px",
-          }}
-        >
-          <h1
-            className="section-heading"
-            style={{
-              fontSize: "clamp(64px, 10vw, 150px)",
-              marginBottom: "20px",
-              textShadow:
-                "0 0 80px rgba(220, 38, 38, 0.3), 0 0 160px rgba(220, 38, 38, 0.1)",
-            }}
-          >
-            react-
-            <span
-              style={{
-                backgroundImage:
-                  "linear-gradient(135deg, #f87171 0%, #ef4444 30%, #dc2626 60%, #991b1b 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              kino
-            </span>
-          </h1>
-
-          <p
-            style={{
-              fontSize: "clamp(16px, 2vw, 20px)",
-              lineHeight: 1.7,
-              color: "#777",
-              maxWidth: "520px",
-              margin: "0 auto 36px",
-              fontWeight: 300,
-            }}
-          >
-            Cinematic scroll-driven storytelling for React.
-            <br />
-            Core engine under 1&nbsp;KB gzipped.
-          </p>
-
-          <div style={{ marginBottom: "28px" }}>
-            <code
-              style={{
-                display: "inline-block",
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "14px",
-                background: "rgba(220, 38, 38, 0.05)",
-                border: "1px solid rgba(220, 38, 38, 0.15)",
-                borderRadius: "6px",
-                padding: "10px 20px",
-                color: "#ef4444",
-              }}
-            >
-              npm install react-kino
-              <span
-                style={{
-                  display: "inline-block",
-                  width: "2px",
-                  height: "14px",
-                  background: "#ef4444",
-                  marginLeft: "4px",
-                  verticalAlign: "middle",
-                  animation: "blink-cursor 1s infinite",
-                }}
-              />
-            </code>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <Link href="/docs" className="gamer-btn-primary">
-              Documentation
-            </Link>
-            <Link href="/playground" className="gamer-btn-outline">
-              Playground
-            </Link>
-            <a
-              href="https://github.com/btahir/react-kino"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gamer-btn-outline"
-            >
-              GitHub
-            </a>
-          </div>
+    <main className="kino-landing">
+      <nav className="kl-nav" aria-label="Main navigation">
+        <Link className="kl-logo" href="/">
+          kino<span>↗</span>
+        </Link>
+        <div>
+          <Link href="/docs">Documentation</Link>
+          <Link href="#recipes">Recipes</Link>
+          <Link href="https://github.com/btahir/react-kino">GitHub ↗</Link>
+          <Link className="kl-button kl-button-small" href="/studio">
+            Open Storyboard
+          </Link>
         </div>
-      </Parallax>
-
-      <div
-        style={{
-          position: "absolute",
-          bottom: "36px",
-          left: "50%",
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: "11px",
-          color: "#444",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          animation: "bounce-down 2s ease-in-out infinite",
-        }}
+      </nav>
+      <header className="kl-hero">
+        <div className="kl-kicker">
+          <span /> OPEN-SOURCE SCROLL STORYTELLING FOR REACT
+        </div>
+        <h1>
+          Give your story
+          <br />
+          <em>a sense of motion.</em>
+        </h1>
+        <p>
+          Build cinematic pages in React. Tune the timing by eye.
+          <br className="kl-desktop" /> Keep every scene, component, and line of
+          code yours.
+        </p>
+        <div className="kl-hero-actions">
+          <Link href="/studio" className="kl-button">
+            Make a story <span>↗</span>
+          </Link>
+          <Link href="/docs">Start with code →</Link>
+        </div>
+        <div className="kl-install">
+          <code>npm install react-kino</code>
+          <span>React 18+ · MIT · No account</span>
+        </div>
+      </header>
+      <section
+        className="kl-canvas-wrap"
+        aria-label="Interactive story preview"
       >
-        ↓ scroll to explore
-      </div>
-    </section>
-  );
-}
-
-/* ─── Marquee Strip ─── */
-function MarqueeStrip() {
-  const names = [
-    "Scene",
-    "Reveal",
-    "Parallax",
-    "Counter",
-    "TextReveal",
-    "CompareSlider",
-    "HorizontalScroll",
-    "Progress",
-    "VideoScroll",
-    "Marquee",
-    "StickyHeader",
-    "ScrollTransform",
-    "Kino",
-  ];
-  return (
-    <div
-      style={{
-        borderTop: "1px solid #141414",
-        borderBottom: "1px solid #141414",
-        padding: "18px 0",
-        background: "rgba(220, 38, 38, 0.01)",
-      }}
-    >
-      <Marquee speed={25} gap={56}>
-        {names.map((n) => (
-          <span
-            key={n}
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "13px",
-              color: "#2a2a2a",
-              letterSpacing: "0.05em",
-            }}
-          >
-            {"<"}
-            <span style={{ color: "#3a1515" }}>{n}</span>
-            {" />"}
-          </span>
-        ))}
-      </Marquee>
-    </div>
-  );
-}
-
-/* ─── Scene Demo ─── */
-function SceneDemo() {
-  return (
-    <Scene duration="120vh">
-      {(progress) => (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: `radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, ${0.04 + 0.1 * progress}) 0%, #080808 65%)`,
-            padding: "0 24px",
-          }}
-        >
-          <span className="component-tag" style={{ marginBottom: "32px" }}>
-            {"<Scene>"}
-          </span>
-          <div
-            style={{
-              fontSize: "clamp(80px, 15vw, 200px)",
-              fontFamily: "'Rajdhani', sans-serif",
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
-              lineHeight: 1,
-              marginBottom: "20px",
-              backgroundImage: `linear-gradient(135deg, #ffffff ${Math.max(0, 70 - progress * 100)}%, #ef4444 ${100 - progress * 50}%, #7f1d1d 100%)`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              textShadow:
-                progress > 0.3
-                  ? `0 0 60px rgba(220, 38, 38, ${progress * 0.3})`
-                  : "none",
-              filter:
-                progress > 0.3
-                  ? `drop-shadow(0 0 40px rgba(220, 38, 38, ${progress * 0.25}))`
-                  : "none",
-            }}
-          >
-            {Math.round(progress * 100)}%
-          </div>
-          <p
-            style={{
-              fontSize: "13px",
-              fontFamily: "'JetBrains Mono', monospace",
-              color: "#444",
-              letterSpacing: "0.08em",
-            }}
-          >
-            scene progress
-          </p>
-
-          {/* Audio-bar visualizer */}
-          <div
-            style={{
-              marginTop: "40px",
-              display: "flex",
-              gap: "6px",
-              alignItems: "end",
-              height: "60px",
-            }}
-          >
-            {[0.8, 1.2, 1.6, 1.2, 0.8, 1.4, 1.0, 0.6].map((mult, i) => (
-              <div
-                key={i}
-                style={{
-                  width: "4px",
-                  height: `${8 + progress * 50 * mult}px`,
-                  background: `linear-gradient(to top, rgba(220, 38, 38, ${0.2 + progress * 0.8}), rgba(239, 68, 68, ${0.1 + progress * 0.6}))`,
-                  borderRadius: "2px",
-                  boxShadow:
-                    progress > 0.5
-                      ? `0 0 8px rgba(220, 38, 38, ${progress * 0.3})`
-                      : "none",
-                  transition: "height 0.1s ease",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </Scene>
-  );
-}
-
-/* ─── TextReveal Demo ─── */
-function TextRevealDemo() {
-  return (
-    <Scene duration="150vh">
-      {(progress) => (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 24px",
-          }}
-        >
-          <span className="component-tag" style={{ marginBottom: "40px" }}>
-            {"<TextReveal>"}
-          </span>
-          <div
-            style={{
-              maxWidth: "700px",
-              fontSize: "clamp(28px, 4vw, 48px)",
-              fontWeight: 600,
-              lineHeight: 1.4,
-              letterSpacing: "-0.02em",
-              textAlign: "center",
-            }}
-          >
-            <TextReveal progress={progress} mode="word" at={0.0} span={0.75}>
-              Scroll-driven storytelling components for React. Build cinematic
-              experiences without the complexity.
-            </TextReveal>
-          </div>
-        </div>
-      )}
-    </Scene>
-  );
-}
-
-/* ─── Reveal Demo ─── */
-function RevealDemo() {
-  const animations = [
-    "fade",
-    "fade-up",
-    "fade-down",
-    "scale",
-    "blur",
-  ] as const;
-
-  return (
-    <Scene duration="200vh">
-      {(progress) => (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 24px",
-          }}
-        >
-          <span className="component-tag" style={{ marginBottom: "32px" }}>
-            {"<Reveal>"}
-          </span>
-          <h2
-            className="section-heading"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              marginBottom: "16px",
-              textAlign: "center",
-              opacity: Math.min(1, progress * 6),
-            }}
-          >
-            Five entrance animations.
+        <LandingStory />
+        <p className="kl-caption">
+          <span>A real scene. The same runtime your site uses.</span>
+          <span>Scrub it. Change it. Make it yours.</span>
+        </p>
+      </section>
+      <section className="kl-workflow">
+        <div>
+          <span className="kl-kicker">FROM AN IDEA TO A PAGE</span>
+          <h2>
+            A visual workflow.
+            <br />A familiar codebase.
           </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#666",
-              marginBottom: "48px",
-              textAlign: "center",
-              opacity: Math.min(1, progress * 5),
-            }}
-          >
-            Each triggered by scroll progress.
-          </p>
-          <div
-            style={{
-              display: "flex",
-              gap: "16px",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              maxWidth: "900px",
-            }}
-          >
-            {animations.map((anim, i) => (
-              <Reveal
-                key={anim}
-                animation={anim}
-                progress={progress}
-                at={0.15 + i * 0.1}
-                duration={800}
-              >
-                <div
-                  className="gamer-card"
-                  style={{ padding: "28px 32px", minWidth: "150px", textAlign: "center" }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "13px",
-                      color: "#ef4444",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    {anim}
-                  </div>
-                  <div style={{ fontSize: "13px", color: "#555" }}>animation</div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
-      )}
-    </Scene>
-  );
-}
-
-/* ─── ScrollTransform Demo ─── */
-function ScrollTransformDemo() {
-  return (
-    <Scene duration="200vh">
-      {() => (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 24px",
-          }}
-        >
-          <span className="component-tag" style={{ marginBottom: "32px" }}>
-            {"<ScrollTransform>"}
-          </span>
-          <h2
-            className="section-heading"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              marginBottom: "12px",
-              textAlign: "center",
-            }}
-          >
-            Transform on scroll.
-          </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#666",
-              marginBottom: "56px",
-              textAlign: "center",
-              maxWidth: "480px",
-            }}
-          >
-            3D rotations, scale, and opacity — all driven by scroll progress.
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "24px",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            {/* Card 1: Device tilt */}
-            <ScrollTransform
-              from={{ rotateX: 35, rotateY: -10, scale: 0.8, opacity: 0.2 }}
-              to={{ rotateX: 0, rotateY: 0, scale: 1, opacity: 1 }}
-              perspective={1000}
-              span={0.5}
-              easing="ease-out-cubic"
-              transformOrigin="center bottom"
-            >
-              <div
-                className="gamer-card"
-                style={{
-                  padding: "40px 48px",
-                  textAlign: "center",
-                  minWidth: "200px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "#dc2626",
-                    marginBottom: "12px",
-                  }}
-                >
-                  {"{ 3D }"}
-                </div>
-                <div style={{ fontSize: "13px", color: "#555" }}>device tilt</div>
-              </div>
-            </ScrollTransform>
-
-            {/* Card 2: Flip Y */}
-            <ScrollTransform
-              from={{ rotateY: 90, opacity: 0 }}
-              to={{ rotateY: 0, opacity: 1 }}
-              perspective={800}
-              at={0.2}
-              span={0.4}
-              easing="ease-out-cubic"
-            >
-              <div
-                className="gamer-card"
-                style={{
-                  padding: "40px 48px",
-                  textAlign: "center",
-                  minWidth: "200px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "#dc2626",
-                    marginBottom: "12px",
-                  }}
-                >
-                  {"↻ Y"}
-                </div>
-                <div style={{ fontSize: "13px", color: "#555" }}>flip Y</div>
-              </div>
-            </ScrollTransform>
-
-            {/* Card 3: Unfold */}
-            <ScrollTransform
-              from={{ rotateX: -60, rotateY: 20, scale: 0.6, opacity: 0 }}
-              to={{ rotateX: 0, rotateY: 0, scale: 1, opacity: 1 }}
-              perspective={1200}
-              transformOrigin="top center"
-              at={0.35}
-              span={0.4}
-              easing="ease-out-cubic"
-            >
-              <div
-                className="gamer-card"
-                style={{
-                  padding: "40px 48px",
-                  textAlign: "center",
-                  minWidth: "200px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "32px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "#dc2626",
-                    marginBottom: "12px",
-                  }}
-                >
-                  {"⊞"}
-                </div>
-                <div style={{ fontSize: "13px", color: "#555" }}>unfold</div>
-              </div>
-            </ScrollTransform>
-          </div>
-        </div>
-      )}
-    </Scene>
-  );
-}
-
-/* ─── Counter Demo ─── */
-function CounterDemo() {
-  return (
-    <Scene duration="120vh">
-      {(progress) => (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 24px",
-          }}
-        >
-          <span className="component-tag" style={{ marginBottom: "32px" }}>
-            {"<Counter>"}
-          </span>
-          <h2
-            className="section-heading"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              marginBottom: "12px",
-              textAlign: "center",
-              opacity: Math.min(1, progress * 8),
-            }}
-          >
-            Numbers that move.
-          </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#666",
-              marginBottom: "56px",
-              textAlign: "center",
-              opacity: Math.min(1, progress * 6),
-            }}
-          >
-            Animated counters driven by scroll progress.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "24px",
-              maxWidth: "800px",
-              width: "100%",
-            }}
-          >
-            {[
-              {
-                label: "Core (Gzip)",
-                to: 0.9,
-                fmt: (n: number) => `${n.toFixed(1)} KB`,
-              },
-              {
-                label: "React-Kino (Gzip)",
-                to: 4.9,
-                fmt: (n: number) => `${n.toFixed(1)} KB`,
-              },
-              { label: "Components", to: 13, fmt: (n: number) => `${n}` },
-            ].map((stat, i) => (
-              <div key={stat.label} style={{ textAlign: "center", padding: "24px 8px" }}>
-                <div
-                  style={{
-                    fontSize: "clamp(36px, 5vw, 72px)",
-                    fontFamily: "'Rajdhani', sans-serif",
-                    fontWeight: 700,
-                    color: "#ef4444",
-                    letterSpacing: "-0.02em",
-                    lineHeight: 1.1,
-                    marginBottom: "8px",
-                    textShadow: `0 0 40px rgba(220, 38, 38, ${0.1 + progress * 0.3})`,
-                  }}
-                >
-                  <Counter
-                    from={0}
-                    to={stat.to}
-                    at={0.05 + i * 0.05}
-                    span={0.5}
-                    progress={progress}
-                    format={stat.fmt}
-                  />
-                </div>
-                <span
-                  style={{
-                    fontSize: "12px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                    color: "#444",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.12em",
-                  }}
-                >
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </Scene>
-  );
-}
-
-/* ─── Compare Demo ─── */
-function CompareDemo() {
-  return (
-    <Scene duration="150vh">
-      {(progress) => (
-        <div
-          style={{
-            width: "100%",
-            height: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 24px",
-          }}
-        >
-          <span className="component-tag" style={{ marginBottom: "32px" }}>
-            {"<CompareSlider>"}
-          </span>
-          <h2
-            className="section-heading"
-            style={{
-              fontSize: "clamp(32px, 5vw, 56px)",
-              marginBottom: "12px",
-              textAlign: "center",
-              opacity: Math.min(1, progress * 8),
-            }}
-          >
-            Before &amp; After.
-          </h2>
-          <p
-            style={{
-              fontSize: "16px",
-              color: "#666",
-              marginBottom: "40px",
-              textAlign: "center",
-              opacity: Math.min(1, progress * 6),
-            }}
-          >
-            Scroll-driven comparison slider.
-          </p>
-
-          <div
-            style={{
-              maxWidth: "640px",
-              width: "100%",
-              borderRadius: "12px",
-              overflow: "hidden",
-              border: "1px solid #1a1a1a",
-              boxShadow: `0 0 40px rgba(220, 38, 38, ${progress * 0.08})`,
-            }}
-          >
-            <CompareSlider
-              scrollDriven
-              progress={progress}
-              before={
-                <div
-                  style={{
-                    width: "100%",
-                    height: "360px",
-                    background: "#0c0c0c",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "16px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                  }}
-                >
-                  <div style={{ fontSize: "48px", opacity: 0.1 }}>{"{ }"}</div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#333",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Without react-kino
-                  </div>
-                  <div style={{ fontSize: "12px", color: "#222" }}>
-                    Static content
-                  </div>
-                </div>
-              }
-              after={
-                <div
-                  style={{
-                    width: "100%",
-                    height: "360px",
-                    background:
-                      "linear-gradient(135deg, #120808 0%, #1a0a0a 30%, #2a0e0e 60%, #dc2626 100%)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "16px",
-                    fontFamily: "'JetBrains Mono', monospace",
-                  }}
-                >
-                  <div style={{ fontSize: "48px" }}>{"{ }"}</div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "rgba(255,255,255,0.8)",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    With react-kino
-                  </div>
-                  <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>
-                    Cinematic scroll experience
-                  </div>
-                </div>
-              }
-            />
-          </div>
-        </div>
-      )}
-    </Scene>
-  );
-}
-
-/* ─── Feature Showcase (bidirectional slide-in) ─── */
-function FeatureShowcase() {
-  const fromLeft = [
-    {
-      icon: "//",
-      title: "Tiny Core Engine",
-      description: "Core runtime is under 1 KB gzipped.",
-    },
-    {
-      icon: "<>",
-      title: "Declarative API",
-      description: "Compose scenes and animations like JSX.",
-    },
-  ];
-  const fromRight = [
-    {
-      icon: ">>",
-      title: "GPU Accelerated",
-      description: "CSS transforms and will-change for 60fps.",
-    },
-    {
-      icon: "a11y",
-      title: "Accessible",
-      description: "Respects prefers-reduced-motion out of the box.",
-    },
-  ];
-
-  return (
-    <Scene duration="180vh">
-      {(progress) => {
-        const slide = Math.min(1, progress * 2.5);
-        const ease = 1 - Math.pow(1 - slide, 3); // easeOutCubic
-
-        return (
-          <div
-            style={{
-              width: "100%",
-              height: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "0 24px",
-              overflow: "hidden",
-            }}
-          >
-            <span className="component-tag" style={{ marginBottom: "32px" }}>
-              {"<Scene>"}
-            </span>
-            <h2
-              className="section-heading"
-              style={{
-                fontSize: "clamp(32px, 5vw, 56px)",
-                marginBottom: "12px",
-                textAlign: "center",
-                opacity: Math.min(1, progress * 5),
-              }}
-            >
-              Features worth scrolling for.
-            </h2>
-            <p
-              style={{
-                fontSize: "16px",
-                color: "#666",
-                marginBottom: "48px",
-                textAlign: "center",
-                opacity: Math.min(1, progress * 4),
-              }}
-            >
-              Two directions. One scroll.
-            </p>
-
-            {/* Row 1: slides in from left */}
-            <div
-              style={{
-                display: "flex",
-                gap: "20px",
-                marginBottom: "20px",
-                transform: `translateX(${(1 - ease) * -110}%)`,
-                opacity: Math.min(1, progress * 3),
-                transition: "transform 0.05s linear",
-              }}
-            >
-              {fromLeft.map((f) => (
-                <div
-                  key={f.title}
-                  className="gamer-card"
-                  style={{
-                    padding: "36px 32px",
-                    width: "280px",
-                    flexShrink: 0,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "20px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      color: "#dc2626",
-                      marginBottom: "16px",
-                      fontWeight: 700,
-                      textShadow: "0 0 20px rgba(220, 38, 38, 0.3)",
-                    }}
-                  >
-                    {f.icon}
-                  </div>
-                  <h3
-                    style={{
-                      fontFamily: "'Rajdhani', sans-serif",
-                      fontSize: "20px",
-                      fontWeight: 700,
-                      marginBottom: "8px",
-                    }}
-                  >
-                    {f.title}
-                  </h3>
-                  <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.6 }}>
-                    {f.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Row 2: slides in from right */}
-            <div
-              style={{
-                display: "flex",
-                gap: "20px",
-                transform: `translateX(${(1 - ease) * 110}%)`,
-                opacity: Math.min(1, progress * 3),
-                transition: "transform 0.05s linear",
-              }}
-            >
-              {fromRight.map((f) => (
-                <div
-                  key={f.title}
-                  className="gamer-card"
-                  style={{
-                    padding: "36px 32px",
-                    width: "280px",
-                    flexShrink: 0,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "20px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      color: "#dc2626",
-                      marginBottom: "16px",
-                      fontWeight: 700,
-                      textShadow: "0 0 20px rgba(220, 38, 38, 0.3)",
-                    }}
-                  >
-                    {f.icon}
-                  </div>
-                  <h3
-                    style={{
-                      fontFamily: "'Rajdhani', sans-serif",
-                      fontSize: "20px",
-                      fontWeight: 700,
-                      marginBottom: "8px",
-                    }}
-                  >
-                    {f.title}
-                  </h3>
-                  <p style={{ fontSize: "14px", color: "#666", lineHeight: 1.6 }}>
-                    {f.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      }}
-    </Scene>
-  );
-}
-
-/* ─── Demo Video Grid ─── */
-function DemoVideoGrid() {
-  const demos = [
-    { name: "Scene", file: "scene" },
-    { name: "Marquee", file: "marquee" },
-    { name: "StickyHeader", file: "sticky-header" },
-    { name: "VideoScroll", file: "video-scroll" },
-    { name: "HorizontalScroll", file: "horizontal-scroll" },
-    { name: "Progress", file: "progress" },
-  ];
-
-  return (
-    <section
-      style={{
-        width: "100%",
-        padding: "80px 24px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <h2
-        className="section-heading"
-        style={{
-          fontSize: "clamp(28px, 4vw, 44px)",
-          marginBottom: "12px",
-          textAlign: "center",
-        }}
-      >
-        See Every Component.
-      </h2>
-      <p style={{ fontSize: "15px", color: "#666", marginBottom: "40px", textAlign: "center" }}>
-        Each clip shows a component in action — loop, watch, build.
-      </p>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "20px",
-          maxWidth: "1040px",
-          width: "100%",
-        }}
-      >
-        {demos.map((d) => (
-          <div key={d.file} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <video
-              src={`/demos/${d.file}.mp4`}
-              autoPlay
-              loop
-              muted
-              playsInline
-              style={{
-                width: "100%",
-                borderRadius: "10px",
-                border: "1px solid rgba(220, 38, 38, 0.15)",
-                boxShadow: "0 0 60px rgba(220, 38, 38, 0.06)",
-              }}
-            />
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "12px",
-                color: "#555",
-                paddingLeft: "4px",
-              }}
-            >
-              {"<"}{d.name}{" />"}
-            </span>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ─── Component Gallery (unlock cascade) ─── */
-function ComponentGallery() {
-  const components = [
-    { name: "Kino", code: "<Kino>", desc: "Root scroll tracker provider" },
-    { name: "Scene", code: '<Scene duration="200vh">', desc: "Pinned scroll-driven scenes with progress" },
-    { name: "Reveal", code: '<Reveal animation="fade-up">', desc: "Scroll-triggered entrance animations" },
-    { name: "Parallax", code: "<Parallax speed={0.5}>", desc: "Depth-based scroll parallax effects" },
-    { name: "TextReveal", code: '<TextReveal mode="word">', desc: "Progressive word-by-word text reveal" },
-    { name: "Counter", code: "<Counter from={0} to={100}>", desc: "Scroll-animated number counters" },
-    { name: "CompareSlider", code: "<CompareSlider>", desc: "Before & after comparison slider" },
-    { name: "HorizontalScroll", code: "<HorizontalScroll>", desc: "Vertical scroll to horizontal motion" },
-    { name: "Progress", code: '<Progress type="bar">', desc: "Global scroll progress indicators" },
-    { name: "VideoScroll", code: '<VideoScroll src="…">', desc: "Frame-by-frame video scrubbing on scroll" },
-    { name: "Marquee", code: "<Marquee speed={40}>", desc: "Infinite looping ticker animation" },
-    { name: "StickyHeader", code: "<StickyHeader>", desc: "Scroll-aware fixed header with blur" },
-    { name: "ScrollTransform", code: "<ScrollTransform>", desc: "Scroll-driven 3D transforms and opacity" },
-  ];
-
-  const hooks = [
-    { name: "useScrollProgress", desc: "Global page scroll 0→1" },
-    { name: "useSceneProgress", desc: "Per-element scroll tracking" },
-    { name: "useIsClient", desc: "SSR hydration guard" },
-  ];
-
-  return (
-    <Scene duration="250vh">
-      {(progress) => {
-        const totalItems = components.length + hooks.length;
-        // How many items are "unlocked" at current progress
-        const unlocked = Math.floor(progress * totalItems * 1.4);
-
-        return (
-          <div
-            style={{
-              width: "100%",
-              minHeight: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "60px 24px",
-            }}
-          >
-            <div style={{ textAlign: "center", marginBottom: "48px" }}>
-              <h2
-                className="section-heading"
-                style={{
-                  fontSize: "clamp(32px, 5vw, 56px)",
-                  marginBottom: "16px",
-                  opacity: Math.min(1, progress * 8),
-                }}
-              >
-                The Full Arsenal.
-              </h2>
-              <p
-                style={{
-                  fontSize: "16px",
-                  color: "#666",
-                  opacity: Math.min(1, progress * 6),
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "14px",
-                    color: "#ef4444",
-                  }}
-                >
-                  {Math.min(totalItems, unlocked)}
-                </span>
-                /{totalItems} unlocked &middot; core engine under 1 KB gzipped
+        <ol>
+          <li>
+            <span>01</span>
+            <div>
+              <h3>Compose your story</h3>
+              <p>
+                Start with a complete recipe, or bring your own components.
+                Arrange scenes and give each layer its moment.
               </p>
             </div>
-
-            {/* Component grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                gap: "14px",
-                maxWidth: "1040px",
-                width: "100%",
-                marginBottom: "40px",
-              }}
+          </li>
+          <li>
+            <span>02</span>
+            <div>
+              <h3>See what feels right</h3>
+              <p>
+                Scrub the real renderer. Drag timing handles. Preview a phone
+                layout. Undo the experiment that went too far.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>03</span>
+            <div>
+              <h3>Take it with you</h3>
+              <p>
+                Export a small JSON document, commit it beside your code, and
+                render it in your application. No hosted player required.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </section>
+      <section className="kl-recipes" id="recipes">
+        <div className="kl-section-title">
+          <div>
+            <span className="kl-kicker">A GOOD PLACE TO BEGIN</span>
+            <h2>One story. Many possibilities.</h2>
+          </div>
+          <Link href="/docs/recipes/story-recipes">
+            Get the recipe source →
+          </Link>
+        </div>
+        <div className="kl-recipe-grid">
+          {storyRecipes.map((recipe, index) => (
+            <Link
+              key={recipe.id}
+              href={`/recipes/${recipe.id}`}
+              className="kl-recipe"
             >
-              {components.map((c, i) => {
-                const isUnlocked = i < unlocked;
-                const isJustUnlocked = i === unlocked - 1;
-                return (
-                  <div
-                    key={c.name}
-                    className="gallery-card"
-                    style={{
-                      padding: "24px",
-                      borderRadius: "12px",
-                      background: isUnlocked ? "#111" : "#0a0a0a",
-                      border: `1px solid ${
-                        isJustUnlocked
-                          ? "rgba(220, 38, 38, 0.5)"
-                          : isUnlocked
-                            ? "rgba(220, 38, 38, 0.15)"
-                            : "#111"
-                      }`,
-                      boxShadow: isJustUnlocked
-                        ? "0 0 30px rgba(220, 38, 38, 0.15), 0 0 60px rgba(220, 38, 38, 0.05)"
-                        : "none",
-                      opacity: isUnlocked ? 1 : 0.25,
-                      transform: isUnlocked ? "scale(1)" : "scale(0.97)",
-                      transition:
-                        "opacity 0.4s ease, transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease",
-                    }}
-                  >
-                    <code
-                      style={{
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "12px",
-                        color: isUnlocked ? "#dc2626" : "#331111",
-                        display: "block",
-                        marginBottom: "12px",
-                        transition: "color 0.4s ease",
-                      }}
-                    >
-                      {c.code}
-                    </code>
-                    <h3
-                      style={{
-                        fontFamily: "'Rajdhani', sans-serif",
-                        fontSize: "20px",
-                        fontWeight: 600,
-                        marginBottom: "4px",
-                        color: isUnlocked ? "#e8e8e8" : "#333",
-                        transition: "color 0.4s ease",
-                      }}
-                    >
-                      {c.name}
-                    </h3>
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        color: isUnlocked ? "#555" : "#222",
-                        lineHeight: 1.5,
-                        transition: "color 0.4s ease",
-                      }}
-                    >
-                      {c.desc}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Hooks row */}
-            <div style={{ maxWidth: "1040px", width: "100%" }}>
-              <h3
-                style={{
-                  fontFamily: "'Rajdhani', sans-serif",
-                  fontSize: "16px",
-                  fontWeight: 600,
-                  color: "#444",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  marginBottom: "16px",
-                  textAlign: "center",
-                  opacity: Math.min(1, Math.max(0, (progress - 0.5) * 4)),
-                }}
-              >
-                Hooks
-              </h3>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "14px",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                {hooks.map((h, i) => {
-                  const hookIndex = components.length + i;
-                  const isUnlocked = hookIndex < unlocked;
-                  const isJustUnlocked = hookIndex === unlocked - 1;
-                  return (
-                    <div
-                      key={h.name}
-                      style={{
-                        padding: "16px 20px",
-                        borderRadius: "10px",
-                        background: isUnlocked ? "#111" : "#0a0a0a",
-                        border: `1px solid ${
-                          isJustUnlocked
-                            ? "rgba(220, 38, 38, 0.5)"
-                            : isUnlocked
-                              ? "rgba(220, 38, 38, 0.15)"
-                              : "#111"
-                        }`,
-                        boxShadow: isJustUnlocked
-                          ? "0 0 24px rgba(220, 38, 38, 0.12)"
-                          : "none",
-                        opacity: isUnlocked ? 1 : 0.25,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "14px",
-                        transition:
-                          "opacity 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease",
-                      }}
-                    >
-                      <code
-                        style={{
-                          fontFamily: "'JetBrains Mono', monospace",
-                          fontSize: "13px",
-                          color: isUnlocked ? "#ef4444" : "#331111",
-                          transition: "color 0.4s ease",
-                        }}
-                      >
-                        {h.name}()
-                      </code>
-                      <span
-                        style={{
-                          fontSize: "13px",
-                          color: isUnlocked ? "#555" : "#222",
-                          transition: "color 0.4s ease",
-                        }}
-                      >
-                        {h.desc}
-                      </span>
-                    </div>
-                  );
-                })}
+              <div className={`kl-recipe-art kl-art-${index}`}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <strong>{recipe.title}</strong>
+                <i>↗</i>
               </div>
-            </div>
-          </div>
-        );
-      }}
-    </Scene>
-  );
-}
-
-/* ─── Footer ─── */
-function Footer() {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText("npm install react-kino").then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <footer
-      style={{
-        padding: "100px 24px 60px",
-        textAlign: "center",
-        borderTop: "1px solid #141414",
-        background:
-          "radial-gradient(ellipse at 50% 0%, rgba(220, 38, 38, 0.03) 0%, transparent 60%)",
-      }}
-    >
-      <h2
-        className="section-heading"
-        style={{
-          fontSize: "clamp(32px, 4vw, 56px)",
-          marginBottom: "12px",
-          textShadow: "0 0 60px rgba(220, 38, 38, 0.15)",
-        }}
-      >
-        react-
-        <span style={{ color: "#dc2626" }}>kino</span>
-      </h2>
-      <p
-        style={{
-          fontSize: "17px",
-          color: "#666",
-          lineHeight: 1.7,
-          marginBottom: "40px",
-        }}
-      >
-        Cinematic scroll-driven storytelling for React.
-      </p>
-
-      <button
-        onClick={handleCopy}
-        className="gamer-card"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "12px",
-          padding: "16px 24px",
-          cursor: "pointer",
-          marginBottom: "32px",
-          color: "#ffffff",
-        }}
-      >
-        <code
-          style={{
-            fontSize: "14px",
-            fontFamily: "'JetBrains Mono', monospace",
-            color: "#ef4444",
-          }}
-        >
-          npm install react-kino
-        </code>
-        <span
-          style={{
-            fontSize: "12px",
-            color: copied ? "#ef4444" : "#444",
-            fontFamily: "'JetBrains Mono', monospace",
-            transition: "color 0.2s",
-          }}
-        >
-          {copied ? "copied!" : "click to copy"}
-        </span>
-      </button>
-
-      <div
-        style={{
-          display: "flex",
-          gap: "24px",
-          justifyContent: "center",
-          marginBottom: "48px",
-        }}
-      >
-        <Link href="/playground" className="nav-link" style={{ color: "#dc2626" }}>
-          Playground
-        </Link>
-        <Link href="/templates" className="nav-link" style={{ color: "#dc2626" }}>
-          Templates
-        </Link>
-        <Link href="/docs" className="nav-link" style={{ color: "#dc2626" }}>
-          Documentation
-        </Link>
-        <a
-          href="https://github.com/btahir/react-kino"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="nav-link"
-          style={{ color: "#dc2626" }}
-        >
-          GitHub
-        </a>
-      </div>
-
-      <p
-        style={{
-          fontSize: "12px",
-          fontFamily: "'JetBrains Mono', monospace",
-          color: "#222",
-          letterSpacing: "0.05em",
-        }}
-      >
-        built with react-kino
-      </p>
-    </footer>
-  );
-}
-
-/* ─── Page ─── */
-export default function LandingPage() {
-  return (
-    <div className="landing-page">
-      <Kino>
-        <StickyHeader threshold={60} background="rgba(8, 8, 8, 0.92)" blur>
-          <div className="site-nav">
-            <Link href="/" className="site-nav-logo" style={{ textDecoration: "none" }}>
-              react-<span>kino</span>
+              <h3>{recipe.title}</h3>
+              <p>{recipe.description}</p>
             </Link>
-            <div className="site-nav-links">
-              <Link href="/playground" className="nav-link">
-                Playground
-              </Link>
-              <Link href="/templates" className="nav-link">
-                Templates
-              </Link>
-              <Link href="/docs" className="nav-link">
-                Docs
-              </Link>
-              <a
-                href="https://github.com/btahir/react-kino"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nav-link"
-              >
-                GitHub
-              </a>
-            </div>
-          </div>
-        </StickyHeader>
-        <Progress type="bar" position="top" color="#dc2626" />
-        <Hero />
-
-        <MarqueeStrip />
-        <SceneDemo />
-        <TextRevealDemo />
-        <RevealDemo />
-        <ScrollTransformDemo />
-        <CounterDemo />
-        <CompareDemo />
-        <MarqueeStrip />
-        <FeatureShowcase />
-        <DemoVideoGrid />
-        <ComponentGallery />
-        <Footer />
-      </Kino>
-    </div>
+          ))}
+        </div>
+      </section>
+      <section className="kl-principles">
+        <div>
+          <span className="kl-kicker">MADE TO FIT THE REAL WORLD</span>
+          <h2>
+            Motion should never
+            <br />
+            get in the way.
+          </h2>
+        </div>
+        <div>
+          <p>
+            Readable mobile layouts. A reduced-motion path. Automatic fallback
+            when a pinned scene grows too tall. Your words should always have
+            room.
+          </p>
+          <p>
+            Use Kino's components on their own or add Storyboard through a
+            separate import. Your visitors don't download the editor.
+          </p>
+          <Link href="/docs/responsive-stories">
+            Read the layout principles →
+          </Link>
+        </div>
+      </section>
+      <section className="kl-final">
+        <span className="kl-kicker">YOUR NEXT PAGE STARTS HERE</span>
+        <h2>
+          Make something
+          <br />
+          <em>worth scrolling.</em>
+        </h2>
+        <Link href="/studio" className="kl-button">
+          Open Storyboard <span>↗</span>
+        </Link>
+      </section>
+      <footer className="kl-footer">
+        <span className="kl-logo">
+          kino<span>↗</span>
+        </span>
+        <p>Independent. Open source. Free under MIT.</p>
+        <div>
+          <Link href="/docs">Docs</Link>
+          <Link href="/playground">Components</Link>
+          <Link href="https://react-tourlight.vercel.app/support">
+            Support this project
+          </Link>
+          <Link href="https://github.com/btahir/react-kino">GitHub ↗</Link>
+        </div>
+      </footer>
+    </main>
   );
 }

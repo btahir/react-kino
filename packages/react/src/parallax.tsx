@@ -1,5 +1,10 @@
 "use client";
-import React, { useRef, type CSSProperties, type ReactNode } from "react";
+import React, {
+  useRef,
+  useEffect,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { useScrollTracker } from "./hooks/use-scroll-tracker";
 import { useGatedScroll } from "./hooks/use-gated-scroll";
 import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
@@ -7,6 +12,9 @@ import { usePrefersReducedMotion } from "./hooks/use-prefers-reduced-motion";
 export interface ParallaxProps {
   /** Speed multiplier: 1 = normal scroll, <1 = slower (background), >1 = faster (foreground) */
   speed?: number;
+  /** Element-relative range in pixels. Use both to enter from outside the viewport. */
+  from?: number;
+  to?: number;
   /** Scroll direction */
   direction?: "vertical" | "horizontal";
   children: ReactNode;
@@ -16,14 +24,21 @@ export interface ParallaxProps {
 
 export function Parallax({
   speed = 0.5,
+  from,
+  to,
   direction = "vertical",
   children,
   className,
   style,
 }: ParallaxProps) {
   const elRef = useRef<HTMLDivElement>(null);
+  const lastOffset = useRef(0);
   const reducedMotion = usePrefersReducedMotion();
   const { tracker, isOwned } = useScrollTracker();
+
+  useEffect(() => {
+    lastOffset.current = 0;
+  }, [direction, reducedMotion]);
 
   // Ref-based fast path: write the parallax transform directly on every scroll
   // frame without re-rendering, gated so off-screen parallax costs nothing.
@@ -32,11 +47,26 @@ export function Parallax({
     tracker,
     isOwned,
     enabled: !reducedMotion,
-    deps: [speed, direction],
-    compute: ({ scrollY }) => {
+    deps: [speed, direction, from, to],
+    compute: ({ scrollY, viewportHeight }) => {
       const el = elRef.current;
       if (!el) return;
-      const offset = scrollY * (1 - speed);
+      const start =
+        tracker.offsetTop(el, scrollY) -
+        (direction === "vertical" ? lastOffset.current : 0);
+      const local = Math.max(
+        0,
+        Math.min(
+          1,
+          (scrollY - start + viewportHeight) /
+            (viewportHeight + el.offsetHeight),
+        ),
+      );
+      const offset =
+        from !== undefined && to !== undefined
+          ? from + (to - from) * local
+          : (scrollY - start) * (1 - speed);
+      lastOffset.current = offset;
       el.style.transform =
         direction === "vertical"
           ? `translateY(${offset}px)`

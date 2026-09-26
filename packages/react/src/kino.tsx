@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
   type ReactNode,
+  type RefObject,
 } from "react";
 import { ScrollTracker } from "@react-kino/core";
 
@@ -29,18 +30,24 @@ export function useKinoOptional(): KinoContextValue | null {
   return useContext(KinoContext);
 }
 
-interface KinoProps {
+export interface KinoProps {
+  /** Scrollable ancestor. Keep the ref attached for the provider lifetime. */
+  root?: RefObject<HTMLElement | null>;
   children: ReactNode;
 }
 
-export function Kino({ children }: KinoProps) {
+export function Kino({ children, root }: KinoProps) {
   // Lazy init: useRef(new ScrollTracker()) would allocate a tracker on
   // every render even though only the first one is ever used. Passing a
   // function to useState-style lazy init isn't available for useRef, so we
   // guard the assignment instead.
+  const rootRef = useRef(root);
+  rootRef.current = root;
   const trackerRef = useRef<ScrollTracker | null>(null);
   if (trackerRef.current === null) {
-    trackerRef.current = new ScrollTracker();
+    trackerRef.current = new ScrollTracker(
+      () => rootRef.current?.current ?? null,
+    );
   }
 
   useEffect(() => {
@@ -55,4 +62,3 @@ export function Kino({ children }: KinoProps) {
     </KinoContext.Provider>
   );
 }
-

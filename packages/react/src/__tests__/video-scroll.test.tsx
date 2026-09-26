@@ -3,12 +3,28 @@ import React from "react";
 import { render, fireEvent, act } from "@testing-library/react";
 import { VideoScroll } from "../video-scroll";
 
-let capturedSubscriber: ((data: { scrollY: number; viewportHeight: number }) => void) | null =
-  null;
+let capturedSubscriber:
+  | ((data: { scrollY: number; viewportHeight: number }) => void)
+  | null = null;
 
 // Mock @react-kino/core to avoid real scroll tracking in tests
 vi.mock("@react-kino/core", () => ({
   ScrollTracker: class {
+    getRoot() {
+      return null;
+    }
+    snapshot() {
+      return {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        scrollHeight: document.documentElement.scrollHeight,
+        progress: 0,
+      };
+    }
+    offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+      return el.getBoundingClientRect().top + scrollY;
+    }
+
     subscribe(cb: (data: { scrollY: number; viewportHeight: number }) => void) {
       capturedSubscriber = cb;
       return () => {};
@@ -22,9 +38,7 @@ vi.mock("@react-kino/core", () => ({
 
 describe("VideoScroll", () => {
   it("renders the spacer div", () => {
-    const { container } = render(
-      <VideoScroll src="/test-video.mp4" />
-    );
+    const { container } = render(<VideoScroll src="/test-video.mp4" />);
     const spacer = container.firstElementChild as HTMLElement;
     expect(spacer).toBeTruthy();
     expect(spacer.style.position).toBe("relative");
@@ -32,9 +46,7 @@ describe("VideoScroll", () => {
   });
 
   it("renders a video element", () => {
-    const { container } = render(
-      <VideoScroll src="/test-video.mp4" />
-    );
+    const { container } = render(<VideoScroll src="/test-video.mp4" />);
     const video = container.querySelector("video");
     expect(video).toBeTruthy();
     expect(video!.getAttribute("src")).toBe("/test-video.mp4");
@@ -42,9 +54,7 @@ describe("VideoScroll", () => {
   });
 
   it("does not autoplay", () => {
-    const { container } = render(
-      <VideoScroll src="/test-video.mp4" />
-    );
+    const { container } = render(<VideoScroll src="/test-video.mp4" />);
     const video = container.querySelector("video");
     expect(video).toBeTruthy();
     expect(video!.autoplay).toBe(false);
@@ -52,7 +62,7 @@ describe("VideoScroll", () => {
 
   it("accepts poster prop", () => {
     const { container } = render(
-      <VideoScroll src="/test-video.mp4" poster="/poster.jpg" />
+      <VideoScroll src="/test-video.mp4" poster="/poster.jpg" />,
     );
     const video = container.querySelector("video");
     expect(video).toBeTruthy();
@@ -63,7 +73,7 @@ describe("VideoScroll", () => {
     const { container } = render(
       <VideoScroll src="/test-video.mp4">
         <div data-testid="overlay">Overlay content</div>
-      </VideoScroll>
+      </VideoScroll>,
     );
     const overlay = container.querySelector("[data-testid='overlay']");
     expect(overlay).toBeTruthy();
@@ -72,7 +82,7 @@ describe("VideoScroll", () => {
 
   it("applies custom className to the spacer", () => {
     const { container } = render(
-      <VideoScroll src="/test-video.mp4" className="custom-video" />
+      <VideoScroll src="/test-video.mp4" className="custom-video" />,
     );
     const spacer = container.firstElementChild as HTMLElement;
     expect(spacer.className).toBe("custom-video");

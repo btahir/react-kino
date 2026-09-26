@@ -5,15 +5,20 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "test": "turbo run test",
+    "test": "pnpm --filter @react-kino/core test && pnpm --filter react-kino test",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "test:e2e": "playwright test",
+    "test:tools": "node scripts/verify-tools.mjs",
+    "test:packed": "node scripts/verify-packed.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@changesets/cli": "^2.29.8",
+    "@playwright/test": "1.63.0",
     "turbo": "^2",
     "typescript": "^5"
   },

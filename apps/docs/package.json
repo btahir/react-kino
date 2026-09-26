@@ -2,7 +2,7 @@
   "name": "@react-kino/docs",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "pnpm -w exec turbo run build --filter=@react-kino/templates... && next build",
     "dev": "next dev --port 5173",
     "start": "next start",
     "clean": "rm -rf .next .source",

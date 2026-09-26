@@ -1,0 +1,78 @@
+---
+title: Storyboard and portable stories
+description: Edit real React scroll stories visually, export a versioned JSON document, and keep your components in your codebase.
+---
+
+Kino Storyboard is an optional, local visual editor. Open [the workspace](/studio), choose a recipe, and select a layer in the preview or timeline. Drag its start/end handles or use keyboard arrows and numeric fields. Adjust its transform, reorder layers or scenes, and compare the desktop animation with the mobile reading layout.
+
+This authoring API requires `react-kino@0.6.0` or later.
+
+## Render the document
+
+```tsx
+"use client";
+import { Story } from "react-kino/story";
+import { parseStory } from "react-kino/document";
+import { createRecipeComponents } from "react-kino/recipe-kit";
+import rawStory from "./story.kino.json";
+
+const document = parseStory(JSON.stringify(rawStory));
+export function MyPage() {
+  return (
+    <Story
+      document={document}
+      components={{
+        ...createRecipeComponents(),
+        ProductVisual: <YourProduct />,
+      }}
+    />
+  );
+}
+```
+
+A component layer references a registered name. The document never contains executable React or JavaScript. Your application supplies links, forms, media, and rich UI through `components`; imported documents can only select those names. Missing registrations remain visible and produce a diagnostic.
+
+## Embed the editor locally
+
+```tsx
+"use client";
+import { Storyboard } from "react-kino/studio";
+import { createStoryRecipe } from "react-kino/recipes";
+import { createRecipeComponents } from "react-kino/recipe-kit";
+
+export function Authoring() {
+  return (
+    <Storyboard
+      initialDocument={createStoryRecipe("launch")}
+      storageKey="my-product-story-v1"
+      components={{
+        ...createRecipeComponents(),
+        ProductVisual: <YourProduct />,
+      }}
+      onChange={(document) => console.log(document)}
+    />
+  );
+}
+```
+
+Import the editor only in your authoring route or development UI. The default runtime does not import it. The editor provides its own scoped styles. Undo/redo is bounded to 80 document states. Drafts are saved locally after edits; a restored draft requires your explicit choice. **Clear saved draft** removes the stored copy, keeping the current open document available for export.
+
+Download JSON to share or commit. Import files or paste JSON in the inspector. Imports are limited to 2 MB and validated before replacing the current document; you can undo a successful import. Storage and clipboard failures are shown in the workspace, with download as the alternative. No account, hosted data store, telemetry, or payment is required.
+
+## Mobile is a reading policy
+
+A story narrower than 640px switches to normal document flow, one column, and visible untransformed layers. Reduced-motion users receive the same reading path. This is a deliberate responsive policy, not a smaller copy of the desktop animation. A tall desktop scene also unpins and reveals its content. Use `reading` to enable this mode explicitly.
+
+## Validate and inspect
+
+```bash
+npx @react-kino/cli recipe launch story.kino.json
+npx @react-kino/cli validate story.kino.json --json
+npx @react-kino/cli doctor story.kino.json --components Product --json
+```
+
+The CLI checks the document, not the layout of your deployed application. Browser testing is still necessary for media, registered components, overflow, focus, and performance. The [JSON Schema](/schema/story-v1.json) helps editors; `validateStory` also checks unique IDs and start-before-end constraints.
+
+## Support independent maintenance
+
+Tourlight, Kino, Clickmap, and Redact share one independent maintainer. Voluntary support helps fund fixes, compatibility, documentation, and development; every feature remains free and MIT licensed. [Support this project](https://react-tourlight.vercel.app/support) through our shared support page. No sponsorship is needed to use or export your work.

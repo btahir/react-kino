@@ -1,0 +1,157 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "react-kino",
+  "homepage": "https://react-kino.dev",
+  "items": [
+    {
+      "name": "kino",
+      "type": "registry:component",
+      "title": "Kino",
+      "description": "Root provider that initializes the shared scroll tracker for all react-kino components.",
+      "registryDependencies": [],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/kino.tsx",
+          "type": "registry:component",
+          "target": "components/kino/kino.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scene",
+      "type": "registry:component",
+      "title": "Scene",
+      "description": "Pinned scroll section with progress-based children rendering. The core building block for scroll-driven storytelling.",
+      "registryDependencies": ["kino"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/scene.tsx",
+          "type": "registry:component",
+          "target": "components/kino/scene.tsx"
+        }
+      ]
+    },
+    {
+      "name": "reveal",
+      "type": "registry:component",
+      "title": "Reveal",
+      "description": "Scroll-triggered entrance animation with multiple presets: fade, fade-up, fade-down, scale, blur.",
+      "registryDependencies": ["kino", "scene"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/reveal.tsx",
+          "type": "registry:component",
+          "target": "components/kino/reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "parallax",
+      "type": "registry:component",
+      "title": "Parallax",
+      "description": "Speed-shifted scroll layer. Elements move faster or slower than natural scroll speed for depth effects.",
+      "registryDependencies": ["kino"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/parallax.tsx",
+          "type": "registry:component",
+          "target": "components/kino/parallax.tsx"
+        }
+      ]
+    },
+    {
+      "name": "counter",
+      "type": "registry:component",
+      "title": "Counter",
+      "description": "Animated number counter that interpolates between values as the user scrolls.",
+      "registryDependencies": ["kino", "scene"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/counter.tsx",
+          "type": "registry:component",
+          "target": "components/kino/counter.tsx"
+        }
+      ]
+    },
+    {
+      "name": "compare-slider",
+      "type": "registry:component",
+      "title": "CompareSlider",
+      "description": "Before/after comparison slider. Supports drag interaction or scroll-driven reveal.",
+      "registryDependencies": ["kino", "scene"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/compare-slider.tsx",
+          "type": "registry:component",
+          "target": "components/kino/compare-slider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "horizontal-scroll",
+      "type": "registry:component",
+      "title": "HorizontalScroll",
+      "description": "Horizontal scroll section that converts vertical scroll into horizontal panel movement.",
+      "registryDependencies": ["kino"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/horizontal-scroll.tsx",
+          "type": "registry:component",
+          "target": "components/kino/horizontal-scroll.tsx"
+        }
+      ]
+    },
+    {
+      "name": "progress",
+      "type": "registry:component",
+      "title": "Progress",
+      "description": "Scroll progress indicator with bar, dots, and ring variants.",
+      "registryDependencies": ["kino"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/progress.tsx",
+          "type": "registry:component",
+          "target": "components/kino/progress.tsx"
+        }
+      ]
+    },
+    {
+      "name": "video-scroll",
+      "type": "registry:component",
+      "title": "VideoScroll",
+      "description": "Scroll-driven video scrubber. Pins a video and scrubs its currentTime based on scroll progress.",
+      "registryDependencies": ["kino"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/video-scroll.tsx",
+          "type": "registry:component",
+          "target": "components/kino/video-scroll.tsx"
+        }
+      ]
+    },
+    {
+      "name": "text-reveal",
+      "type": "registry:component",
+      "title": "TextReveal",
+      "description": "Progressive text reveal that highlights words, characters, or lines as the user scrolls.",
+      "registryDependencies": ["kino", "scene"],
+      "dependencies": ["react-kino"],
+      "files": [
+        {
+          "path": "components/kino/text-reveal.tsx",
+          "type": "registry:component",
+          "target": "components/kino/text-reveal.tsx"
+        }
+      ]
+    }
+  ]
+}

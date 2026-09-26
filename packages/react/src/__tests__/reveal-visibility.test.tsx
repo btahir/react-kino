@@ -8,12 +8,28 @@ import { Reveal } from "../reveal";
 // (no <Scene>) can be driven by its own viewport position.
 let subscriber: ((d: ProgressData) => void) | null = null;
 vi.mock("@react-kino/core", async () => {
-  const actual = await vi.importActual<typeof import("@react-kino/core")>(
-    "@react-kino/core"
-  );
+  const actual =
+    await vi.importActual<typeof import("@react-kino/core")>(
+      "@react-kino/core",
+    );
   return {
     ...actual,
     ScrollTracker: class {
+      getRoot() {
+        return null;
+      }
+      snapshot() {
+        return {
+          scrollY: window.scrollY,
+          viewportHeight: window.innerHeight,
+          scrollHeight: document.documentElement.scrollHeight,
+          progress: 0,
+        };
+      }
+      offsetTop(el: HTMLElement, scrollY = window.scrollY) {
+        return el.getBoundingClientRect().top + scrollY;
+      }
+
       subscribe(cb: (d: ProgressData) => void) {
         subscriber = cb;
         return () => {
@@ -42,7 +58,7 @@ function drive(y: number) {
       viewportHeight: 768,
       scrollHeight: 5000,
       progress: 0,
-    })
+    }),
   );
 }
 
@@ -81,7 +97,7 @@ describe("Reveal trigger=visibility", () => {
     const { container } = render(
       <StubbedReveal trigger="visibility" animation="fade" at={0.5}>
         <span>content</span>
-      </StubbedReveal>
+      </StubbedReveal>,
     );
     const revealEl = container.querySelector("span")!
       .parentElement as HTMLElement;

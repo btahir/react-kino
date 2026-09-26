@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kino",
+  "type": "registry:component",
+  "title": "Kino",
+  "description": "Root provider that initializes the shared scroll tracker for all react-kino components.",
+  "dependencies": ["react-kino"],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "components/kino/kino.tsx",
+      "content": "\"use client\";\nexport { Kino, useKino } from \"react-kino\";\n",
+      "type": "registry:component",
+      "target": "components/kino/kino.tsx"
+    }
+  ],
+  "meta": {
+    "importSpecifier": "react-kino",
+    "componentName": "Kino"
+  }
+}

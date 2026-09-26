@@ -1,5 +1,15 @@
 {
   "root": true,
   "title": "react-kino",
-  "pages": ["index", "---Components---", "components", "---Hooks---", "hooks", "---Recipes---", "recipes"]
+  "pages": [
+    "index",
+    "authoring",
+    "responsive-stories",
+    "---Components---",
+    "components",
+    "---Hooks---",
+    "hooks",
+    "---Recipes---",
+    "recipes"
+  ]
 }

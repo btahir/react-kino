@@ -1,6 +1,6 @@
 {
   "name": "@react-kino/cli",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "CLI for scaffolding react-kino scroll pages",
   "bin": {
     "kino": "./dist/index.js"
@@ -8,7 +8,10 @@
   "main": "./dist/index.js",
   "files": [
     "dist",
-    "templates"
+    "templates",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup",
@@ -19,7 +22,9 @@
   "dependencies": {
     "fs-extra": "^11",
     "kleur": "^4",
-    "prompts": "^2"
+    "prompts": "^2",
+    "@react-kino/core": "workspace:^",
+    "react-kino": "workspace:^"
   },
   "devDependencies": {
     "@types/fs-extra": "^11",
@@ -30,5 +35,15 @@
   "license": "MIT",
   "engines": {
     "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/btahir/react-kino.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://www.react-kino.dev/docs",
+  "funding": {
+    "type": "individual",
+    "url": "https://react-tourlight.vercel.app/support"
   }
 }

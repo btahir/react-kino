@@ -1,20 +1,38 @@
 {
   "name": "@react-kino/core",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Framework-agnostic scroll engine powering react-kino",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./document": {
+      "import": {
+        "types": "./dist/document.d.mts",
+        "default": "./dist/document.mjs"
+      },
+      "require": {
+        "types": "./dist/document.d.ts",
+        "default": "./dist/document.js"
+      }
+    }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "sideEffects": false,
   "scripts": {
@@ -37,8 +55,19 @@
     "url": "https://github.com/btahir/react-kino.git",
     "directory": "packages/core"
   },
-  "homepage": "https://github.com/btahir/react-kino#readme",
+  "homepage": "https://www.react-kino.dev/docs",
   "bugs": {
     "url": "https://github.com/btahir/react-kino/issues"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://react-tourlight.vercel.app/support"
+  },
+  "typesVersions": {
+    "*": {
+      "document": [
+        "dist/document.d.ts"
+      ]
+    }
   }
 }

@@ -13,10 +13,10 @@ react-kino/
 ├── packages/
 │   ├── core/       # @react-kino/core — framework-agnostic scroll engine (pure TS, zero deps)
 │   ├── react/      # react-kino — React components and hooks (the npm-published package)
-│   └── cli/        # @react-kino/cli — future scaffolding CLI
+│   └── cli/        # @react-kino/cli — local scaffolding, recipe and validation CLI
 ├── apps/
 │   ├── docs/       # Next.js 15 + Fumadocs documentation site
-│   └── playground/ # future interactive playground
+│   └── playground/ # component playground
 └── tooling/        # shared ESLint, TypeScript, and tsup configs
 ```
 
@@ -29,7 +29,7 @@ pnpm install              # install all dependencies
 pnpm build                # build all packages in dependency order (core → react → docs)
 pnpm dev                  # run all dev scripts in parallel (tsup --watch + vite dev)
 pnpm lint                 # lint all packages
-pnpm test                 # run tests (depends on build)
+pnpm test                 # run core and React unit tests directly
 pnpm typecheck            # type-check all packages
 pnpm clean                # clean all dist dirs and node_modules
 ```
@@ -52,14 +52,12 @@ Build order enforced by Turborepo: `@react-kino/core` → `react-kino` → `apps
 - **SSR safety:** All scroll logic in `useEffect` (client-side only). Components render children on server. Use `useIsClient()` guard for scroll-dependent calculations.
 - **Next.js compatibility:** Components use `"use client"` directive for App Router
 - **Accessibility:** Respect `prefers-reduced-motion` — render content immediately without animation when preferred
-- **Bundle target:** Under 8KB gzipped for core components
-- **Dependencies:** Zero required runtime deps. React is a peer dep. Framer Motion is an optional peer dep.
+- **Bundle discipline:** Keep optional Studio and recipe data out of runtime imports; measure entrypoints with the same tooling.
+- **Dependencies:** Core has zero runtime dependencies; React wrapper depends on core and React peers.
 
-## Animation Engine Priority
+## Animation Engine
 
-1. CSS Scroll Timeline API (Chrome 115+, Firefox 121+) — native, best perf
-2. Web Animations API (WAAPI) — JS-controlled but GPU-accelerated fallback
-3. Framer Motion — optional enhancement if installed
+The current engine uses passive listeners, requestAnimationFrame batching, ProgressValue subscriptions, and DOM writes. Do not claim native ScrollTimeline or WAAPI acceleration without implementing and verifying it.
 
 ## Pinning Strategy
 
@@ -67,4 +65,4 @@ Build order enforced by Turborepo: `@react-kino/core` → `react-kino` → `apps
 
 ## Publishing
 
-Uses changesets for independent package versioning. GitHub Actions: `ci.yml` (lint + test on PR), `publish.yml` (npm publish on release tag).
+Uses changesets for independent package versioning. Run local checks and publish manually only with explicit user direction. Do not add automatic GitHub workflows.

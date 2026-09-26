@@ -11,6 +11,12 @@ export default function Layout({ children }: { children: ReactNode }) {
       }}
       links={[
         { text: "Home", url: "/" },
+        { text: "Storyboard", url: "/studio" },
+        {
+          text: "Support this project",
+          url: "https://react-tourlight.vercel.app/support",
+          external: true,
+        },
         {
           text: "GitHub",
           url: "https://github.com/btahir/react-kino",
